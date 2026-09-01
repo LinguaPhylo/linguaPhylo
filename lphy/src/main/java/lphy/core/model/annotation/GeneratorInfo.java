@@ -24,4 +24,6 @@ public @interface GeneratorInfo {
     GeneratorCategory category() default GeneratorCategory.NONE;
     String[] examples() default {};
     //Class returnType() default Object.class;
+    // for phylospec name
+    String phylospec() default "";
 }

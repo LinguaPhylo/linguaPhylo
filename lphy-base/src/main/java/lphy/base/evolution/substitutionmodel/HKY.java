@@ -28,8 +28,10 @@ public class HKY extends RateMatrix {
     protected static final String freqParamName = SubstModelParamNames.FreqParamName;
 
 
-    public HKY(@ParameterInfo(name = kappaParamName, narrativeName = "transition bias parameter", description = "the kappa of the HKY process.") Value<Number> kappa,
-               @ParameterInfo(name = SubstModelParamNames.FreqParamName, narrativeName="base frequency vector", description = "the base frequencies.") Value<Double[]> freq,
+    public HKY(@ParameterInfo(name = kappaParamName, narrativeName = "transition bias parameter", description = "the kappa of the HKY process.",
+               phylospec = "kappa") Value<Number> kappa,
+               @ParameterInfo(name = SubstModelParamNames.FreqParamName, narrativeName="base frequency vector", description = "the base frequencies.",
+               phylospec = "baseFrequencies") Value<Double[]> freq,
                @ParameterInfo(name = RateMatrix.meanRateParamName, narrativeName="rate", description = "the total rate of substitution per unit time. Default 1.0.", optional = true) Value<Number> rate) {
 
         super(rate);
@@ -41,7 +43,8 @@ public class HKY extends RateMatrix {
 
     @GeneratorInfo(name = "hky", verbClause = "is", narrativeName = "HKY model",
             category = GeneratorCategory.RATE_MATRIX, examples = {"hkyCoalescent.lphy"},
-            description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optionally a total rate) and produces an HKY85 rate matrix.")
+            description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optionally a total rate) and produces an HKY85 rate matrix.",
+            phylospec = "hky")
     public Value<Double[][]> apply() {
 
         Map<String, Value> params = getParams();

@@ -1,0 +1,4593 @@
+{
+  "componentLibrary" : {
+    "name" : "LPhy",
+    "version" : "0.1.0",
+    "description" : "Generators and data types available in LinguaPhylo (LPhy), exported for PhyloSpec.",
+    "authors" : [ "LinguaPhylo team" ],
+    "license" : "LGPL-3.0",
+    "types" : [ {
+      "name" : "Vector<Boolean>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<Real>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<Integer>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<Real>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<Any>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<String>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<PopulationFunction>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<Variant>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<TimeTree>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<Vector<Real>>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<Vector<Real>>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Vector<Vector<String>>",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Boolean",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Real",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Integer",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Real",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Any",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "String",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "SequenceType",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "BModelSet",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Mpileup",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "NChar",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Taxa",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Alignment",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "ContinuousCharacterData",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "FastaAlignment",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "MetaDataAlignment",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "SimpleAlignment",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "PopulationFunction",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "SVSPopulation",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "SiteModel",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "TimeTree",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "TimeTreeNode",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    }, {
+      "name" : "Table",
+      "description" : "",
+      "typeParameters" : [ ],
+      "typeProperties" : [ ],
+      "namespace" : "lphy.types"
+    } ],
+    "generators" : [ {
+      "name" : "AutoCorrelatedLogRates",
+      "description" : "This parametric distribution generates node-specific log-rates by a Brownian increment process\nalong the given time tree. The root node has a specified log-rate, and each child node's log-rate\nis drawn from Normal( parentLogRate, sigma^2 * dt ), where dt is the time between parent and child.\nThis leads to an auto-correlated relaxation of the molecular clock across lineages.\n",
+      "namespace" : "lphy.distributions.phylo_likelihood",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "sigma2",
+        "type" : "Real",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "rootLogRate",
+        "type" : "Real",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "nodeLogRates",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : ""
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BICEPS",
+      "description" : "The BICEPS (Bayesian Integrated Coalescent Epoch PlotS) tree prior. Divides the tree into epochs with independent InverseGamma-distributed population sizes.",
+      "namespace" : "lphy.distributions.coal_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "populationShape",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Shape (alpha) of InverseGamma prior on population sizes. Must be > 1."
+      }, {
+        "name" : "populationMean",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Mean of InverseGamma prior on population sizes. Scale beta = populationMean * (alpha - 1)."
+      }, {
+        "name" : "groupSizes",
+        "type" : "Vector<Integer>",
+        "required" : true,
+        "description" : "Coalescent events per epoch (present to past). The sum determines n-1."
+      }, {
+        "name" : "ploidy",
+        "type" : "Real",
+        "required" : false,
+        "description" : "Gene copy number per individual (default 2.0 for diploid)."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "number of taxa."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object, (e.g. Taxa or Object[])"
+      }, {
+        "name" : "ages",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "an array of leaf node ages."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Bernoulli",
+      "description" : "The coin toss distribution. With true (heads) having probability p.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Boolean>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "p",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of success."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Bernoulli",
+      "description" : "The Bernoulli process for n iid trials. The success (true) probability is p. Produces a boolean n-tuple.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Boolean>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "p",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of success."
+      }, {
+        "name" : "replicates",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of bernoulli trials."
+      }, {
+        "name" : "minSuccesses",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "Optional condition: the minimum number of ones in the boolean array."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Beta",
+      "description" : "The beta probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alpha",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the first shape parameter."
+      }, {
+        "name" : "beta",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the second shape parameter."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BirthDeath",
+      "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the sampling proportion."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the root of the tree."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BirthDeath",
+      "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the sampling proportion."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the root of the tree."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BirthDeath",
+      "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the sampling proportion."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the root node."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BirthDeath",
+      "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the sampling proportion."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the root node."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BirthDeathSerial",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and on number of taxa and their ages (Stadler and Yang, 2013).",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "psi",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage sampling-through-time rate."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object"
+      }, {
+        "name" : "ages",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "an array of leaf node ages."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the root."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BirthDeathSerial",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and on number of taxa and their ages (Stadler and Yang, 2013).",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "psi",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage sampling-through-time rate."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object"
+      }, {
+        "name" : "ages",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "an array of leaf node ages."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the root."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BirthDeath",
+      "description" : "A tree of only extant species, which is conceptually embedded<br>in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and on number of taxa.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Any",
+        "required" : false,
+        "description" : "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree), optional."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the root."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "BirthDeath",
+      "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the number of taxa."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "CalibratedYule",
+      "description" : "The CalibratedYule method accepts one or more clade taxa and generates a tip-labelled time tree. If a root age is provided, the method conditions the tree generation on this root age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate, possibly scaled to mutations or calendar units."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the total number of taxa."
+      }, {
+        "name" : "cladeTaxa",
+        "type" : "Any",
+        "required" : true,
+        "description" : "a string array of taxa id or a taxa object for clade taxa (e.g. dataframe, alignment or tree)"
+      }, {
+        "name" : "cladeMRCAAge",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "an array of ages for clade most recent common ancestor, ages should be correspond with clade taxa array."
+      }, {
+        "name" : "otherTaxa",
+        "type" : "Any",
+        "required" : false,
+        "description" : "a string array of taxa id or a taxa object for other taxa (e.g. dataframe, alignment or tree)"
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the root age to be conditioned on optional."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Categorical",
+      "description" : "The categorical distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "p",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the probability distribution over integer states 1 to K."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Cauchy",
+      "description" : "The Cauchy distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "median",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the median of the Cauchy distribution."
+      }, {
+        "name" : "scale",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the scale of the Cauchy distribution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Dirichlet",
+      "description" : "The dirichlet probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "conc",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the concentration parameters of a Dirichlet distribution."
+      }, {
+        "name" : "sum",
+        "type" : "Real",
+        "required" : false,
+        "description" : "The expected sum of values. By default, the sum is 1."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "DirichletMultinomial",
+      "description" : "The dirichlet multinomial distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Integer>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "p",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "event probabilities."
+      }, {
+        "name" : "w",
+        "type" : "Real",
+        "required" : true,
+        "description" : "overdispersion parameter of Dirichlet multinomial distribution."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "number of trials."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "DirichletMultinomial",
+      "description" : "The dirichlet multinomial distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Integer>>",
+      "typeParameters" : [ ],
+      "arguments" : [ ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "DiscretizeGamma",
+      "description" : "The discretized gamma probability distribution with mean = 1.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "shape",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the shape of the discretized gamma distribution."
+      }, {
+        "name" : "ncat",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of bins in the discretization."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "ErrorModel",
+      "description" : "The error model distribution on an alignment.",
+      "namespace" : "lphy.distributions.taxa_alignment",
+      "generatedType" : "Distribution<Alignment>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alpha",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the false positive probability."
+      }, {
+        "name" : "beta",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the false negative probability."
+      }, {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the alignment without errors."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Exp",
+      "description" : "The exponential probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "mean",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the mean of an exponential distribution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "ExpMarkovChain",
+      "description" : "A chain of random variables. X[0] ~ Exp(mean=initialMean) or X[0] ~ LogNormal(meanlog, sdlog); X[i+1] ~ Exp(mean=X[i])",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "initialMean",
+        "type" : "Real",
+        "required" : false,
+        "description" : "This is the mean of the exponential from which the first value of the chain is drawn."
+      }, {
+        "name" : "firstValue",
+        "type" : "Real",
+        "required" : false,
+        "description" : "This is the value of the 1st element of the chain (X[0])."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the dimension of the return. Use either X[0] ~ Exp(mean=initialMean); or X[0] ~ LogNormal(meanlog, sdlog); Then X[i+1] ~ Exp(mean=X[i])"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and (optionally) on number of *extant* taxa.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "psi",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage sampling-through-time rate."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and (optionally) on number of *extant* taxa.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "psi",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage sampling-through-time rate."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and (optionally) on number of *extant* taxa.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "psi",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage sampling-through-time rate."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on root age and (optionally) on number of extant taxa.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate (birth rate - death rate)."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover (death rate / birth rate)."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "samplingProportion",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of sampling prior to death: psi / (psi + mu)."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on root age and (optionally) on number of extant taxa.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate (birth rate - death rate)."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover (death rate / birth rate)."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "samplingProportion",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of sampling prior to death: psi / (psi + mu)."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on root age and (optionally) on number of extant taxa.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate (birth rate - death rate)."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover (death rate / birth rate)."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "samplingProportion",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of sampling prior to death: psi / (psi + mu)."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa. optional."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FullBirthDeath",
+      "description" : "A birth-death tree with both extant and extinct species.<br>Conditioned on age of root or origin.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the age of the root of the tree (only one of rootAge and originAge may be specified)."
+      }, {
+        "name" : "originAge",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the age of the origin of the tree  (only one of rootAge and originAge may be specified)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Gamma",
+      "description" : "The gamma probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "shape",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the shape of the distribution."
+      }, {
+        "name" : "scale",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the scale of the distribution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "GaussianRandomWalk",
+      "description" : "A chain of random variables. X[0] ~ Normal(mean=initialMean, sd=sd) or X[0] supplied via firstValue; X[i+1] ~ Normal(X[i], sd).",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "initialMean",
+        "type" : "Real",
+        "required" : false,
+        "description" : "The mean of the Normal from which the first value of the chain is drawn."
+      }, {
+        "name" : "firstValue",
+        "type" : "Real",
+        "required" : false,
+        "description" : "The value of the 1st element of the chain (X[0])."
+      }, {
+        "name" : "sd",
+        "type" : "Real",
+        "required" : true,
+        "description" : "The standard deviation of the Normal increment between consecutive elements."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "The length of the chain. Use either X[0] ~ Normal(mean=initialMean, sd=sd); or supply X[0] via firstValue. Then X[i+1] ~ Normal(X[i], sd)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "GLM",
+      "description" : "The general linear model with optional link function and scale. Error is on the link scale: y = scale × g^{-1}(β·x + ε) where ε ~ Normal(0, σ). When x is a matrix (Double[][]), vectorisation applies the model to each row, returning Double[] - useful for sampling multiple GLM responses from a design matrix.",
+      "namespace" : "lphy.distributions",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "beta",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the coefficients of the general linear model."
+      }, {
+        "name" : "x",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the explanatory variables of the general linear model. For GLM with separate scale, do not include an intercept column."
+      }, {
+        "name" : "sd",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the standard deviation of residual error (on the link scale)."
+      }, {
+        "name" : "link",
+        "type" : "String",
+        "required" : false,
+        "description" : "the link function: 'identity' (default), 'log', or 'logit'."
+      }, {
+        "name" : "scale",
+        "type" : "Real",
+        "required" : false,
+        "description" : "optional scale multiplier applied after the inverse link transformation. Result is: scale × g^{-1}(β · x + error). Default is 1.0."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Geometric",
+      "description" : "The probability distribution of the number of failures before the first success given a fixed probability of success p, supported on the set { 0, 1, 2, 3, ... }.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "p",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of success."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "InverseGamma",
+      "description" : "The inverse-gamma probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alpha",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the alpha parameter of inverse gamma."
+      }, {
+        "name" : "beta",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the beta parameter of inverse gamma."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "LeafCalibrations",
+      "description" : "Get a double array of ages for the tip dates according to the calibrations in the nexus file, ordered to match the sequence order in the DATA block.",
+      "namespace" : "lphy.distributions",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "file",
+        "type" : "String",
+        "required" : true,
+        "description" : "the name of nexus file including path. The nexus file contains leaf calibrations."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "LogNormal",
+      "description" : "The log-normal probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "meanlog",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the mean of the distribution on the log scale."
+      }, {
+        "name" : "sdlog",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the standard deviation of the distribution on the log scale."
+      }, {
+        "name" : "offset",
+        "type" : "Real",
+        "required" : false,
+        "description" : "optional parameter to shift entire distribution by an offset. default is 0."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "MissingSites",
+      "description" : "The missing data distribution for an alignment.",
+      "namespace" : "lphy.distributions.taxa_alignment",
+      "generatedType" : "Distribution<Alignment>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "prob",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability that the state in a site is changed to the unknown state."
+      }, {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the alignment before data is missing."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "MixturePhyloCTMC",
+      "description" : "Mixture (convex combination) of two or three component phylogenetic likelihoods that apply to the same alignment.",
+      "namespace" : "lphy.distributions.phylo_likelihood",
+      "generatedType" : "Distribution<Alignment>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "comp1",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "First component alignment RV generated by a phylogenetic CTMC."
+      }, {
+        "name" : "comp2",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "Second component alignment RV generated by a phylogenetic CTMC."
+      }, {
+        "name" : "weights",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "Mixture weights (length 2 simplex)."
+      }, {
+        "name" : "index",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "Optional component index (0 or 1) used for SIMULATION ONLY; ignored when mapping to BEAST."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "MixturePhyloCTMC",
+      "description" : "Mixture (convex combination) of two or three component phylogenetic likelihoods that apply to the same alignment.",
+      "namespace" : "lphy.distributions.phylo_likelihood",
+      "generatedType" : "Distribution<Alignment>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "comp1",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "First component alignment RV generated by a phylogenetic CTMC."
+      }, {
+        "name" : "comp2",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "Second component alignment RV generated by a phylogenetic CTMC."
+      }, {
+        "name" : "comp3",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "Third component alignment RV generated by a phylogenetic CTMC."
+      }, {
+        "name" : "weights",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "Mixture weights (length 3 simplex)."
+      }, {
+        "name" : "index",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "Optional component index (0, 1 or 2) used for SIMULATION ONLY; ignored when mapping to BEAST."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "MultispeciesCoalescent",
+      "description" : "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree. The (optional) taxa object provides for non-trivial mappings from individuals to species, and not all species have to have representatives. The (optional) numLoci parameter can be used to produce more than one gene tree from this distribution.",
+      "namespace" : "lphy.distributions.coal_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "theta",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "effective population sizes, one for each species (both extant and ancestral)."
+      }, {
+        "name" : "n",
+        "type" : "Vector<Integer>",
+        "required" : false,
+        "description" : "the number of sampled taxa in the gene tree for each extant species."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "the taxa for the gene tree, with species to define the mapping."
+      }, {
+        "name" : "S",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the species tree. "
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "NegativeBinomial",
+      "description" : "It uses the Pascal distribution with the given number of successes (integer) and probability of success.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "r",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of successes."
+      }, {
+        "name" : "p",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of a success."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Normal",
+      "description" : "The normal probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "mean",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the mean of the distribution."
+      }, {
+        "name" : "sd",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the standard deviation of the distribution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "NormalGamma",
+      "description" : "The normal-gamma probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "shape",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the shape of the distribution."
+      }, {
+        "name" : "scale",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the scale of the distribution."
+      }, {
+        "name" : "mean",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the mean of the distribution."
+      }, {
+        "name" : "precision",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the standard deviation of the distribution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "PhyloBrownian",
+      "description" : "The phylogenetic Brownian motion distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic continuous trait likelihood is derived from.)",
+      "namespace" : "lphy.distributions.phylo_likelihood",
+      "generatedType" : "Distribution<ContinuousCharacterData>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the time tree."
+      }, {
+        "name" : "diffRate",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the diffusion rate."
+      }, {
+        "name" : "y0",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the value of continuous trait at the root."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "PhyloCTMC",
+      "description" : "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic likelihood is derived from.)",
+      "namespace" : "lphy.distributions.phylo_likelihood",
+      "generatedType" : "Distribution<Alignment>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the time tree."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the clock rate. Default value is 1.0."
+      }, {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used."
+      }, {
+        "name" : "Q",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "the instantaneous rate matrix."
+      }, {
+        "name" : "siteRates",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise."
+      }, {
+        "name" : "branchRates",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "a rate for each branch in the tree. Original branch rates are used if rates not given. Branch rates are assumed to be 1.0 otherwise."
+      }, {
+        "name" : "L",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "length of the alignment"
+      }, {
+        "name" : "dataType",
+        "type" : "SequenceType",
+        "required" : false,
+        "description" : "the data type used for simulations, default to nucleotide"
+      }, {
+        "name" : "root",
+        "type" : "Alignment",
+        "required" : false,
+        "description" : "root sequence, defaults to root sequence generated from equilibrium frequencies."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "PhyloCTMC",
+      "description" : "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic likelihood is derived from.)",
+      "namespace" : "lphy.distributions.phylo_likelihood",
+      "generatedType" : "Distribution<Alignment>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the time tree."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the clock rate. Default value is 1.0."
+      }, {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used."
+      }, {
+        "name" : "siteModel",
+        "type" : "SiteModel",
+        "required" : true,
+        "description" : "the site model"
+      }, {
+        "name" : "branchRates",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise."
+      }, {
+        "name" : "L",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "length of the alignment"
+      }, {
+        "name" : "dataType",
+        "type" : "SequenceType",
+        "required" : false,
+        "description" : "the data type used for simulations, default to nucleotide"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "PhyloMultivariateBrownian",
+      "description" : "The phylogenetic multivariate Brownian motion distribution.",
+      "namespace" : "lphy.distributions.phylo_likelihood",
+      "generatedType" : "Distribution<ContinuousCharacterData>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the time tree."
+      }, {
+        "name" : "diffusionMatrix",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "the multivariate diffusion rates."
+      }, {
+        "name" : "y0",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the value of multivariate traits at the root."
+      }, {
+        "name" : "branchRates",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "a rate multiplier for each branch in the tree, indexed by child node getIndex(). If absent, all branches have rate 1. Enables a relaxed random walk (RRW) when combined with drawn per-branch rates."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "PhyloOU",
+      "description" : "The phylogenetic Ornstein-Ulhenbeck distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id.",
+      "namespace" : "lphy.distributions.phylo_likelihood",
+      "generatedType" : "Distribution<ContinuousCharacterData>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the time tree."
+      }, {
+        "name" : "diffRate",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the variance of the underlying Brownian process. This is not the equilibrium variance of the OU process."
+      }, {
+        "name" : "theta",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the 'optimal' value that the long-term process is centered around."
+      }, {
+        "name" : "alpha",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the drift term that determines the rate of drift towards the optimal value."
+      }, {
+        "name" : "y0",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the value of continuous trait at the root."
+      }, {
+        "name" : "branchThetas",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the 'optimal' value for each branch in the tree."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Poisson",
+      "description" : "The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the expected number of events."
+      }, {
+        "name" : "offset",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "optional parameter to add a constant to the returned result, default is 0"
+      }, {
+        "name" : "min",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "optional parameter to specify a condition that the number of events must be greater than or equal to this mininum, default is 0."
+      }, {
+        "name" : "max",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "optional parameter to specify a condition that the number of events must be less than or equal to this maximum"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Poisson",
+      "description" : "The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the expected number of events."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "PoissonIndicators",
+      "description" : "Poisson indicator prior matching MASCOT's GLM indicator prior. Draws k ~ Poisson(λ) conditioned on k ≤ n, then places k ones uniformly at random among n positions.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Boolean>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of indicators (length of the boolean array)."
+      }, {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the expected number of active indicators (Poisson rate parameter)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "CoalescentPopFunc",
+      "description" : "The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 1999)",
+      "namespace" : "lphy.distributions.coal_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "popFunc",
+        "type" : "PopulationFunction",
+        "required" : true,
+        "description" : "the population size."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "number of taxa."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object, (e.g. Taxa or Object[])"
+      }, {
+        "name" : "ages",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "an array of leaf node ages."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "RandomBooleanArray",
+      "description" : "Samples a random boolean array of given length and given hamming weight. The hamming weight is the number of true values in the array and must be less than or equal to the length.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Boolean>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "length",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the length of the boolean array to be generated."
+      }, {
+        "name" : "hammingWeight",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of true values in the boolean array."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "RandomComposition",
+      "description" : "Samples a random k-tuple of positive integers that sum to n.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Integer>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the sum of the random tuple."
+      }, {
+        "name" : "k",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the size of the random tuple."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "SNPSampler",
+      "description" : "Sample SNPs from a given nucleotide one sequence alignment by using a binomial distribution to choose mutation sites (with the number of trials equal to the number of sites). For each selected site, use the reference nucleotide as the reference allele and randomly choose a different nucleotide as the alternative allele.",
+      "namespace" : "lphy.distributions",
+      "generatedType" : "Distribution<Vector<Variant>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the one sequence alignment"
+      }, {
+        "name" : "p",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the probability of each site to be SNP, deafult to be 0.01"
+      }, {
+        "name" : "r",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the ratio of heterozygousSNPs and non-reference homozygous SNPs, default all SNPs are heterozygous"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "sample",
+      "description" : "The sample function uniformly sample the subset of a given size from an array of the elements either with or without the replacement.",
+      "namespace" : "lphy.distributions",
+      "generatedType" : "Distribution<Any>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "array",
+        "type" : "Any",
+        "required" : true,
+        "description" : "1d-array to be sampled."
+      }, {
+        "name" : "size",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of elements to choose."
+      }, {
+        "name" : "replace",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "If replace is true, the same element can be sampled multiple times, if false (as default), it can only appear once in the result."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "SampleBranch",
+      "description" : "Randomly sample a branch among the branches at a given age in the given tree, represented by the node attached to this branch. The function is deterministic when there is only one branch at the given age. The branch is represented by the node under it.",
+      "namespace" : "lphy.distributions",
+      "generatedType" : "Distribution<TimeTreeNode>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the full tree to sample branch from."
+      }, {
+        "name" : "age",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age that branch would sample at."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Sequence",
+      "description" : "Create one sequence given the length and the probability distribution over each state.",
+      "namespace" : "lphy.distributions.taxa_alignment",
+      "generatedType" : "Distribution<SimpleAlignment>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "p",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the probability distribution over integer states 1 to K."
+      }, {
+        "name" : "L",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "length of the alignment"
+      }, {
+        "name" : "dataType",
+        "type" : "SequenceType",
+        "required" : false,
+        "description" : "the sequence type of the alignment"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Coalescent",
+      "description" : "The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 1999)",
+      "namespace" : "lphy.distributions.coal_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "theta",
+        "type" : "Real",
+        "required" : true,
+        "description" : "effective population size, possibly scaled to mutations or calendar units."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "number of taxa."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object, (e.g. Taxa or TimeTree or Object[])"
+      }, {
+        "name" : "ages",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "an array of leaf node ages."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on origin age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "psi",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage sampling-through-time rate."
+      }, {
+        "name" : "originAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the origin."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on origin age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "psi",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage sampling-through-time rate."
+      }, {
+        "name" : "originAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the origin."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on origin age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate."
+      }, {
+        "name" : "mu",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage death rate."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "psi",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage sampling-through-time rate."
+      }, {
+        "name" : "originAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the origin."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on origin age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate (birth rate - death rate)."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover (death rate / birth rate)."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "samplingProportion",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of sampling prior to death: psi / (psi + mu)."
+      }, {
+        "name" : "originAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the origin."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on origin age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate (birth rate - death rate)."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover (death rate / birth rate)."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "samplingProportion",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of sampling prior to death: psi / (psi + mu)."
+      }, {
+        "name" : "originAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the origin."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "FossilBirthDeath",
+      "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on origin age.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "diversification",
+        "type" : "Real",
+        "required" : true,
+        "description" : "diversification rate (birth rate - death rate)."
+      }, {
+        "name" : "turnover",
+        "type" : "Real",
+        "required" : true,
+        "description" : "turnover (death rate / birth rate)."
+      }, {
+        "name" : "rho",
+        "type" : "Real",
+        "required" : true,
+        "description" : "proportion of extant taxa sampled."
+      }, {
+        "name" : "samplingProportion",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the probability of sampling prior to death: psi / (psi + mu)."
+      }, {
+        "name" : "originAge",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the age of the origin."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "SkylineCoalescent",
+      "description" : "The skyline coalescent distribution over tip-labelled time trees. If no group sizes are specified, then there is one population parameter per coalescent event (as per classic skyline coalescent of Pybus, Rambaut and Harvey 2000)",
+      "namespace" : "lphy.distributions.coal_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "theta",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "effective population size, one value for each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or calendar units. If no groupSizes are specified, then the number of coalescent intervals will be equal to the number of population size parameters."
+      }, {
+        "name" : "groupSizes",
+        "type" : "Vector<Integer>",
+        "required" : false,
+        "description" : "A tuple of group sizes. The sum of this tuple determines the number of coalescent events in the tree and thus the number of taxa. By default all group sizes are 1 which is equivalent to the classic skyline coalescent."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "number of taxa."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "Taxa object, (e.g. Taxa or Object[])"
+      }, {
+        "name" : "ages",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "an array of leaf node ages."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "StructuredCoalescent",
+      "description" : "The structured coalescent distribution over tip-labelled time trees.",
+      "namespace" : "lphy.distributions.coal_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "M",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "The population process rate matrix which contains the effective population sizes and migration rates. Off-diagonal migration rates are in units of expected migrants per *generation* backwards in time."
+      }, {
+        "name" : "k",
+        "type" : "Vector<Integer>",
+        "required" : false,
+        "description" : "the number of taxa in each population. provide either this or a demes argument."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : false,
+        "description" : "the taxa."
+      }, {
+        "name" : "demes",
+        "type" : "Vector<Any>",
+        "required" : false,
+        "description" : "the deme array, which runs parallel to the taxonArray in the taxa object."
+      }, {
+        "name" : "sort",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "whether to sort the deme array, before mapping them to the indices of the effective population sizes and migration rates. If not, as default, the pop size indices are determined by the natural order of the deme array, if true, then the indices are the order of sorted deme array."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "StructuredCoalescentRateShifts",
+      "description" : "Structured coalescent with piecewise constant (time-varying) migration rates and effective population sizes. Rate shifts occur at fixed times. IMPORTANT: Demes are always sorted alphabetically - provide theta and m arrays with values ordered according to alphabetically sorted deme names.",
+      "namespace" : "lphy.distributions.coal_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "theta",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "Effective population sizes for all intervals. Flattened array of [nIntervals * nDemes] values. For each interval, provide Ne for each deme in ALPHABETICAL order of deme names."
+      }, {
+        "name" : "m",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "Migration rates for all intervals. Flattened array of [nIntervals * nDemes * (nDemes-1)] values. For each interval, rates are ordered: for source i, for dest j (j!=i), where i,j are indices of ALPHABETICALLY sorted deme names. Rates are in units of expected migrants per generation backward in time."
+      }, {
+        "name" : "rateShiftTimes",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "Start times of each interval, going backward from present. Times must be in strictly increasing order. Negative times are allowed for time offsets between predictor data and the tree. Example: [0.0, 5.0, 10.0] defines 3 intervals. Example: [-3.0, 0.0, 5.0] offsets predictor data 3 years before most recent sample."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : true,
+        "description" : "The taxa."
+      }, {
+        "name" : "demes",
+        "type" : "Vector<Any>",
+        "required" : true,
+        "description" : "Deme assignment for each taxon, parallel to the taxa array. Demes will be sorted alphabetically to determine indices."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "StructuredCoalescentSkyline",
+      "description" : "Structured coalescent with a per-deme Skyline on log effective population sizes and time-constant migration rates. Demes are always sorted alphabetically; provide logNe and M arrays with entries ordered by alphabetically sorted deme names.",
+      "namespace" : "lphy.distributions.coal_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "logNe",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "Log effective population sizes per deme per epoch. Shape [nDemes][nEpochs]. Row index follows ALPHABETICAL order of deme names; column index is epoch (0 = most recent)."
+      }, {
+        "name" : "M",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "Migration rates (constant over time). Flat array of length nDemes * (nDemes - 1). Order: for source i (alphabetical), for dest j != i (alphabetical). Rates are in units of expected migrants per generation backward in time. Exactly one of M or logM must be supplied."
+      }, {
+        "name" : "logM",
+        "type" : "Vector<Vector<Real>>",
+        "required" : false,
+        "description" : "Log migration rates, time-varying. Shape [nDemes*(nDemes-1)][nMigEpochs]. Row index follows the same source-major order as M; column index is the migration epoch (epoch 0 = most recent). Requires migrationRateShifts. Exactly one of M or logM must be supplied."
+      }, {
+        "name" : "rateShifts",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "Start times of each Ne epoch, going backward from the present. Length equals number of epochs. Strictly increasing; first element typically 0.0."
+      }, {
+        "name" : "migrationRateShifts",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "Start times of each migration epoch, going backward from the present. Length equals logM[*].length. Strictly increasing; first element typically 0.0. Required when logM is supplied."
+      }, {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : true,
+        "description" : "The taxa."
+      }, {
+        "name" : "demes",
+        "type" : "Vector<Any>",
+        "required" : true,
+        "description" : "Deme assignment for each taxon, parallel to the taxa array. Demes are sorted alphabetically to determine indices."
+      }, {
+        "name" : "interpolation",
+        "type" : "String",
+        "required" : false,
+        "description" : "How log-Ne is interpolated between epochs. \"constant\" (default): piecewise-constant log-Ne, where logNe[deme][i] is the value throughout epoch i. \"linear\": piecewise-linear log-Ne, where logNe[deme][i] is the value at the knot time rateShifts[i]; between rateShifts[i] and rateShifts[i+1] log-Ne interpolates linearly between logNe[deme][i] and logNe[deme][i+1]; after the last knot log-Ne stays at logNe[deme][nEpochs-1]. The linear mode matches Mascot's Skygrowth; the constant mode matches Mascot's StructuredSkygrid."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "SubsampledTree",
+      "description" : "Generate a randomly sampled tree using the given sample fractions and clade taxa name arrays from the specified tree. The order of sample fractions corresponds to the order of the name arrays.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the full tree to extract taxa from."
+      }, {
+        "name" : "taxa",
+        "type" : "Vector<Vector<String>>",
+        "required" : true,
+        "description" : "the taxa name arrays that the function would sample"
+      }, {
+        "name" : "sampleFraction",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the fractions that the function sample in the taxa"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "UCLN_Mean1",
+      "description" : "The uncorrelated lognormal (UCLN) relaxed clock model, where the mean of log-normal distr on branch rates in real space must be fixed to 1. Use the clock rate (mu) in PhyloCTMC as the expected mean clock rate.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "uclnSigma",
+        "type" : "Real",
+        "required" : true,
+        "description" : "The standard deviation of the expected lognormal distribution on branch rates."
+      }, {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "The tree."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Uniform",
+      "description" : "The uniform probability distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lower",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the lower bound of the uniform distribution."
+      }, {
+        "name" : "upper",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the upper bound of the uniform distribution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "UniformDiscrete",
+      "description" : "The discrete uniform distribution over integers.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lower",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the lower bound (inclusive) of the uniform distribution on integers."
+      }, {
+        "name" : "upper",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the upper bound (inclusive) of the uniform distribution on integer."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Weibull",
+      "description" : "The Weibull distribution.",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alpha",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the first shape parameter of the Weibull distribution."
+      }, {
+        "name" : "beta",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the second shape parameter of the Weibull distribution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "WeightedDirichlet",
+      "description" : "The scaled dirichlet probability distribution. The weighted mean of values must equal to the expected weighted mean (default to 1).",
+      "namespace" : "lphy.distributions.prior",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "conc",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the concentration parameters of the scaled Dirichlet distribution."
+      }, {
+        "name" : "weights",
+        "type" : "Vector<Integer>",
+        "required" : true,
+        "description" : "the relative weight parameters of the scaled Dirichlet distribution."
+      }, {
+        "name" : "mean",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the expected weighted mean of the values, default to 1."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Yule",
+      "description" : "The Yule tree distribution over tip-labelled time trees. Will be conditional on the root age if one is provided.",
+      "namespace" : "lphy.distributions.bd_tree",
+      "generatedType" : "Distribution<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "per-lineage birth rate, possibly scaled to mutations or calendar units."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the number of taxa."
+      }, {
+        "name" : "taxa",
+        "type" : "Any",
+        "required" : false,
+        "description" : "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)"
+      }, {
+        "name" : "rootAge",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the root age to be conditioned on. optional."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "bSiteRates",
+      "description" : "the site rates for the given bModelTest parameters.",
+      "namespace" : "lphy.distributions.site_model",
+      "generatedType" : "Distribution<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "shape",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the shape parameter of the discretized Gamma distribution."
+      }, {
+        "name" : "ncat",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of categories of the discretized Gamma distribution."
+      }, {
+        "name" : "L",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of sites to simulate."
+      }, {
+        "name" : "proportionInvariable",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the proportion of invariable sites parameter"
+      }, {
+        "name" : "useShape",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : "true if the non-zero site rates follow a discretized Gamma distribution."
+      }, {
+        "name" : "useProportionInvariable",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : "true if there is a proportion of invariable sites."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "arange",
+      "description" : "A function to produce an equally space array of doubles. Takes a start value, and stop value and a step value and returns a double array value.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "start",
+        "type" : "Real",
+        "required" : true,
+        "description" : "value of the range to start at (inclusive)"
+      }, {
+        "name" : "stop",
+        "type" : "Real",
+        "required" : true,
+        "description" : "value of the range to stop at (inclusive)"
+      }, {
+        "name" : "step",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the step size"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "aminoAcids",
+      "description" : "The amino acid data type.",
+      "namespace" : "lphy.functions.sequ_type",
+      "generatedType" : "SequenceType",
+      "typeParameters" : [ ],
+      "arguments" : [ ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "argi",
+      "description" : "The arg function for reading an integer.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Integer",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "name",
+        "type" : "String",
+        "required" : true,
+        "description" : "the name of the integer argument."
+      }, {
+        "name" : "default",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "the default value."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "AutoCorrelatedClock",
+      "description" : "This deterministic function calculates the mean substitution rate on each branch\nof a phylogeny under an autocorrelated Brownian motion (log-rate) model.\nFor each parent-child node pair, the average rate is computed via a bridging integral\n(the so-called MeanZ approach). Optionally, the average rates can be normalized so that\nthe time-weighted mean rate over the entire tree is 1.0.\n",
+      "namespace" : "lphy.functions.phylo_likelihood",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "nodeLogRates",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "rootLogRate",
+        "type" : "Real",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "sigma2",
+        "type" : "Real",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : ""
+      }, {
+        "name" : "normalize",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : ""
+      }, {
+        "name" : "taylorOrder",
+        "type" : "Integer",
+        "required" : false,
+        "description" : ""
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "bModelSet",
+      "description" : "Returns the set of models for the given bModelTest model set name.",
+      "namespace" : "lphy.functions.model_ave_sel",
+      "generatedType" : "BModelSet",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "0",
+        "type" : "String",
+        "required" : true,
+        "description" : "the bModelTest model set name. The option includes: allreversible, transitionTransversionSplit, namedSimple, namedExtended."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "binaryCovarion",
+      "description" : "The rate matrix of the Covarion model for Binary data. It is equivalent to the BEAST mode.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alpha",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the rate of evolution in slow mode."
+      }, {
+        "name" : "s",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the rate of flipping between slow and fast modes"
+      }, {
+        "name" : "vfreq",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the frequencies of the visible states"
+      }, {
+        "name" : "hfreq",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the frequencies of the hidden rates"
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default = 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "binaryDataType",
+      "description" : "The binary data type.",
+      "namespace" : "lphy.functions.sequ_type",
+      "generatedType" : "SequenceType",
+      "typeParameters" : [ ],
+      "arguments" : [ ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "binaryRateMatrix",
+      "description" : "The binary trait instantaneous rate matrix. Takes a lambda and produces an instantaneous rate matrix:\n\n    Q = ⎡-1  1⎤\n        ⎣ λ -λ⎦",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lambda",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the lambda parameter of the binary process. Rate of 0->1 is 1, rate of 1->0 is lambda."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "blosum62",
+      "description" : "The BLOSUM62 instantaneous rate matrix for amino acids (Henikoff & Henikoff 1992).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to BLOSUM62 empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "cbind",
+      "description" : "Column-bind two matrices. Both must have the same number of rows. The result has nRows rows and (aCols + bCols) columns. For combining 3+ matrices, chain calls: cbind(cbind(X1, X2), X3).",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "The first matrix (Double[][])."
+      }, {
+        "name" : "b",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "The second matrix (Double[][])."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "concat2Str",
+      "description" : "A function to concatenate substrings into one sting.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "String",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "prefix",
+        "type" : "String",
+        "required" : true,
+        "description" : "the prefix substring to concatenate."
+      }, {
+        "name" : "suffix",
+        "type" : "String",
+        "required" : true,
+        "description" : "the suffix substring to concatenate."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "concatArray",
+      "description" : "A function to concatenate two arrays into one.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "0",
+        "type" : "Any",
+        "required" : true,
+        "description" : "array 1."
+      }, {
+        "name" : "1",
+        "type" : "Any",
+        "required" : true,
+        "description" : "array 2."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "Cons_Exp_ConsPopFunc",
+      "description" : "Models population growth using a piecewise exponential growth function with x as an independent parameter.",
+      "namespace" : "lphy.functions.coal_tree",
+      "generatedType" : "PopulationFunction",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tau",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Time before which population size is constant."
+      }, {
+        "name" : "r",
+        "type" : "Real",
+        "required" : true,
+        "description" : "The exponential growth rate."
+      }, {
+        "name" : "NC",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Current population size after time x."
+      }, {
+        "name" : "x",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Time at which the population reaches NC."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "constantPopFunc",
+      "description" : "Models population using a constant population size.",
+      "namespace" : "lphy.functions.coal_tree",
+      "generatedType" : "PopulationFunction",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "N0",
+        "type" : "Real",
+        "required" : true,
+        "description" : "The constant population size."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "copySites",
+      "description" : "Create a new alignment by copying sites from the original alignment. The sites can be duplicated. Use other function to sample or manipulate the site indices.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Alignment",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "ids",
+        "type" : "Vector<Integer>",
+        "required" : true,
+        "description" : "the array of site indices (start from 0) of the original alignment."
+      }, {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the original alignment."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "cpREV",
+      "description" : "The cpREV instantaneous rate matrix for amino acids in chloroplast-encoded proteins (Adachi et al. 2000).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to cpREV empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "taxa",
+      "description" : "A set of taxa with species and ages defined in parallel arrays.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Taxa",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "names",
+        "type" : "Vector<Any>",
+        "required" : true,
+        "description" : "an array of objects representing taxa names"
+      }, {
+        "name" : "species",
+        "type" : "Vector<Any>",
+        "required" : false,
+        "description" : "an array of objects representing species names"
+      }, {
+        "name" : "ages",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the ages of the taxa"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "dcmut",
+      "description" : "The DCMut instantaneous rate matrix for amino acids — a re-estimation of the Dayhoff matrix (Kosiol & Goldman 2005).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to DCMut empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "dateToAge",
+      "description" : "convert from dates to relative ages for setting in taxa",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "dates",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the doubel array of the tip dates"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "dayhoff",
+      "description" : "The Dayhoff instantaneous rate matrix for amino acids (Dayhoff et al. 1978).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to Dayhoff empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "setDifference",
+      "description" : "Computes the difference between two arrays. The first parameter is the main set, and the second is the set of elements to subtract. Elements in the second set that are not found in the first set are ignored.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "mainSet",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the primary set of elements from which to exclude"
+      }, {
+        "name" : "excludeSet",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the set of elements to be excluded from the main set"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "distance",
+      "description" : "It computes a matrix of pairwise distances from a given alignment using an evolutionary model. If there is a gap or an ambiguous state, it is treated as different from any canonical states.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the alignment (no unambiguous states)."
+      }, {
+        "name" : "m",
+        "type" : "String",
+        "required" : false,
+        "description" : "the evolutionary model, such as JC96 or p, default to p (Hamming) distance"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "elementsAt",
+      "description" : "A function to extract element(s) from an array by index.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "index",
+        "type" : "Vector<Integer>",
+        "required" : true,
+        "description" : "index list"
+      }, {
+        "name" : "array",
+        "type" : "Any",
+        "required" : true,
+        "description" : "array to retrieve element of"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "ExpansionPopFunc",
+      "description" : "Models population using a piecewise constant-exponential function with optional NA and I_na.",
+      "namespace" : "lphy.functions.coal_tree",
+      "generatedType" : "PopulationFunction",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "NA",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Ancestral population size."
+      }, {
+        "name" : "r",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Exponential decay rate."
+      }, {
+        "name" : "NC",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Population size for [0, x]."
+      }, {
+        "name" : "x",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Time boundary x."
+      }, {
+        "name" : "I_na",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "Indicator for NA usage (0 or 1)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "exponentialPopFunc",
+      "description" : "Models population growth using an exponential growth function with optional NA and I_na.",
+      "namespace" : "lphy.functions.coal_tree",
+      "generatedType" : "PopulationFunction",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "GrowthRate",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Exponential growth rate"
+      }, {
+        "name" : "N0",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Initial population size"
+      }, {
+        "name" : "NA",
+        "type" : "Real",
+        "required" : false,
+        "description" : "Ancestral population size"
+      }, {
+        "name" : "I_na",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "Indicator for using NA (0 or 1)"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "extantTaxa",
+      "description" : "Returns the extant taxa from the given taxa object.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Taxa",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : true,
+        "description" : "the taxa-dimensioned value."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "extantTree",
+      "description" : "A tree pruned from a larger tree by retaining only the tips at time zero.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "TimeTree",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the full tree to extract extant tree from."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "extractAlignment",
+      "description" : "extract several taxa from the alignment",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Alignment",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the alignment that extract from"
+      }, {
+        "name" : "taxa",
+        "type" : "Vector<String>",
+        "required" : true,
+        "description" : "the string array of taxa that will be extracted"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "extractTrait",
+      "description" : "return a trait alignment, which contains the set of traits extracted from taxa names.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Alignment",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : true,
+        "description" : "the set of taxa whose names contain the traits."
+      }, {
+        "name" : "sep",
+        "type" : "String",
+        "required" : true,
+        "description" : "the substring to split the taxa names, where Java regular expression escape characters will be given no special meaning."
+      }, {
+        "name" : "i",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "i (>=0) is the index to extract the trait value."
+      }, {
+        "name" : "name",
+        "type" : "String",
+        "required" : false,
+        "description" : "the map containing optional arguments and their values for reuse."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "f81",
+      "description" : "The F81 instantaneous rate matrix. Takes base frequencies and produces an F81 rate matrix.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the base frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default = 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "flu",
+      "description" : "The FLU instantaneous rate matrix for amino acids in influenza proteins (Dang et al. 2010).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to FLU empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "gtr",
+      "description" : "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "rates",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the relative rates of the GTR process."
+      }, {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the base frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the rate of substitution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "generalLinearFunction",
+      "description" : "The general linear function: y = scale × g^{-1}(sum_j indicator_j * beta_j * x_j + error) where g^{-1} is the inverse link function, scale is an optional multiplier (default 1.0), indicator is an optional Boolean array for BSSVS predictor selection (default all true), and error is an optional additive term on the linear predictor (default 0.0). When x is a matrix (Double[][]), vectorisation applies the function to each row, returning Double[] - useful for computing multiple GLM predictions from a design matrix.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Real",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "beta",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the coefficients of the general linear model."
+      }, {
+        "name" : "x",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the explanatory variables (predictors). For GLM with separate scale, do not include an intercept column."
+      }, {
+        "name" : "link",
+        "type" : "String",
+        "required" : false,
+        "description" : "the link function: 'identity' (default), 'log', or 'logit'."
+      }, {
+        "name" : "scale",
+        "type" : "Real",
+        "required" : false,
+        "description" : "optional scale multiplier applied after the inverse link transformation. Result is: scale × g^{-1}(linear predictor). Default is 1.0."
+      }, {
+        "name" : "indicator",
+        "type" : "Vector<Boolean>",
+        "required" : false,
+        "description" : "optional Boolean array for BSSVS (Bayesian stochastic search variable selection). When provided, only predictors with indicator=true contribute to the linear predictor. Must have same length as beta."
+      }, {
+        "name" : "error",
+        "type" : "Real",
+        "required" : false,
+        "description" : "optional error term added to the linear predictor before the inverse link transformation. Result is: scale × g^{-1}(sum_j indicator_j * beta_j * x_j + error)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "generalTimeReversible",
+      "description" : "The general time reversible instantaneous rate matrix. Takes relative rates and base frequencies and produces an general time reversible rate matrix.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "rates",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the relative rates of the GTR process."
+      }, {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the base frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the base frequencies."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "get",
+      "description" : "Get the value from a map given a string ID as the key.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "key",
+        "type" : "String",
+        "required" : true,
+        "description" : "the key of the map as String"
+      }, {
+        "name" : "map",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the map"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "gompertzPopFunc_f0",
+      "description" : "Constructs a Gompertz population model (f0-parameterized) with optional NA and indicator I_na.",
+      "namespace" : "lphy.functions.coal_tree",
+      "generatedType" : "PopulationFunction",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "b",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Gompertz growth rate (b)."
+      }, {
+        "name" : "N0",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Initial population size (N0)."
+      }, {
+        "name" : "f0",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Initial proportion, f0 = N0 / NInfinity."
+      }, {
+        "name" : "NA",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Ancestral population size (NA)."
+      }, {
+        "name" : "I_na",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "Indicator (0 or 1) controlling usage of NA."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "gompertzPopFunc_t50",
+      "description" : "Constructs a GompertzPopulation_t50 model with optional NA and an I_na indicator.",
+      "namespace" : "lphy.functions.coal_tree",
+      "generatedType" : "PopulationFunction",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "t50",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Time when population is half of carrying capacity."
+      }, {
+        "name" : "b",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Growth rate parameter (>0)."
+      }, {
+        "name" : "NInfinity",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Carrying capacity NInfinity (>0)."
+      }, {
+        "name" : "NA",
+        "type" : "Real",
+        "required" : false,
+        "description" : "Ancestral population size (>=0)."
+      }, {
+        "name" : "I_na",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "Indicator (0 or 1). If 1 and NA>0 => use NA."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "hivb",
+      "description" : "The HIVb instantaneous rate matrix for amino acids — between-host HIV evolution (Nickle et al. 2007).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to HIVb empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "hivw",
+      "description" : "The HIVw instantaneous rate matrix for amino acids — within-host HIV evolution (Nickle et al. 2007).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to HIVw empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "hky",
+      "description" : "The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optionally a total rate) and produces an HKY85 rate matrix.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "kappa",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the kappa of the HKY process.",
+        "phylospec" : "kappa"
+      }, {
+        "name" : "baseFrequencies",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the base frequencies.",
+        "phylospec" : "baseFrequencies"
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the total rate of substitution per unit time. Default 1.0."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ],
+      "phylospec" : "hky"
+    }, {
+      "name" : "ifelse",
+      "description" : "Return the 1st value if the condition is true, else return the 2nd value.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "0",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : "the logical condition to determine which value to return"
+      }, {
+        "name" : "1",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the value to return if the condition is true"
+      }, {
+        "name" : "2",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the value to return if the condition is false"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "informativeSites",
+      "description" : "Return the array of site indices (start from 0), at the given alignment, which parsimony informative sites.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Vector<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the original alignment."
+      }, {
+        "name" : "ignoreUnknown",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "If true (as default), ignore the unknown state '?' (incl. gap '-'), when determine parsimony informative sites."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "setInternalNodesID",
+      "description" : "Assign IDs to internal nodes of a given tree. Use this to trigger the inclusion of internal node sequences in the simulated alignment generated by PhyloCTMC.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "TimeTree",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the tree to set internal nodes id."
+      }, {
+        "name" : "internalNodesID",
+        "type" : "Vector<Any>",
+        "required" : false,
+        "description" : "the vector of internal nodes id."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "intersect",
+      "description" : "A function to get intersection between two sets.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "0",
+        "type" : "Any",
+        "required" : true,
+        "description" : "set 1."
+      }, {
+        "name" : "1",
+        "type" : "Any",
+        "required" : true,
+        "description" : "set 2."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "invariableSites",
+      "description" : "Return the array of site indices (start from 0) at the given alignment, which are invariable sites.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Vector<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the original alignment."
+      }, {
+        "name" : "ignoreUnknown",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "If true (as default), ignore the unknown state '?' (incl. gap '-'), when determine variable sites or constant sites."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "jtt",
+      "description" : "The JTT instantaneous rate matrix for amino acids (Jones, Taylor & Thornton 1992).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to JTT empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "jukesCantor",
+      "description" : "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the rate of the Jukes-Cantor process. Default value is 1.0."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "k80",
+      "description" : "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "kappa",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the kappa of the K80 process."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the K80 process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "lg",
+      "description" : "The LG instantaneous rate matrix for amino acids (Le & Gascuel 2008).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to LG empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "labelClade",
+      "description" : "Find the most recent common ancestor of given taxa names in the tree and give it a label.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "TimeTree",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the tree to label"
+      }, {
+        "name" : "taxa",
+        "type" : "Vector<String>",
+        "required" : true,
+        "description" : "the root of the taxa names would be labelled"
+      }, {
+        "name" : "label",
+        "type" : "String",
+        "required" : true,
+        "description" : "the label"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "length",
+      "description" : "the length of the argument",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Integer",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "0",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the array to return the length of."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "lewisMK",
+      "description" : "The LewisMK Q matrix construction function. Takes a mean rate and a number of states and produces a LewisMK Q matrix.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "numStates",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of states"
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the LewisMK process. Default value is 1.0."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "localBranchRates",
+      "description" : "A function that returns branch rates for the given tree, indicator mask and raw rates. Each branch takes on the rate of its node index if the indicator is true, or inherits the rate of its parent branch otherwise.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "Vector<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the tree."
+      }, {
+        "name" : "indicators",
+        "type" : "Vector<Boolean>",
+        "required" : true,
+        "description" : "a boolean indicator for each node except the root. True if there is a new rate on the branch above this node, false if the rate is inherited from the parent node."
+      }, {
+        "name" : "rates",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "A rate for each node in the tree (except root). Only those with a corresponding indicator are used."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "localClock",
+      "description" : "Apply local clock in a phylogenetic tree to generate a tree with branch rates. The order of elements in clades and cladeRates array should match. The clades should not be overlapped with each other.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the tree used to calculate branch rates"
+      }, {
+        "name" : "clades",
+        "type" : "Vector<Any>",
+        "required" : true,
+        "description" : "the array of the node names"
+      }, {
+        "name" : "cladeRates",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the array of clade rates"
+      }, {
+        "name" : "rootRate",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the root rate of the tree"
+      }, {
+        "name" : "includeStem",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "whether to include stem of clades, defaults to true"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "logisticPopFunc",
+      "description" : "Models population growth using a logistic growth function, with optional ancestral population size (NA) and indicator (I_na).",
+      "namespace" : "lphy.functions.coal_tree",
+      "generatedType" : "PopulationFunction",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "t50",
+        "type" : "Real",
+        "required" : true,
+        "description" : "The logistic midpoint (inflection point)."
+      }, {
+        "name" : "nCarryingCapacity",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Carrying capacity (K)."
+      }, {
+        "name" : "b",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Logistic growth rate."
+      }, {
+        "name" : "NA",
+        "type" : "Real",
+        "required" : true,
+        "description" : "Ancestral population size (optional)."
+      }, {
+        "name" : "I_na",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "Indicator for using NA (0 or 1)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "mrca",
+      "description" : "get the most recent common ancestor from given tree and taxa names.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "TimeTreeNode",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the tree to look for most recent common ancestor"
+      }, {
+        "name" : "taxa",
+        "type" : "Vector<String>",
+        "required" : true,
+        "description" : "the array of taxa names to look for most recent common ancestor"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "map",
+      "description" : "A map defined by the argumentName=value pairs of its arguments.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "countMigrations",
+      "description" : "The number of single-child nodes in the tree where the 'deme' attribute changes.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "Integer",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the tree."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "migrationMatrix",
+      "description" : "This function constructs the population process rate matrix. Diagonals are the population sizes, off-diagonals are populated with the migration rate from pop i to pop j (backwards in time in units of expected migrants per generation).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "theta",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the population sizes."
+      }, {
+        "name" : "m",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the migration rates between each pair of demes (row-major order minus diagonals)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "mtArt",
+      "description" : "The mtArt instantaneous rate matrix for amino acids in arthropod mitochondrial proteins (Abascal et al. 2007).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to mtArt empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "mtMam",
+      "description" : "The mtMam instantaneous rate matrix for amino acids in mammalian mitochondrial proteins (Yang et al. 1998).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to mtMam empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "mtREV",
+      "description" : "The mtREV instantaneous rate matrix for amino acids in mitochondrial proteins (Adachi & Hasegawa 1996).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to mtREV empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "nchar",
+      "description" : "The number of sites in the given alignment.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Integer",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "sites",
+        "type" : "NChar",
+        "required" : true,
+        "description" : "a site-dimensioned object (e.g. alignment) or an array of site-dimensioned objects."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "ntaxa",
+      "description" : "The number of taxa in the given taxa-dimensioned value (e.g. alignment, tree et cetera).",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Integer",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "taxa",
+        "type" : "Taxa",
+        "required" : true,
+        "description" : "the taxa-dimensioned value."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "newick",
+      "description" : "A function that parses a tree from a newick formatted string.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "TimeTree",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "String",
+        "required" : true,
+        "description" : "the tree in Newick format."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "nucleotideModel",
+      "description" : "The instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "modelSet",
+        "type" : "BModelSet",
+        "required" : true,
+        "description" : "The set of models to choose from. Valid value are: allreversible, transitionTransversionSplit, namedSimple, namedExtended."
+      }, {
+        "name" : "modelIndicator",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the index of the model to be employed"
+      }, {
+        "name" : "rates",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the relative rates of the GTR process."
+      }, {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the base frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the rate of substitution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "nucleotides",
+      "description" : "The nucleotide data type.",
+      "namespace" : "lphy.functions.sequ_type",
+      "generatedType" : "SequenceType",
+      "typeParameters" : [ ],
+      "arguments" : [ ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "obama",
+      "description" : "OBAMA-style averaging over an arbitrary subset of 15 empirical amino acid substitution models, selected by an integer indicator. Optional useExternalFreqs gates whether the supplied freq overrides the model's empirical frequencies.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "modelIndicator",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "integer in [0, k-1] selecting one of the k empirical AA models in the models parameter (or in [0, 14] when models is omitted, indexing the canonical OBAMA list)."
+      }, {
+        "name" : "models",
+        "type" : "Vector<String>",
+        "required" : false,
+        "description" : "optional subset of empirical AA model names (case-insensitive). Allowed: WAG, JTT, LG, Dayhoff, DCMut, cpREV, mtREV, mtMam, mtArt, Blosum62, VT, RtREV, FLU, HIVb, HIVw. Defaults to all 15."
+      }, {
+        "name" : "useExternalFreqs",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "if true, use the supplied freq; if false, use the selected model's empirical frequencies. If unset, freq overrides empirical when supplied."
+      }, {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "optional base frequencies (alphabetical AA order) overriding the selected model's empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "parseInt",
+      "description" : "A function to parse the given string to an integer.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Integer",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "str",
+        "type" : "String",
+        "required" : true,
+        "description" : "the string value to parse into an integer."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "pruneTree",
+      "description" : "A tree pruned from a larger tree by retaining only nodes subtending nodes with non-null id's.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "TimeTree",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "tree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the full tree to sample"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "rangeInt",
+      "description" : "The range of integers from start to end. Boundaries are included.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "start",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "start of the range (inclusive)"
+      }, {
+        "name" : "end",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "end of the range (inclusive)"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "rateShiftTimes",
+      "description" : "Computes rate shift times from date inputs and an interval format string, matching MASCOT's BEAUti rate shift editor. Returns times in 'time before most recent sample' units. The interval string uses Y-M-D format (e.g. \"0-1-0\" for monthly intervals).",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "mostRecentSampleDate",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the date of the most recent sample as a decimal year (e.g. 2020.5)."
+      }, {
+        "name" : "from",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the most recent predictor date as a decimal year (e.g. 2020.0)."
+      }, {
+        "name" : "to",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the final (oldest) predictor date as a decimal year (e.g. 2018.0)."
+      }, {
+        "name" : "interval",
+        "type" : "String",
+        "required" : true,
+        "description" : "the predictor interval as a Y-M-D format string, e.g. \"0-1-0\" for monthly, \"1-0-0\" for yearly, \"0-0-7\" for weekly."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "readDelim",
+      "description" : "A function that loads values from a data delimited file and returns a map.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Table",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "file",
+        "type" : "String",
+        "required" : true,
+        "description" : "the file name including path."
+      }, {
+        "name" : "sep",
+        "type" : "String",
+        "required" : true,
+        "description" : "the separator (delimiter) to separate values in each row."
+      }, {
+        "name" : "header",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "If 'header' is true, as default, then use the 1st row as the map keys, otherwise it will create keys and load the values from the 1st row."
+      }, {
+        "name" : "comment",
+        "type" : "String",
+        "required" : false,
+        "description" : "The comment character to ignore everything after it in one line. The default is #."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "readFasta",
+      "description" : "A function that parses an alignment from a fasta file.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Alignment",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "file",
+        "type" : "String",
+        "required" : true,
+        "description" : "the name of fasta file including path, which contains an alignment."
+      }, {
+        "name" : "options",
+        "type" : "Any",
+        "required" : false,
+        "description" : "the map containing optional arguments and their values for reuse."
+      }, {
+        "name" : "sequenceType",
+        "type" : "SequenceType",
+        "required" : false,
+        "description" : "the sequence type for sequences in the fasta format, default to guess the type between Nucleotide and Amino Acid."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "readMpileup",
+      "description" : "Read in a mpileup file and the taxa names that used to generate mpileup file.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Mpileup",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "file",
+        "type" : "String",
+        "required" : true,
+        "description" : "the name of mpileup file including path, should have .mpileup or .pileup suffix"
+      }, {
+        "name" : "names",
+        "type" : "Vector<Any>",
+        "required" : true,
+        "description" : "an array of objects representing taxa names"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "readNexus",
+      "description" : "A function that parses an alignment from a Nexus file.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "MetaDataAlignment",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "file",
+        "type" : "String",
+        "required" : true,
+        "description" : "the name of Nexus file including path."
+      }, {
+        "name" : "options",
+        "type" : "Any",
+        "required" : false,
+        "description" : "the map containing optional arguments and their values for reuse."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "readTrees",
+      "description" : "A function that parses trees from either a Nexus (default) or Newick file.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "Vector<TimeTree>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "file",
+        "type" : "String",
+        "required" : true,
+        "description" : "the name of Nexus/Newick file including path."
+      }, {
+        "name" : "format",
+        "type" : "String",
+        "required" : false,
+        "description" : "Nexus or Newick (case-insensitive), default to Nexus."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "rmTaxa",
+      "description" : "Remove a set of taxa from the given alignment.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Alignment",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "names",
+        "type" : "Vector<Any>",
+        "required" : true,
+        "description" : "an array of objects representing taxa names"
+      }, {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the original alignment."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "rep",
+      "description" : "The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "element",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the element to replicate."
+      }, {
+        "name" : "times",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the standard deviation of the distribution."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "repArray",
+      "description" : "The replication function. Take an array and an integer representing the number of times to replicate the array. Return a vector of the value repeated the specified number of times.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "array",
+        "type" : "Any",
+        "required" : true,
+        "description" : "1d-array to replicate."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the times to replicate array."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "rtREV",
+      "description" : "The rtREV instantaneous rate matrix for amino acids in retroviral reverse transcriptase (Dimmic et al. 2002).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to rtREV empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "stochasticVariableSelection",
+      "description" : "Models population using different growth models based on the indicator value.",
+      "namespace" : "lphy.functions.coal_tree",
+      "generatedType" : "SVSPopulation",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "indicator",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "The indicator for the population model."
+      }, {
+        "name" : "models",
+        "type" : "Vector<PopulationFunction>",
+        "required" : true,
+        "description" : "The array of population models."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "select",
+      "description" : "A function to select a value if the indicator is true, or return 0 otherwise.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Real",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the value."
+      }, {
+        "name" : "indicator",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : "indicator for whether the number should be selected, or replace with zero"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "selectSites",
+      "description" : "Select the site where the fraction of unknown states are less than the threshold in that site.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Vector<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "unknownFracLess",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the threshold to select a site, if the fraction of unknown states (incl. gap) in this site is less than the threshold."
+      }, {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the original alignment."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "simulate",
+      "description" : "The function to simulate data from a given lphy script.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "lphy",
+        "type" : "String",
+        "required" : true,
+        "description" : "the file path of the lphy script to simulate data."
+      }, {
+        "name" : "seed",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the seed (integer)."
+      }, {
+        "name" : "outDir",
+        "type" : "String",
+        "required" : false,
+        "description" : "the directory to output the simulated values. Default to the parent directory of the given lphy script."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "slice",
+      "description" : "A function to slice a subarray from an array.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "start",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "start index"
+      }, {
+        "name" : "end",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "end index"
+      }, {
+        "name" : "array",
+        "type" : "Any",
+        "required" : true,
+        "description" : "array to retrieve element of"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "slice",
+      "description" : "A function to slice a subarray from an array.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "start",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "start index"
+      }, {
+        "name" : "end",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "end index"
+      }, {
+        "name" : "array",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "array of doubles to slice"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "sort",
+      "description" : "The sort function sorts an array by increasing (as default) or decreasing order.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "array",
+        "type" : "Any",
+        "required" : true,
+        "description" : "1d-array to sort."
+      }, {
+        "name" : "decreasing",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "sort the array by increasing (as default) or decreasing."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "species",
+      "description" : "extract the species from the given taxa object as a new taxa object. Useful to generate a species tree in the multispecies coalescent. The age of each species will be the youngest age of the taxa from that species.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Taxa",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "0",
+        "type" : "Taxa",
+        "required" : true,
+        "description" : "the taxa object from which to extract the species from."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "split",
+      "description" : "A function to split a given string at the regular expressions and return the i'th (starting from 0) substring of the resulting list.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "String",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "str",
+        "type" : "String",
+        "required" : true,
+        "description" : "the string value to extract a substring matching the given pattern."
+      }, {
+        "name" : "regex",
+        "type" : "String",
+        "required" : true,
+        "description" : "a regular expression"
+      }, {
+        "name" : "i",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the index (>=0) of the substring to return"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "standard",
+      "description" : "The Standard data type function. Takes a state count and produces a Standard data type with that number of states.",
+      "namespace" : "lphy.functions.sequ_type",
+      "generatedType" : "SequenceType",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "numStates",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the number of distinct states in this data type."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "substituteClade",
+      "description" : "Substitute a clade in a tree with a given node and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree.",
+      "namespace" : "lphy.functions.tree",
+      "generatedType" : "TimeTree",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "baseTree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the tree that we are going to add another tree onto."
+      }, {
+        "name" : "cladeTree",
+        "type" : "TimeTree",
+        "required" : true,
+        "description" : "the tree that we are going to add it on the base tree"
+      }, {
+        "name" : "node",
+        "type" : "TimeTreeNode",
+        "required" : true,
+        "description" : "the node with the branch that the branch tree would be add on to."
+      }, {
+        "name" : "time",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mutation happen time that the branch tree would be add onto the base tree"
+      }, {
+        "name" : "nodeLabel",
+        "type" : "String",
+        "required" : true,
+        "description" : "the name of added branch node."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "sum",
+      "description" : "The sum of the elements of the given array",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Real",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "array",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "the array to sum the elements of."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "sum",
+      "description" : "Sums over an axis of the 2d array",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "array",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "the 2d array to sum the elements of."
+      }, {
+        "name" : "axis",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "the axis over which the array is summed: axis=0 for sum by column, axis=1 for sum by row. Defaults to axis=1 (row summation)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "hammingWeight",
+      "description" : "The sum of the true elements of the given boolean array",
+      "namespace" : "lphy.functions.prior",
+      "generatedType" : "Integer",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "array",
+        "type" : "Vector<Boolean>",
+        "required" : true,
+        "description" : "the boolean array to sum the elements of."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "sumCols",
+      "description" : "Sums over each column of the given array",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "array",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "the 2d array to sum the elements of."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "sumRows",
+      "description" : "Sums over each row of the given array",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Real>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "array",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "the 2d array to sum the elements of."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "taxa",
+      "description" : "The taxa of the given taxa-dimensioned object (e.g. alignment, tree et cetera).",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Taxa",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "taxa",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the taxa value (i.e. alignment or tree)."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "strToDouble",
+      "description" : "Cast string to double.",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Real",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "0",
+        "type" : "String",
+        "required" : true,
+        "description" : "given a string."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "setUnion",
+      "description" : "Set the union of two given sets and remove all repeat elements.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "firstSet",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the first set to put in the final set"
+      }, {
+        "name" : "secondSet",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the second set to put in the final set"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "unique",
+      "description" : "the unique set of the array",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Any",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "arg",
+        "type" : "Any",
+        "required" : true,
+        "description" : "the string array to find its unique set."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "vt",
+      "description" : "The VT instantaneous rate matrix for amino acids (Müller & Vingron 2000).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to VT empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "variableSites",
+      "description" : "Return the array of site indices (start from 0), at the given alignment, which variable sites.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "Vector<Integer>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the original alignment."
+      }, {
+        "name" : "ignoreUnknown",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "If true (as default), ignore the unknown state '?' (incl. gap '-'), when determine variable sites or constant sites."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "wag",
+      "description" : "The WAG instantaneous rate matrix for amino acids (Whelan & Goldman 2001).",
+      "namespace" : "lphy.functions.rate_matrix",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "freq",
+        "type" : "Vector<Real>",
+        "required" : false,
+        "description" : "the base frequencies (alphabetical AA order). Defaults to WAG empirical frequencies."
+      }, {
+        "name" : "meanRate",
+        "type" : "Real",
+        "required" : false,
+        "description" : "the mean rate of the process. default 1.0"
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "fasta",
+      "description" : "A function that returns an alignment which can be saved as a fasta file later using lphy studio or slphy.",
+      "namespace" : "lphy.functions.taxa_alignment",
+      "generatedType" : "FastaAlignment",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "alignment",
+        "type" : "Alignment",
+        "required" : true,
+        "description" : "the lphy alignment that is written into the fasta file."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "bSiteModel",
+      "description" : "Returns the site model for the given parameters.",
+      "namespace" : "lphy.functions.site_model",
+      "generatedType" : "SiteModel",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "Q",
+        "type" : "Vector<Vector<Real>>",
+        "required" : true,
+        "description" : "the instantaneous rate matrix."
+      }, {
+        "name" : "siteRates",
+        "type" : "Vector<Real>",
+        "required" : true,
+        "description" : "raw site rates."
+      }, {
+        "name" : "pInv",
+        "type" : "Real",
+        "required" : true,
+        "description" : "the proportion of invariable sites parameter"
+      }, {
+        "name" : "useSiteRates",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : "true if the site rates have heterogeneity."
+      }, {
+        "name" : "usePInv",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : "true if the proportion invariable used."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    }, {
+      "name" : "toDesignMatrix",
+      "description" : "Convert a table from readDelim into a Double[][] design matrix for generalLinearFunction. Supports long formats (deme/interval or from/to/interval columns) and MASCOT matrix formats (Ne vector, Ne time-variant matrix, square migration matrix, time-variant migration matrix). Format is auto-detected from column names. Rows are sorted in canonical order. Use nIntervals to tile static predictors across time intervals for use with cbind.",
+      "namespace" : "lphy.functions",
+      "generatedType" : "Vector<Vector<Real>>",
+      "typeParameters" : [ ],
+      "arguments" : [ {
+        "name" : "table",
+        "type" : "Table",
+        "required" : true,
+        "description" : "Table read from a CSV file containing predictor data in one of the supported formats (long or MASCOT matrix)."
+      }, {
+        "name" : "migrationMatrix",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "If true, treat as migration format; if false (default), treat as per-deme/Ne format. Used to disambiguate MASCOT matrix formats."
+      }, {
+        "name" : "nIntervals",
+        "type" : "Integer",
+        "required" : false,
+        "description" : "Number of time intervals to tile a static predictor across. Only valid for static formats (Ne vector, square migration matrix). The single-interval block is replicated nIntervals times to match time-variant predictors."
+      } ],
+      "constraints" : [ ],
+      "examples" : [ ]
+    } ]
+  }
+}

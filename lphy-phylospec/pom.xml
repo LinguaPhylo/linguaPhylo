@@ -1,0 +1,56 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.linguaphylo</groupId>
+        <artifactId>lphy-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>lphy-phylospec</artifactId>
+    <name>lphy-phylospec</name>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <!-- this module versions independently (see <version> above), but lphy-base still
+             versions with the rest of the reactor, hence ${revision} rather than ${project.version} -->
+        <lphy-base.version>1.8.1-SNAPSHOT</lphy-base.version>
+        <phylospec-core.version>0.0.1-SNAPSHOT</phylospec-core.version>
+        <!-- Override on the command line: -Dexporter.args=path/to/output.json -->
+        <exporter.args/>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.linguaphylo</groupId>
+            <artifactId>lphy-base</artifactId>
+            <version>${lphy-base.version}</version>
+        </dependency>
+
+        <!-- installed locally via: cd ../../phylospec && mvn -pl core/java -am install -Dmaven.test.skip=true -->
+        <dependency>
+            <groupId>org.phylospec</groupId>
+            <artifactId>phylospec-core</artifactId>
+            <version>${phylospec-core.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <!-- classpath mode, not module-path: phylospec-core pulls in jsonschema-generator,
+                         whose own transitive slf4j dependency doesn't resolve cleanly as a JPMS module.
+                         This tool is a build-time export step, not part of the runtime module graph. -->
+                    <mainClass>lphy.phylospec.export.ComponentLibraryExporter</mainClass>
+                    <arguments>
+                        <argument>${exporter.args}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

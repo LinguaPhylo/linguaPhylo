@@ -68,6 +68,7 @@
         <module>lphy</module>
         <module>lphy-base</module>
         <module>lphy-studio</module>
+        <module>lphy-phylospec</module>
     </modules>
 
     <profiles>
