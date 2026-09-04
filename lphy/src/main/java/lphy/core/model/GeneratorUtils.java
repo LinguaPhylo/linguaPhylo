@@ -4,9 +4,7 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,33 +107,44 @@ public class GeneratorUtils {
 
     /**
      * @param type the type signature for a return value or parameter
-     * @return the generic class. e.g. if type is {@code lphy.graphicalModel.Value<java.lang.Number>} then this will return java.lang.Number.class
+     * @return the generic class. e.g. if type is {@code lphy.graphicalModel.Value<java.lang.Number>} then this will return java.lang.Number.class.
+     * Handles a {@code T} that is itself generic too, e.g. {@code Value<Map<String, Object>>} returns
+     * {@code Map.class}, not just {@code Value<T>} where T is a plain, non-generic class.
      */
     public static Class getClass(Type type) {
-        Class typeClass;
-        String name = type.getTypeName();
-
-        if (name.indexOf('<') >= 0) {
-
-            String typeClassString = name.substring(name.indexOf('<') + 1, name.lastIndexOf('>'));
-
-            if (typeClassString.endsWith("[]")) {
-                typeClassString = "L" + typeClassString;
-
-                while (typeClassString.endsWith("[]")) {
-                    typeClassString = "[" + typeClassString.substring(0, typeClassString.lastIndexOf('['));
-                }
-                typeClassString = typeClassString + ";";
+        if (type instanceof ParameterizedType parameterizedType) {
+            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+            if (actualTypeArguments.length > 0) {
+                return resolveRawClass(actualTypeArguments[0]);
             }
+        }
+        return Object.class;
+    }
 
-            try {
-                typeClass = Class.forName(typeClassString);
-            } catch (ClassNotFoundException e) {
-                // TODO need to understand these cases better!
-                typeClass = Object.class;
-            }
-        } else typeClass = Object.class;
-        return typeClass;
+    /**
+     * Resolves a (possibly still generic) {@link Type} down to its raw, erased {@link Class} --
+     * e.g. {@code Map<String, Object>} (a {@link ParameterizedType}) resolves to {@code Map.class},
+     * and {@code List<String>[]} (a {@link GenericArrayType}, since its component type is itself
+     * generic) resolves to {@code List[].class}. A plain array like {@code Double[]} never reaches
+     * the {@link GenericArrayType} branch: with no type variable involved, the JVM already
+     * represents it as the concrete {@code Class} {@code Double[].class}, caught by the first case.
+     */
+    private static Class resolveRawClass(Type type) {
+        if (type instanceof Class<?> c) {
+            return c;
+        } else if (type instanceof ParameterizedType parameterizedType) {
+            return resolveRawClass(parameterizedType.getRawType());
+        } else if (type instanceof GenericArrayType genericArrayType) {
+            Class<?> componentClass = resolveRawClass(genericArrayType.getGenericComponentType());
+            return Array.newInstance(componentClass, 0).getClass();
+        } else if (type instanceof WildcardType wildcardType) {
+            Type[] upperBounds = wildcardType.getUpperBounds();
+            return upperBounds.length > 0 ? resolveRawClass(upperBounds[0]) : Object.class;
+        } else if (type instanceof TypeVariable<?> typeVariable) {
+            Type[] bounds = typeVariable.getBounds();
+            return bounds.length > 0 ? resolveRawClass(bounds[0]) : Object.class;
+        }
+        return Object.class;
     }
 
     public static boolean hasSingleGeneratorOutput(Value value) {
