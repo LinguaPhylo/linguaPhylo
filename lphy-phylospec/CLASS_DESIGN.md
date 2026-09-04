@@ -1,6 +1,6 @@
 # lphy-phylospec: class design summary
 
-Companion to `DESIGN.md`. Summarizes, per class, what each proposed class in the
+Companion to `README.md`. Summarizes, per class, what each proposed class in the
 `lphy-phylospec` module layout does and how it plugs into `phylospec-core`'s existing tiling
 framework, followed by a class diagram.
 
@@ -32,7 +32,7 @@ function), while `@ParameterInfo` lives on its constructor's parameters — and 
   LPhy→PhyloSpec type-name translation has to happen: `ComponentLibraryExporter` (the JSON export)
   no longer does this translation — it reports LPhy's own literal types (`Double[]`, `Object`, ...)
   — so this method must itself turn a reflected `Double[]` into the `TypeToken` for PhyloSpec's
-  `Vector<Real>`, not assume that work is already done. See `DESIGN.md`'s "Type-name mapping"
+  `Vector<Real>`, not assume that work is already done. See `README.md`'s "Type-name mapping"
   section for the specifics (the numeric refinement lattice, the `Double`/`Number` many-to-one
   mapping, and the `Vector<T>` translation) this method needs to reconstruct.
 - `applyTile(...)` — resolves each input to a `Value<?>`, then calls LPhy's existing

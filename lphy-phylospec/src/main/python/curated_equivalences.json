@@ -1,0 +1,129 @@
+{
+  "_comment": "Hand-curated LPhy <-> PhyloSpec name equivalences for concepts that don't share an exact name. Read by compare_component_libraries.py and layered on top of exact-name matches. Each entry: lphy (list of names), phylospec (list of names) -- either side may have more than one name for one-to-many / many-to-one equivalences -- and an optional note flagging a real caveat (different parameterization, narrower/broader scope, etc). This file is maintained by hand and reviewed for correctness; it is NOT derived automatically from the two component-library JSONs (see find_near_matches() in the script for a candidate list to promote into this file after a manual check). generatorNotes/typeNotes are a separate, smaller mechanism: supplementary notes appended to one side's Description cell in the LPhy-only/PhyloSpec-only tables (unlike the equivalence lists above, these entries are never matched -- the note just records something worth knowing about why there's no counterpart).",
+
+  "types": [
+    {
+      "lphy": ["TimeTree"],
+      "phylospec": ["Tree"]
+    },
+    {
+      "lphy": ["SequenceType"],
+      "phylospec": ["Character", "Nucleotide", "AminoAcid"],
+      "note": "LPhy's SequenceType is a single alphabet marker (see nucleotides(), aminoAcids(), standard(n)); PhyloSpec models the same idea as the Character type hierarchy."
+    },
+    {
+      "lphy": ["Double"],
+      "phylospec": ["Real", "NonNegativeReal", "PositiveReal", "Probability", "Rate", "Age", "Simplex"],
+      "note": "LPhy's Double is untyped and covers PhyloSpec's whole Real hierarchy: NonNegativeReal / PositiveReal / Probability, plus the aliases Rate (= PositiveReal) and Age (= NonNegativeReal). Simplex is grouped here too as a Probability-vector refinement, though note it's actually Vector<Probability> (a vector), not a scalar Real -- LPhy's Double[] is its closer structural match."
+    },
+    {
+      "lphy": ["Integer"],
+      "phylospec": ["Integer", "NonNegativeInteger", "PositiveInteger", "Count"],
+      "note": "LPhy's Integer is untyped and covers PhyloSpec's whole Integer hierarchy: NonNegativeInteger / PositiveInteger, plus the alias Count (= NonNegativeInteger)."
+    },
+    {
+      "lphy": ["Boolean[]", "Double[]", "Integer[]", "Number[]", "Object[]", "Variant[]", "TimeTree[]"],
+      "phylospec": ["Vector"],
+      "note": "LPhy uses one bracketed array type per element type; PhyloSpec has a single generic Vector<T> (e.g. LPhy's Double[] ≈ PhyloSpec's Vector<Real>)."
+    },
+    {
+      "lphy": ["Double[][]"],
+      "phylospec": ["Matrix", "SquareMatrix", "QMatrix", "StochasticMatrix"],
+      "note": "same pattern, one level deeper; PhyloSpec's Matrix<T> is itself defined as an alias of Vector<Vector<T>>. SquareMatrix / QMatrix / StochasticMatrix are constrained refinements of Matrix (square, a substitution-model rate matrix, a probability-transition matrix) that LPhy's untyped 2-D arrays don't distinguish."
+    }
+  ],
+
+  "generators": [
+    {
+      "lphy": ["Exp"],
+      "phylospec": ["Exponential"],
+      "note": "different parameterization: LPhy uses mean, PhyloSpec uses rate = 1/mean"
+    },
+    {
+      "lphy": ["DiscretizeGamma"],
+      "phylospec": ["DiscreteGamma"]
+    },
+    {
+      "lphy": ["UniformDiscrete"],
+      "phylospec": ["DiscreteUniform"]
+    },
+    {
+      "lphy": ["ExpMarkovChain"],
+      "phylospec": ["ExponentialMarkovChain"]
+    },
+    {
+      "lphy": ["FossilBirthDeath"],
+      "phylospec": ["FossilizedBirthDeath"]
+    },
+    {
+      "lphy": ["arange", "rangeInt"],
+      "phylospec": ["range"],
+      "note": "LPhy splits this into a general arange (float values, step argument) and an integer-only rangeInt; PhyloSpec has a single integer range"
+    },
+    {
+      "lphy": ["rep"],
+      "phylospec": ["repeat"]
+    },
+    {
+      "lphy": ["newick"],
+      "phylospec": ["fromNewick"]
+    },
+    {
+      "lphy": ["ntaxa"],
+      "phylospec": ["numTaxa"],
+      "note": "PhyloSpec's numTaxa takes an alignment or tree; LPhy's ntaxa takes a Taxa object directly"
+    },
+    {
+      "lphy": ["readFasta"],
+      "phylospec": ["fromFasta"]
+    },
+    {
+      "lphy": ["readNexus"],
+      "phylospec": ["fromNexus"]
+    },
+    {
+      "lphy": ["readTrees"],
+      "phylospec": ["fromTree"],
+      "note": "LPhy reads one or more trees with an explicit format; PhyloSpec reads a single tree, format inferred from extension"
+    },
+    {
+      "lphy": ["readDelim"],
+      "phylospec": ["fromCSV"],
+      "note": "different return shape: LPhy Table vs PhyloSpec Vector<Map<String,String>>"
+    },
+    {
+      "lphy": ["extractTrait"],
+      "phylospec": ["discreteTraitsFromTaxa"]
+    },
+    {
+      "lphy": ["constantPopFunc"],
+      "phylospec": ["constantPopulationFunction"]
+    },
+    {
+      "lphy": ["exponentialPopFunc"],
+      "phylospec": ["exponentialPopulationFunction"]
+    },
+    {
+      "lphy": ["logisticPopFunc"],
+      "phylospec": ["logisticPopulationFunction"]
+    },
+    {
+      "lphy": ["MixturePhyloCTMC"],
+      "phylospec": ["Mixture"],
+      "note": "PhyloSpec models this via the generic Mixture combinator over Distribution<Alignment>, not a dedicated 2/3-component generator"
+    },
+    {
+      "lphy": ["PhyloBrownian"],
+      "phylospec": ["PhyloBM"],
+      "note": "different parameterization: PhyloSpec generalizes to per-site/per-branch rate vectors. (PhyloMultivariateBrownian's correlated-trait covariance is NOT covered by PhyloBM -- left as a genuine LPhy-only gap.)"
+    }
+  ],
+
+  "generatorNotes": [
+    {
+      "side": "phylospec",
+      "name": "taxon",
+      "note": "LPhy has no equivalent single-Taxon constructor -- it always builds the whole Taxa collection at once via taxa(names=..., ...), never taxon-by-taxon."
+    }
+  ]
+}

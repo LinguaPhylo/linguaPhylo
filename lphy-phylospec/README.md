@@ -1,21 +1,16 @@
 # lphy-phylospec
 
-Bridges LPhy and [PhyloSpec](https://github.com/CODEPhylo/phylospec). See `DESIGN.md` and
-`CLASS_DESIGN.md` for the broader plan (running PhyloSpec scripts through LPhy). This module
-currently contains one working piece of that plan: `ComponentLibraryExporter`.
+Bridges LPhy and [PhyloSpec](https://github.com/CODEPhylo/phylospec).
 
-## `ComponentLibraryExporter`
+**Working today**: `ComponentLibraryExporter` — exports LPhy's own types/generators as a
+PhyloSpec-schema-shaped JSON file, and a companion Python pipeline that compares it against
+PhyloSpec's own component library to find model-coverage gaps. See
+[`LPhyVsPhylospecDesign.md`](LPhyVsPhylospecDesign.md) for that pipeline's design.
 
-`src/main/java/lphy/phylospec/export/ComponentLibraryExporter.java`
+**Design only, not yet built**: a tiling framework to run PhyloSpec scripts through LPhy directly.
+See "Tiling framework" below and [`CLASS_DESIGN.md`](CLASS_DESIGN.md) for the per-class plan.
 
-Reflects over every LPhy generator and data type registered on the classpath and writes them
-out as a **component library JSON file**, in the same format as PhyloSpec's own
-`phylospec-core-component-library.json` (validated against
-`../phylospec/schema/component-library.schema.json`). It serializes through `phylospec-core`'s
-own generated POJOs (`ComponentLibrarySchema`, `Type`, `Generator`, `Argument`), so the output
-is structurally guaranteed to match that schema rather than hand-rolled to match it.
-
-### Prerequisite
+## Prerequisites
 
 `phylospec-core` must be installed in your local `.m2` repo first:
 
@@ -24,117 +19,192 @@ cd ../phylospec
 mvn -pl core/java -am install -Dmaven.test.skip=true
 ```
 
-`lphy`/`lphy-base` must also be installed to `.m2` — this module depends on their built jars,
-**not** on the live source tree. If you edit an `@GeneratorInfo`/`@ParameterInfo` annotation (or
-anything else) in `lphy` or `lphy-base` and don't reinstall first, the exporter will silently
-run against the old compiled classes and the JSON won't reflect your change:
+`lphy`/`lphy-base` must also be installed to `.m2` — this module depends on their built jars, not
+the live source tree. If you edit an `@GeneratorInfo`/`@ParameterInfo` annotation (or anything
+else) in `lphy` or `lphy-base`, reinstall before regenerating the exported JSON, or the exporter
+will silently run against stale compiled classes:
 
 ```bash
 cd ..   # repo root
 mvn -q -pl lphy,lphy-base -am install -Dmaven.test.skip=true
 ```
 
-### Usage
+## `ComponentLibraryExporter`
 
-From this module's own directory:
+`src/main/java/lphy/phylospec/export/ComponentLibraryExporter.java`
+
+Reflects over LPhy core + `lphy-base` (explicitly, by extension class name — not "whatever's on
+the classpath") and writes every generator and data type out as a **component library JSON file**,
+in the same format as PhyloSpec's own `phylospec-core-component-library.json` (serialized through
+`phylospec-core`'s own generated POJOs, so it's structurally guaranteed to match that schema).
+
+It reports LPhy's own literal types (`Double`, `Boolean[]`, `Map`, ...) — it does **not** translate
+into PhyloSpec vocabulary (no `Double` → `Real`, no `Boolean[]` → `Vector<Boolean>`). That
+translation is the tiling framework's job (see "Type-name mapping" below), not the exporter's.
 
 ```bash
 cd lphy-phylospec
-
-# writes to the default output path (see below)
-mvn exec:java
-
-# writes to an explicit path instead
-mvn exec:java -Dexporter.args=/path/to/output.json
+mvn exec:java                                          # default output path
+mvn exec:java -Dexporter.args=/path/to/output.json      # explicit path
 ```
 
-### Input
+`src/main/resources/phylospec-lphy-component-library.json` is a **generated artifact** — produced
+by the command above, never hand-edited.
 
-No file input — the "input" is whatever LPhy generators and types are on the classpath at
-run time, discovered via `lphy.core.spi.LoaderManager` (which loads every registered
-`Extension`, e.g. `LPhyCoreImpl`, `LPhyBaseImpl`, and any third-party extension present on the
-module/classpath). Running this from `lphy-phylospec` only picks up `lphy` + `lphy-base`; a
-downstream extension module would need to depend on this module (or replicate the `main`) to
-include its own generators.
+For exactly how a type/generator and its namespace are determined, and the model-coverage-gap
+comparison pipeline built on top of this JSON, see
+**[`LPhyVsPhylospecDesign.md`](LPhyVsPhylospecDesign.md)**.
 
-For each generator class, the exporter reads:
+## Tiling framework (design only)
 
-- `@GeneratorInfo` (on the generator's `sample()`/`apply()` method) — `phylospec()` name
-  override (falls back to `name()`), `description()`, `category()`.
-- `@ParameterInfo` (on each constructor parameter) — `phylospec()` name override (falls back to
-  `name()`), `description()`, `optional()`.
-- The constructor's actual (generic) parameter types, and the generator's return type, via
-  `GeneratorUtils`.
+**Goal**: given a PhyloSpec script (parsed via `phylospec-core`), automatically construct the
+corresponding LPhy objects (a live `GraphicalModel`), changing existing `lphy`/`lphy-base` code as
+little as possible. Tiles (the PhyloSpec-AST-node → engine-object mapping units) should mostly be
+**auto-generated**, not hand-written one Java class per generator.
 
-When a class or parameter carries an explicit `phylospec()` value — e.g. `HKY`'s `apply()`
-method sets `phylospec = "hky"`, and its `freq` parameter sets `phylospec = "baseFrequencies"` —
-that value is used for `name`/`type` as above, **and** also written verbatim into an additional
-`"phylospec"` field on that `Generator`/`Argument` JSON entry (via `Generator`/`Argument`'s
-existing `additionalProperties` passthrough — no change needed to `phylospec-core`'s POJOs).
-This makes it visible in the JSON itself which names come from an explicit, hand-verified
-PhyloSpec mapping versus which are just the LPhy name used as-is with no such annotation.
-The field is omitted entirely when no `phylospec()` value was set (the common case today —
-only `HKY` sets it so far).
+### Key insight
 
-A generator class with multiple public constructors produces multiple `Generator` entries
-sharing one name — the same way PhyloSpec itself represents overloads (e.g. the two `Yule`
-entries in its own core library).
+LPhy's object model is structurally close to PhyloSpec's already: every generator is "a class with
+named, reflection-discoverable constructor parameters," and LPhy's existing
+`ParserUtils.getMatchingFunctions(name, args)` already does name+args → instance resolution. That
+means **one generic, data-driven tile class, instantiated once per known generator name** (not one
+hand-written Java file per generator) covers the large majority of cases — hand-written override
+tiles are the exception, reserved for genuine parameterization mismatches (e.g. `rate` vs. `mean`).
 
-### Output
+This reuses `phylospec-core`'s existing, engine-agnostic tiling framework
+(`org.phylospec.tiling`) as-is — lexer/parser, AST transforms, `VariableResolver`/`TypeResolver`/
+`StochasticityResolver`, `EvaluateTiles`, `TileLibrary` SPI discovery — without any changes to that
+module. The deprecated `org.phylospec.converters.LPhyConverter` (AST → LPhy source-code string via
+a hardcoded switch table) is superseded by this design, though its mapping table is still a useful
+reference for known parameterization mismatches (see below).
 
-A JSON file (default `src/main/resources/phylospec-lphy-component-library.json`, relative to
-this module's own directory — pass an absolute path via `-Dexporter.args=...` to write
-elsewhere) shaped like:
+### Pipeline
 
-```json
-{
-  "componentLibrary": {
-    "name": "LPhy",
-    "version": "0.1.0",
-    "description": "...",
-    "types": [
-      { "name": "Real", "namespace": "lphy.types", "description": "" }
-    ],
-    "generators": [
-      {
-        "name": "Exp",
-        "description": "The exponential probability distribution.",
-        "namespace": "lphy.distributions.prior",
-        "generatedType": "Distribution<Real>",
-        "arguments": [
-          { "name": "mean", "type": "Real", "required": true, "description": "..." }
-        ]
-      },
-      {
-        "name": "hky",
-        "description": "The HKY instantaneous rate matrix. ...",
-        "namespace": "lphy.functions.rate_matrix",
-        "generatedType": "Vector<Vector<Real>>",
-        "arguments": [
-          { "name": "kappa", "type": "Real", "required": true, "description": "...", "phylospec": "kappa" },
-          { "name": "baseFrequencies", "type": "Vector<Real>", "required": true, "description": "...", "phylospec": "baseFrequencies" }
-        ],
-        "phylospec": "hky"
-      }
-    ]
-  }
-}
+```
+.phylospec source
+   │  Lexer/Parser, transformers, VariableResolver/TypeResolver, StochasticityResolver   ← phylospec-core, unchanged
+   ▼
+resolved/typed AST
+   │  EvaluateTiles<LPhyState>                                                            ← phylospec-core, unchanged
+   ▼
+best Tile per statement
+   │  Tile.apply(LPhyState, …)                                                            ← NEW, in lphy-phylospec
+   ▼
+LPhyState  (wraps a real lphy GraphicalModel: name → Value<?>, RandomVariables, …)
+   │
+   ├─► lphy Sampler → run inference directly
+   └─► LPhy's existing script printer → .lphy text        (free; no re-implementation of LPhyConverter)
 ```
 
-A run also prints a one-line summary (`Wrote N types and M generators to <path>`) and logs any
-Java type it couldn't map to a PhyloSpec type name to stderr.
+### Proposed module layout
 
-`src/main/resources/phylospec-lphy-component-library.json` is a **generated artifact** —
-produced entirely by running `mvn exec:java` as above, never hand-edited. Regenerate it (after
-the reinstall step above, if `lphy`/`lphy-base` changed) rather than editing the file directly.
+```
+lphy-phylospec/
+  src/main/java/lphy/phylospec/
+    tiling/
+      LPhyState.java                 // accumulator: name -> Value<?>, wraps GraphicalModel
+      ReflectiveGeneratorTile.java   // generic, data-driven Tile — the auto-generation engine
+      LPhyCoreTileLibrary.java       // registers hand-written overrides + fills gaps reflectively
+      tiles/                        // small — only genuine PhyloSpec<->LPhy parameterization mismatches
+        ExponentialTile.java         // e.g. rate <-> mean = 1/rate
+        ...
+    runner/
+      PhyloSpecToLPhyRunner.java     // orchestrates lex -> parse -> tile -> run/print
+  src/main/resources/
+    phylospec-lphy-component-library.json   // generated, checked in
+    META-INF/services/org.phylospec.tiling.TileLibrary
+  src/main/java/module-info.java      // provides TileLibrary with LPhyCoreTileLibrary;
+                                       // opens tiling(.tiles) to org.phylospec.core
+```
 
-### Known limitation: type-name mapping
+See [`CLASS_DESIGN.md`](CLASS_DESIGN.md) for what each of these classes does and how it plugs into
+`phylospec-core`'s tiling framework.
 
-PhyloSpec's numeric types form a refinement lattice (`Real` ⊃ `NonNegativeReal` ⊃
-`PositiveReal`, `Probability`, ...) that plain Java types (`Double`, `Integer`) can't express —
-there's no way to reflectively recover "this double is actually a `Probability`". The exporter
-covers this with a small hand-maintained map (`JAVA_TO_PHYLOSPEC_TYPE` in
-`ComponentLibraryExporter`); anything not in that map falls back to its Java simple name (e.g.
-`TimeTree`, `Alignment`, `Taxa`, `SiteModel` currently do) and is logged to stderr so it can be
-reviewed and either added to the map or reconsidered (e.g. via a future bounds-aware
-`ParameterInfo` annotation).
+### Minimal lphy-side code changes
+
+1. `lphy/.../annotation/GeneratorInfo.java`: add
+   `String phylospecName() default ""; String phylospecNamespace() default "";`
+2. `lphy/.../annotation/ParameterInfo.java`: add `String phylospecName() default "";`
+
+Everything else (tiling/runner code, `module-info`, service registration) lives inside this
+module. `lphy-base`'s generator classes need no changes unless their PhyloSpec name/params
+genuinely differ from LPhy's.
+
+### Type-name mapping (feeds `TypeToken` construction in tiles)
+
+Since the exporter doesn't translate LPhy types into PhyloSpec vocabulary, the tiling framework has
+the **whole** translation job — most naturally inside `ReflectiveGeneratorTile`'s `getTypeToken()`
+(see `CLASS_DESIGN.md`), working off the generator's reflected parameter/return `Class`, not off
+the exported JSON's (LPhy-native) type strings. Three things this needs to handle:
+
+- **PhyloSpec's numeric types form a refinement lattice** (`Real` ⊃ `NonNegativeReal` ⊃
+  `PositiveReal`, `Probability`, ...) that LPhy's plain `Double`/`Number` can't express — no way to
+  reflectively recover "this `Double` is actually a `Probability`". Whatever builds `TypeToken`s
+  will need to fall back to the coarsest type (`Real`) for every LPhy `Double`/`Number`, with
+  `TypeResolver` given an explicit rule that a PhyloSpec `Probability`/`NonNegativeReal`/... is
+  assignable to that coarser `Real` (not yet decided where that rule should live).
+- **LPhy has multiple Java types PhyloSpec considers the same type** — `Double` and `Number` (the
+  latter exists purely so a constructor can accept either an int or double literal) both mean
+  PhyloSpec `Real`. A reverse lookup (PhyloSpec name → LPhy Java type) must expect multiple LPhy
+  types per PhyloSpec name and pick one deliberately (e.g. prefer `Double`), not assume 1:1.
+- **LPhy has no `Vector` type** — vectorisation (`lphy.core.vectorization`: `replicates`, or
+  passing a vector where a scalar is expected) is a language *mechanism* that produces a real array
+  value (`Double[]`), not a distinct data type. Translating `Double[]` → PhyloSpec's `Vector<Real>`
+  (and the reverse) is real, necessary work for the tiling framework, in both directions.
+
+### Known mismatches to seed the first hand-written override tiles
+
+Mined from the deprecated `LPhyGeneratorMapping` (`../phylospec/core/java/.../converters/`) — not
+yet re-verified against current names in both repos, but a good starting checklist:
+
+- `Exponential(rate)` (PhyloSpec) vs LPhy `Exp(mean = 1/rate)`
+- `Gamma(shape, rate)` vs LPhy `Gamma(shape, scale = 1/rate)`
+- `Yule(birthRate, taxa)` vs LPhy `Yule(lambda, taxa)` — may be a name-only rename
+- `FossilBirthDeath(birthRate, deathRate, rho, samplingRate, taxa)` vs LPhy
+  `FossilBirthDeathTree(lambda, mu, rho, psi, taxa)`
+- `BirthDeath(birthRate, deathRate, rootHeight, taxa)` vs LPhy `BirthDeath(lambda, mu, rootAge, taxa)`
+- `Coalescent(populationSize, taxa)` vs LPhy `Coalescent(theta, taxa)`
+- Substitution models: `JC69`/`K80`/`F81`/`HKY`/`GTR` vs LPhy `jukesCantor`/`k80`/`f81`/`hky`/`gtr`
+  — likely just name renames, worth checking before writing hand tiles
+- `PhyloBM`/`PhyloOU`/`PhyloCTMC`: PhyloSpec `sigma`/`optimum`/`rootValue` vs LPhy
+  `diffRate`/`theta`/`y0` — real renames
+- `IID(base, n)`: PhyloSpec wraps a base distribution with a replicate count; LPhy instead adds
+  `replicates=n` directly onto the base distribution's own call — a structural (AST-shape)
+  difference, likely needs a `TemplateTile`, not a plain `GeneratorTile`
+
+### Decisions made (confirmed with user)
+
+1. **Name fallback**: `@GeneratorInfo.phylospecName()` / `@ParameterInfo.phylospecName()` default
+   to `""` (same as the existing LPhy name) — auto-fallback, not opt-in. Only generators/params
+   whose PhyloSpec name or parameterization differs need an annotation edit. Safety net: fail/log
+   on any resulting name that collides with a *different*, unrelated PhyloSpec generator.
+2. **Primary output**: real LPhy objects (a live `GraphicalModel`), not `.lphy` script text —
+   `.lphy` text and direct execution both fall out of this for free via LPhy's existing script
+   printer and sampler.
+
+### Open items (not yet decided / not yet investigated)
+
+- Where the "PhyloSpec refined-numeric-type assignable to LPhy's coarser `Real`" compatibility
+  rule should live (in `phylospec-core`'s `TypeResolver` vs. a wrapper in `lphy-phylospec`).
+- Whether `../phylospec`'s `phylospec-core` should move from a vendored system-scoped jar to a
+  normal Maven dependency before or after this module is built.
+- Target starter set of example `.phylospec` scripts to validate against — propose starting with
+  the models in the mismatch list above (Yule/Coalescent/BirthDeath trees + HKY/GTR + a couple of
+  continuous-trait models).
+- Exact shape of `LPhyState` — thin wrapper vs. new accumulator type; needs a closer read of
+  `lphy.core.parser.graphicalmodel.GraphicalModel` and LPhy's sampling flow.
+- Whether `IID` and other structurally-different generators need `TemplateTile` (multi-node
+  pattern match via `AstTemplateMatcher`) — only skimmed, not yet investigated.
+- No CI check exists that the checked-in `phylospec-lphy-component-library.json` is actually
+  up to date with `lphy`/`lphy-base` — regenerated and committed by hand today. Worth a
+  `verify`-phase check (regenerate to a temp file, diff against the checked-in one, fail on drift)
+  before the tiling framework starts depending on it.
+
+### Next step
+
+Scaffold: the two annotation fields, `ReflectiveGeneratorTile`, `LPhyState`, `LPhyCoreTileLibrary`
+with the hand-written tiles from the mismatch list above (re-verified against current names
+first), and `PhyloSpecToLPhyRunner`. Validate end-to-end against a small `.phylospec` script
+exercising a Yule tree + HKY + PhyloCTMC (a common, well-understood model shape).
+
+`lphy-studio` is out of scope for this design.

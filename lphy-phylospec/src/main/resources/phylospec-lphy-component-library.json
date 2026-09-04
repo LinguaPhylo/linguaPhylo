@@ -8,144 +8,379 @@
     "types" : [ {
       "name" : "Boolean[]",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Double[]",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Integer[]",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Number[]",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Object[]",
       "description" : "",
-      "namespace" : "lphy.types"
-    }, {
-      "name" : "String[]",
-      "description" : "",
-      "namespace" : "lphy.types"
-    }, {
-      "name" : "PopulationFunction[]",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Variant[]",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.base.evolution.datatype"
     }, {
       "name" : "TimeTree[]",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.base.evolution.tree"
     }, {
       "name" : "Double[][]",
       "description" : "",
-      "namespace" : "lphy.types"
-    }, {
-      "name" : "Number[][]",
-      "description" : "",
-      "namespace" : "lphy.types"
-    }, {
-      "name" : "String[][]",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Boolean",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Double",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Integer",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Number",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "Object",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
     }, {
       "name" : "String",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "java.lang"
+    }, {
+      "name" : "Map",
+      "description" : "",
+      "typeParameters" : [ "K", "V" ],
+      "namespace" : "java.util"
     }, {
       "name" : "SequenceType",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "jebl.evolution.sequences"
     }, {
       "name" : "BModelSet",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "description" : "The selected model set for bModelTest.",
+      "namespace" : "lphy.base.bmodeltest"
     }, {
       "name" : "Mpileup",
       "description" : "",
-      "namespace" : "lphy.types"
-    }, {
-      "name" : "NChar",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.base.evolution"
     }, {
       "name" : "Taxa",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "description" : "An interface that taxa-dimensioned objects can implement, such as Alignment and TimeTree.\nIt reserves three types of metadata internally: taxa names, ages of taxa, and species.",
+      "namespace" : "lphy.base.evolution"
     }, {
       "name" : "Alignment",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "description" : "An alignment of discrete character states, where states are integers.",
+      "namespace" : "lphy.base.evolution.alignment"
     }, {
       "name" : "ContinuousCharacterData",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "description" : "The continuous character data, where states are doubles.",
+      "namespace" : "lphy.base.evolution.alignment"
     }, {
       "name" : "FastaAlignment",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.base.evolution.alignment"
     }, {
       "name" : "MetaDataAlignment",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "description" : "An alignment containing metadata and parsed from a nexus file.",
+      "namespace" : "lphy.base.evolution.alignment"
     }, {
       "name" : "SimpleAlignment",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.base.evolution.alignment"
     }, {
       "name" : "PopulationFunction",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.base.evolution.coalescent"
     }, {
       "name" : "SVSPopulation",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel"
     }, {
       "name" : "SiteModel",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "description" : "A composited model containing instantaneous rate matrix, rate per site before accounting for proportion invariable, and the proportion of invariable sites.",
+      "namespace" : "lphy.base.evolution.sitemodel"
     }, {
       "name" : "TimeTree",
-      "description" : "",
-      "namespace" : "lphy.types"
+      "description" : "A phylogenetic tree scaled by time, including the contemporary taxa as a special case.",
+      "namespace" : "lphy.base.evolution.tree"
     }, {
       "name" : "TimeTreeNode",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.base.evolution.tree"
     }, {
       "name" : "Table",
       "description" : "",
-      "namespace" : "lphy.types"
+      "namespace" : "lphy.core.model.datatype"
     } ],
     "generators" : [ {
+      "name" : "!",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Number",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "!=",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Boolean",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Object",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Object",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "%",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Number",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "&",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Integer",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Integer",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Integer",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "&&",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Boolean",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "*",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Number",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "**",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Number",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "+",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Number",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "-",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Number",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "/",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Number",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "<",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Boolean",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "<=",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Boolean",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "==",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Boolean",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Object",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Object",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : ">",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Boolean",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : ">=",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Boolean",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
       "name" : "AutoCorrelatedClock",
       "description" : "This deterministic function calculates the mean substitution rate on each branch\nof a phylogeny under an autocorrelated Brownian motion (log-rate) model.\nFor each parent-child node pair, the average rate is computed via a bridging integral\n(the so-called MeanZ approach). Optionally, the average rates can be normalized so that\nthe time-weighted mean rate over the entire tree is 1.0.\n",
-      "namespace" : "lphy.functions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.continuous",
       "generatedType" : "Object",
       "arguments" : [ {
         "name" : "tree",
@@ -186,7 +421,7 @@
     }, {
       "name" : "AutoCorrelatedLogRates",
       "description" : "This parametric distribution generates node-specific log-rates by a Brownian increment process\nalong the given time tree. The root node has a specified log-rate, and each child node's log-rate\nis drawn from Normal( parentLogRate, sigma^2 * dt ), where dt is the time between parent and child.\nThis leads to an auto-correlated relaxation of the molecular clock across lineages.\n",
-      "namespace" : "lphy.distributions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.continuous",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "tree",
@@ -212,7 +447,7 @@
     }, {
       "name" : "BICEPS",
       "description" : "The BICEPS (Bayesian Integrated Coalescent Epoch PlotS) tree prior. Divides the tree into epochs with independent InverseGamma-distributed population sizes.",
-      "namespace" : "lphy.distributions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "populationShape",
@@ -253,7 +488,7 @@
     }, {
       "name" : "Bernoulli",
       "description" : "The coin toss distribution. With true (heads) having probability p.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Boolean>",
       "arguments" : [ {
         "name" : "p",
@@ -264,7 +499,7 @@
     }, {
       "name" : "Bernoulli",
       "description" : "The Bernoulli process for n iid trials. The success (true) probability is p. Produces a boolean n-tuple.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Boolean[]>",
       "arguments" : [ {
         "name" : "p",
@@ -285,7 +520,7 @@
     }, {
       "name" : "Beta",
       "description" : "The beta probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "alpha",
@@ -299,9 +534,25 @@
         "description" : "the second shape parameter."
       } ]
     }, {
+      "name" : "Binomial",
+      "description" : "The binomial distribution of x successes in n trials given probability p of success of a single trial.",
+      "namespace" : "lphy.base.distribution",
+      "generatedType" : "Distribution<Integer>",
+      "arguments" : [ {
+        "name" : "p",
+        "type" : "Double",
+        "required" : true,
+        "description" : "the probability of a success."
+      }, {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "number of trials."
+      } ]
+    }, {
       "name" : "BirthDeath",
       "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -327,7 +578,7 @@
     }, {
       "name" : "BirthDeath",
       "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -353,7 +604,7 @@
     }, {
       "name" : "BirthDeath",
       "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -379,7 +630,7 @@
     }, {
       "name" : "BirthDeath",
       "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -405,7 +656,7 @@
     }, {
       "name" : "BirthDeath",
       "description" : "A tree of only extant species, which is conceptually embedded<br>in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and on number of taxa.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -436,7 +687,7 @@
     }, {
       "name" : "BirthDeath",
       "description" : "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -457,7 +708,7 @@
     }, {
       "name" : "BirthDeathSerial",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and on number of taxa and their ages (Stadler and Yang, 2013).",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -503,7 +754,7 @@
     }, {
       "name" : "BirthDeathSerial",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and on number of taxa and their ages (Stadler and Yang, 2013).",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -549,7 +800,7 @@
     }, {
       "name" : "CalibratedYule",
       "description" : "The CalibratedYule method accepts one or more clade taxa and generates a tip-labelled time tree. If a root age is provided, the method conditions the tree generation on this root age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -585,7 +836,7 @@
     }, {
       "name" : "Categorical",
       "description" : "The categorical distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer>",
       "arguments" : [ {
         "name" : "p",
@@ -596,7 +847,7 @@
     }, {
       "name" : "Cauchy",
       "description" : "The Cauchy distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "median",
@@ -612,7 +863,7 @@
     }, {
       "name" : "Coalescent",
       "description" : "The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 1999)",
-      "namespace" : "lphy.distributions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "theta",
@@ -638,7 +889,7 @@
     }, {
       "name" : "CoalescentPopFunc",
       "description" : "The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 1999)",
-      "namespace" : "lphy.distributions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "popFunc",
@@ -664,7 +915,7 @@
     }, {
       "name" : "Cons_Exp_ConsPopFunc",
       "description" : "Models population growth using a piecewise exponential growth function with x as an independent parameter.",
-      "namespace" : "lphy.functions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
       "generatedType" : "PopulationFunction",
       "arguments" : [ {
         "name" : "tau",
@@ -690,7 +941,7 @@
     }, {
       "name" : "Dirichlet",
       "description" : "The dirichlet probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "conc",
@@ -706,7 +957,7 @@
     }, {
       "name" : "DirichletMultinomial",
       "description" : "The dirichlet multinomial distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer[]>",
       "arguments" : [ {
         "name" : "p",
@@ -727,13 +978,13 @@
     }, {
       "name" : "DirichletMultinomial",
       "description" : "The dirichlet multinomial distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer[]>",
       "arguments" : [ ]
     }, {
       "name" : "DiscretizeGamma",
       "description" : "The discretized gamma probability distribution with mean = 1.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "shape",
@@ -749,7 +1000,7 @@
     }, {
       "name" : "ErrorModel",
       "description" : "The error model distribution on an alignment.",
-      "namespace" : "lphy.distributions.taxa_alignment",
+      "namespace" : "lphy.base.evolution.alignment",
       "generatedType" : "Distribution<Alignment>",
       "arguments" : [ {
         "name" : "alpha",
@@ -770,7 +1021,7 @@
     }, {
       "name" : "Exp",
       "description" : "The exponential probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "mean",
@@ -781,7 +1032,7 @@
     }, {
       "name" : "ExpMarkovChain",
       "description" : "A chain of random variables. X[0] ~ Exp(mean=initialMean) or X[0] ~ LogNormal(meanlog, sdlog); X[i+1] ~ Exp(mean=X[i])",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "initialMean",
@@ -802,7 +1053,7 @@
     }, {
       "name" : "ExpansionPopFunc",
       "description" : "Models population using a piecewise constant-exponential function with optional NA and I_na.",
-      "namespace" : "lphy.functions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
       "generatedType" : "PopulationFunction",
       "arguments" : [ {
         "name" : "NA",
@@ -833,7 +1084,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and (optionally) on number of *extant* taxa.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -869,7 +1120,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and (optionally) on number of *extant* taxa.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -905,7 +1156,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and (optionally) on number of *extant* taxa.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -941,7 +1192,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on root age and (optionally) on number of extant taxa.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -977,7 +1228,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on root age and (optionally) on number of extant taxa.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -1013,7 +1264,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on root age and (optionally) on number of extant taxa.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -1049,7 +1300,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on origin age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -1080,7 +1331,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on origin age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -1111,7 +1362,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on origin age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -1142,7 +1393,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on origin age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -1173,7 +1424,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on origin age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -1204,7 +1455,7 @@
     }, {
       "name" : "FossilBirthDeath",
       "description" : "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Parameterised by diversification rate, turnover and sampling proportion. Conditioned on origin age.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "diversification",
@@ -1235,7 +1486,7 @@
     }, {
       "name" : "FullBirthDeath",
       "description" : "A birth-death tree with both extant and extinct species.<br>Conditioned on age of root or origin.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -1261,7 +1512,7 @@
     }, {
       "name" : "GLM",
       "description" : "The general linear model with optional link function and scale. Error is on the link scale: y = scale × g^{-1}(β·x + ε) where ε ~ Normal(0, σ). When x is a matrix (Double[][]), vectorisation applies the model to each row, returning Double[] - useful for sampling multiple GLM responses from a design matrix.",
-      "namespace" : "lphy.distributions",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "beta",
@@ -1292,7 +1543,7 @@
     }, {
       "name" : "Gamma",
       "description" : "The gamma probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "shape",
@@ -1308,7 +1559,7 @@
     }, {
       "name" : "GaussianRandomWalk",
       "description" : "A chain of random variables. X[0] ~ Normal(mean=initialMean, sd=sd) or X[0] supplied via firstValue; X[i+1] ~ Normal(X[i], sd).",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "initialMean",
@@ -1334,7 +1585,7 @@
     }, {
       "name" : "Geometric",
       "description" : "The probability distribution of the number of failures before the first success given a fixed probability of success p, supported on the set { 0, 1, 2, 3, ... }.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer>",
       "arguments" : [ {
         "name" : "p",
@@ -1345,7 +1596,7 @@
     }, {
       "name" : "InverseGamma",
       "description" : "The inverse-gamma probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "alpha",
@@ -1361,7 +1612,7 @@
     }, {
       "name" : "LeafCalibrations",
       "description" : "Get a double array of ages for the tip dates according to the calibrations in the nexus file, ordered to match the sequence order in the DATA block.",
-      "namespace" : "lphy.distributions",
+      "namespace" : "lphy.base.evolution.tree",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "file",
@@ -1372,7 +1623,7 @@
     }, {
       "name" : "LogNormal",
       "description" : "The log-normal probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "meanlog",
@@ -1393,7 +1644,7 @@
     }, {
       "name" : "MissingSites",
       "description" : "The missing data distribution for an alignment.",
-      "namespace" : "lphy.distributions.taxa_alignment",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Distribution<Alignment>",
       "arguments" : [ {
         "name" : "prob",
@@ -1409,7 +1660,7 @@
     }, {
       "name" : "MixturePhyloCTMC",
       "description" : "Mixture (convex combination) of two or three component phylogenetic likelihoods that apply to the same alignment.",
-      "namespace" : "lphy.distributions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.likelihood",
       "generatedType" : "Distribution<Alignment>",
       "arguments" : [ {
         "name" : "comp1",
@@ -1435,7 +1686,7 @@
     }, {
       "name" : "MixturePhyloCTMC",
       "description" : "Mixture (convex combination) of two or three component phylogenetic likelihoods that apply to the same alignment.",
-      "namespace" : "lphy.distributions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.likelihood",
       "generatedType" : "Distribution<Alignment>",
       "arguments" : [ {
         "name" : "comp1",
@@ -1464,9 +1715,31 @@
         "description" : "Optional component index (0, 1 or 2) used for SIMULATION ONLY; ignored when mapping to BEAST."
       } ]
     }, {
+      "name" : "Multinomial",
+      "description" : "The multinomial probability distribution.",
+      "namespace" : "lphy.base.distribution",
+      "generatedType" : "Distribution<Integer[]>",
+      "arguments" : [ ]
+    }, {
+      "name" : "Multinomial",
+      "description" : "The multinomial probability distribution.",
+      "namespace" : "lphy.base.distribution",
+      "generatedType" : "Distribution<Integer[]>",
+      "arguments" : [ {
+        "name" : "n",
+        "type" : "Integer",
+        "required" : true,
+        "description" : "number of trials."
+      }, {
+        "name" : "p",
+        "type" : "Double[]",
+        "required" : true,
+        "description" : "event probabilities."
+      } ]
+    }, {
       "name" : "MultispeciesCoalescent",
       "description" : "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree. The (optional) taxa object provides for non-trivial mappings from individuals to species, and not all species have to have representatives. The (optional) numLoci parameter can be used to produce more than one gene tree from this distribution.",
-      "namespace" : "lphy.distributions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "theta",
@@ -1492,7 +1765,7 @@
     }, {
       "name" : "NegativeBinomial",
       "description" : "It uses the Pascal distribution with the given number of successes (integer) and probability of success.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer>",
       "arguments" : [ {
         "name" : "r",
@@ -1508,7 +1781,7 @@
     }, {
       "name" : "Normal",
       "description" : "The normal probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "mean",
@@ -1524,7 +1797,7 @@
     }, {
       "name" : "NormalGamma",
       "description" : "The normal-gamma probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "shape",
@@ -1550,7 +1823,7 @@
     }, {
       "name" : "PhyloBrownian",
       "description" : "The phylogenetic Brownian motion distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic continuous trait likelihood is derived from.)",
-      "namespace" : "lphy.distributions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.continuous",
       "generatedType" : "Distribution<ContinuousCharacterData>",
       "arguments" : [ {
         "name" : "tree",
@@ -1571,7 +1844,7 @@
     }, {
       "name" : "PhyloCTMC",
       "description" : "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic likelihood is derived from.)",
-      "namespace" : "lphy.distributions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.likelihood",
       "generatedType" : "Distribution<Alignment>",
       "arguments" : [ {
         "name" : "tree",
@@ -1622,7 +1895,7 @@
     }, {
       "name" : "PhyloCTMC",
       "description" : "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic likelihood is derived from.)",
-      "namespace" : "lphy.distributions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.likelihood",
       "generatedType" : "Distribution<Alignment>",
       "arguments" : [ {
         "name" : "tree",
@@ -1663,7 +1936,7 @@
     }, {
       "name" : "PhyloMultivariateBrownian",
       "description" : "The phylogenetic multivariate Brownian motion distribution.",
-      "namespace" : "lphy.distributions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.continuous",
       "generatedType" : "Distribution<ContinuousCharacterData>",
       "arguments" : [ {
         "name" : "tree",
@@ -1689,7 +1962,7 @@
     }, {
       "name" : "PhyloOU",
       "description" : "The phylogenetic Ornstein-Ulhenbeck distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id.",
-      "namespace" : "lphy.distributions.phylo_likelihood",
+      "namespace" : "lphy.base.evolution.continuous",
       "generatedType" : "Distribution<ContinuousCharacterData>",
       "arguments" : [ {
         "name" : "tree",
@@ -1725,7 +1998,7 @@
     }, {
       "name" : "Poisson",
       "description" : "The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer>",
       "arguments" : [ {
         "name" : "lambda",
@@ -1751,7 +2024,7 @@
     }, {
       "name" : "Poisson",
       "description" : "The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer>",
       "arguments" : [ {
         "name" : "lambda",
@@ -1762,7 +2035,7 @@
     }, {
       "name" : "PoissonIndicators",
       "description" : "Poisson indicator prior matching MASCOT's GLM indicator prior. Draws k ~ Poisson(λ) conditioned on k ≤ n, then places k ones uniformly at random among n positions.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Boolean[]>",
       "arguments" : [ {
         "name" : "n",
@@ -1778,7 +2051,7 @@
     }, {
       "name" : "RandomBooleanArray",
       "description" : "Samples a random boolean array of given length and given hamming weight. The hamming weight is the number of true values in the array and must be less than or equal to the length.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Boolean[]>",
       "arguments" : [ {
         "name" : "length",
@@ -1794,7 +2067,7 @@
     }, {
       "name" : "RandomComposition",
       "description" : "Samples a random k-tuple of positive integers that sum to n.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer[]>",
       "arguments" : [ {
         "name" : "n",
@@ -1810,7 +2083,7 @@
     }, {
       "name" : "SNPSampler",
       "description" : "Sample SNPs from a given nucleotide one sequence alignment by using a binomial distribution to choose mutation sites (with the number of trials equal to the number of sites). For each selected site, use the reference nucleotide as the reference allele and randomly choose a different nucleotide as the alternative allele.",
-      "namespace" : "lphy.distributions",
+      "namespace" : "lphy.base.evolution",
       "generatedType" : "Distribution<Variant[]>",
       "arguments" : [ {
         "name" : "alignment",
@@ -1831,7 +2104,7 @@
     }, {
       "name" : "SampleBranch",
       "description" : "Randomly sample a branch among the branches at a given age in the given tree, represented by the node attached to this branch. The function is deterministic when there is only one branch at the given age. The branch is represented by the node under it.",
-      "namespace" : "lphy.distributions",
+      "namespace" : "lphy.base.evolution.tree",
       "generatedType" : "Distribution<TimeTreeNode>",
       "arguments" : [ {
         "name" : "tree",
@@ -1847,7 +2120,7 @@
     }, {
       "name" : "Sequence",
       "description" : "Create one sequence given the length and the probability distribution over each state.",
-      "namespace" : "lphy.distributions.taxa_alignment",
+      "namespace" : "lphy.base.evolution.alignment",
       "generatedType" : "Distribution<SimpleAlignment>",
       "arguments" : [ {
         "name" : "p",
@@ -1868,7 +2141,7 @@
     }, {
       "name" : "SkylineCoalescent",
       "description" : "The skyline coalescent distribution over tip-labelled time trees. If no group sizes are specified, then there is one population parameter per coalescent event (as per classic skyline coalescent of Pybus, Rambaut and Harvey 2000)",
-      "namespace" : "lphy.distributions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "theta",
@@ -1899,7 +2172,7 @@
     }, {
       "name" : "StructuredCoalescent",
       "description" : "The structured coalescent distribution over tip-labelled time trees.",
-      "namespace" : "lphy.distributions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "M",
@@ -1930,7 +2203,7 @@
     }, {
       "name" : "StructuredCoalescentRateShifts",
       "description" : "Structured coalescent with piecewise constant (time-varying) migration rates and effective population sizes. Rate shifts occur at fixed times. IMPORTANT: Demes are always sorted alphabetically - provide theta and m arrays with values ordered according to alphabetically sorted deme names.",
-      "namespace" : "lphy.distributions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "theta",
@@ -1961,7 +2234,7 @@
     }, {
       "name" : "StructuredCoalescentSkyline",
       "description" : "Structured coalescent with a per-deme Skyline on log effective population sizes and time-constant migration rates. Demes are always sorted alphabetically; provide logNe and M arrays with entries ordered by alphabetically sorted deme names.",
-      "namespace" : "lphy.distributions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "logNe",
@@ -2007,7 +2280,7 @@
     }, {
       "name" : "SubsampledTree",
       "description" : "Generate a randomly sampled tree using the given sample fractions and clade taxa name arrays from the specified tree. The order of sample fractions corresponds to the order of the name arrays.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.tree",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "tree",
@@ -2028,7 +2301,7 @@
     }, {
       "name" : "UCLN_Mean1",
       "description" : "The uncorrelated lognormal (UCLN) relaxed clock model, where the mean of log-normal distr on branch rates in real space must be fixed to 1. Use the clock rate (mu) in PhyloCTMC as the expected mean clock rate.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "uclnSigma",
@@ -2044,7 +2317,7 @@
     }, {
       "name" : "Uniform",
       "description" : "The uniform probability distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "lower",
@@ -2060,7 +2333,7 @@
     }, {
       "name" : "UniformDiscrete",
       "description" : "The discrete uniform distribution over integers.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Integer>",
       "arguments" : [ {
         "name" : "lower",
@@ -2076,7 +2349,7 @@
     }, {
       "name" : "Weibull",
       "description" : "The Weibull distribution.",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double>",
       "arguments" : [ {
         "name" : "alpha",
@@ -2092,7 +2365,7 @@
     }, {
       "name" : "WeightedDirichlet",
       "description" : "The scaled dirichlet probability distribution. The weighted mean of values must equal to the expected weighted mean (default to 1).",
-      "namespace" : "lphy.distributions.prior",
+      "namespace" : "lphy.base.distribution",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "conc",
@@ -2113,7 +2386,7 @@
     }, {
       "name" : "Yule",
       "description" : "The Yule tree distribution over tip-labelled time trees. Will be conditional on the root age if one is provided.",
-      "namespace" : "lphy.distributions.bd_tree",
+      "namespace" : "lphy.base.evolution.birthdeath",
       "generatedType" : "Distribution<TimeTree>",
       "arguments" : [ {
         "name" : "lambda",
@@ -2137,15 +2410,51 @@
         "description" : "the root age to be conditioned on. optional."
       } ]
     }, {
+      "name" : "abs",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "acos",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "acosh",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "aminoAcids",
       "description" : "The amino acid data type.",
-      "namespace" : "lphy.functions.sequ_type",
+      "namespace" : "lphy.base.function.datatype",
       "generatedType" : "SequenceType",
       "arguments" : [ ]
     }, {
       "name" : "arange",
       "description" : "A function to produce an equally space array of doubles. Takes a start value, and stop value and a step value and returns a double array value.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Double[]",
       "arguments" : [ {
         "name" : "start",
@@ -2166,7 +2475,7 @@
     }, {
       "name" : "argi",
       "description" : "The arg function for reading an integer.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Integer",
       "arguments" : [ {
         "name" : "name",
@@ -2180,9 +2489,57 @@
         "description" : "the default value."
       } ]
     }, {
+      "name" : "asin",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "asinh",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "atan",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "atanh",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "bModelSet",
       "description" : "Returns the set of models for the given bModelTest model set name.",
-      "namespace" : "lphy.functions.model_ave_sel",
+      "namespace" : "lphy.base.bmodeltest",
       "generatedType" : "BModelSet",
       "arguments" : [ {
         "name" : "0",
@@ -2193,7 +2550,7 @@
     }, {
       "name" : "bSiteModel",
       "description" : "Returns the site model for the given parameters.",
-      "namespace" : "lphy.functions.site_model",
+      "namespace" : "lphy.base.bmodeltest",
       "generatedType" : "SiteModel",
       "arguments" : [ {
         "name" : "Q",
@@ -2224,7 +2581,7 @@
     }, {
       "name" : "bSiteRates",
       "description" : "the site rates for the given bModelTest parameters.",
-      "namespace" : "lphy.distributions.site_model",
+      "namespace" : "lphy.base.bmodeltest",
       "generatedType" : "Distribution<Double[]>",
       "arguments" : [ {
         "name" : "shape",
@@ -2260,7 +2617,7 @@
     }, {
       "name" : "binaryCovarion",
       "description" : "The rate matrix of the Covarion model for Binary data. It is equivalent to the BEAST mode.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "alpha",
@@ -2291,13 +2648,13 @@
     }, {
       "name" : "binaryDataType",
       "description" : "The binary data type.",
-      "namespace" : "lphy.functions.sequ_type",
+      "namespace" : "lphy.base.function.datatype",
       "generatedType" : "SequenceType",
       "arguments" : [ ]
     }, {
       "name" : "binaryRateMatrix",
       "description" : "The binary trait instantaneous rate matrix. Takes a lambda and produces an instantaneous rate matrix:\n\n    Q = ⎡-1  1⎤\n        ⎣ λ -λ⎦",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "lambda",
@@ -2308,7 +2665,7 @@
     }, {
       "name" : "blosum62",
       "description" : "The BLOSUM62 instantaneous rate matrix for amino acids (Henikoff & Henikoff 1992).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2322,9 +2679,21 @@
         "description" : "the mean rate of the process. default 1.0"
       } ]
     }, {
+      "name" : "cLogLog",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "cbind",
       "description" : "Column-bind two matrices. Both must have the same number of rows. The result has nRows rows and (aCols + bCols) columns. For combining 3+ matrices, chain calls: cbind(cbind(X1, X2), X3).",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "a",
@@ -2338,9 +2707,33 @@
         "description" : "The second matrix (Double[][])."
       } ]
     }, {
+      "name" : "cbrt",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "ceil",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "concat2Str",
       "description" : "A function to concatenate substrings into one sting.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "String",
       "arguments" : [ {
         "name" : "prefix",
@@ -2356,23 +2749,23 @@
     }, {
       "name" : "concatArray",
       "description" : "A function to concatenate two arrays into one.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.base.function",
+      "generatedType" : "Object[]",
       "arguments" : [ {
         "name" : "0",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "array 1."
       }, {
         "name" : "1",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "array 2."
       } ]
     }, {
       "name" : "constantPopFunc",
       "description" : "Models population using a constant population size.",
-      "namespace" : "lphy.functions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
       "generatedType" : "PopulationFunction",
       "arguments" : [ {
         "name" : "N0",
@@ -2383,7 +2776,7 @@
     }, {
       "name" : "copySites",
       "description" : "Create a new alignment by copying sites from the original alignment. The sites can be duplicated. Use other function to sample or manipulate the site indices.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Alignment",
       "arguments" : [ {
         "name" : "ids",
@@ -2397,9 +2790,33 @@
         "description" : "the original alignment."
       } ]
     }, {
+      "name" : "cos",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "cosh",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "countMigrations",
       "description" : "The number of single-child nodes in the tree where the 'deme' attribute changes.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.function.tree",
       "generatedType" : "Integer",
       "arguments" : [ {
         "name" : "tree",
@@ -2410,7 +2827,7 @@
     }, {
       "name" : "cpREV",
       "description" : "The cpREV instantaneous rate matrix for amino acids in chloroplast-encoded proteins (Adachi et al. 2000).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2426,7 +2843,7 @@
     }, {
       "name" : "dateToAge",
       "description" : "convert from dates to relative ages for setting in taxa",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.evolution",
       "generatedType" : "Double[]",
       "arguments" : [ {
         "name" : "dates",
@@ -2437,7 +2854,7 @@
     }, {
       "name" : "dayhoff",
       "description" : "The Dayhoff instantaneous rate matrix for amino acids (Dayhoff et al. 1978).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2453,7 +2870,7 @@
     }, {
       "name" : "dcmut",
       "description" : "The DCMut instantaneous rate matrix for amino acids — a re-estimation of the Dayhoff matrix (Kosiol & Goldman 2005).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2469,7 +2886,7 @@
     }, {
       "name" : "distance",
       "description" : "It computes a matrix of pairwise distances from a given alignment using an evolutionary model. If there is a gap or an ambiguous state, it is treated as different from any canonical states.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "alignment",
@@ -2485,7 +2902,7 @@
     }, {
       "name" : "elementsAt",
       "description" : "A function to extract element(s) from an array by index.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.core.vectorization.operation",
       "generatedType" : "Object",
       "arguments" : [ {
         "name" : "index",
@@ -2494,14 +2911,38 @@
         "description" : "index list"
       }, {
         "name" : "array",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "array to retrieve element of"
       } ]
     }, {
+      "name" : "exp",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "expm1",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "exponentialPopFunc",
       "description" : "Models population growth using an exponential growth function with optional NA and I_na.",
-      "namespace" : "lphy.functions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
       "generatedType" : "PopulationFunction",
       "arguments" : [ {
         "name" : "GrowthRate",
@@ -2527,7 +2968,7 @@
     }, {
       "name" : "extantTaxa",
       "description" : "Returns the extant taxa from the given taxa object.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.taxa",
       "generatedType" : "Taxa",
       "arguments" : [ {
         "name" : "taxa",
@@ -2538,7 +2979,7 @@
     }, {
       "name" : "extantTree",
       "description" : "A tree pruned from a larger tree by retaining only the tips at time zero.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.function.tree",
       "generatedType" : "TimeTree",
       "arguments" : [ {
         "name" : "tree",
@@ -2549,7 +2990,7 @@
     }, {
       "name" : "extractAlignment",
       "description" : "extract several taxa from the alignment",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Alignment",
       "arguments" : [ {
         "name" : "alignment",
@@ -2565,7 +3006,7 @@
     }, {
       "name" : "extractTrait",
       "description" : "return a trait alignment, which contains the set of traits extracted from taxa names.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.taxa",
       "generatedType" : "Alignment",
       "arguments" : [ {
         "name" : "taxa",
@@ -2591,7 +3032,7 @@
     }, {
       "name" : "f81",
       "description" : "The F81 instantaneous rate matrix. Takes base frequencies and produces an F81 rate matrix.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2607,7 +3048,7 @@
     }, {
       "name" : "fasta",
       "description" : "A function that returns an alignment which can be saved as a fasta file later using lphy studio or slphy.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.io",
       "generatedType" : "FastaAlignment",
       "arguments" : [ {
         "name" : "alignment",
@@ -2616,9 +3057,21 @@
         "description" : "the lphy alignment that is written into the fasta file."
       } ]
     }, {
+      "name" : "floor",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "flu",
       "description" : "The FLU instantaneous rate matrix for amino acids in influenza proteins (Dang et al. 2010).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2634,7 +3087,7 @@
     }, {
       "name" : "generalLinearFunction",
       "description" : "The general linear function: y = scale × g^{-1}(sum_j indicator_j * beta_j * x_j + error) where g^{-1} is the inverse link function, scale is an optional multiplier (default 1.0), indicator is an optional Boolean array for BSSVS predictor selection (default all true), and error is an optional additive term on the linear predictor (default 0.0). When x is a matrix (Double[][]), vectorisation applies the function to each row, returning Double[] - useful for computing multiple GLM predictions from a design matrix.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Double",
       "arguments" : [ {
         "name" : "beta",
@@ -2670,7 +3123,7 @@
     }, {
       "name" : "generalTimeReversible",
       "description" : "The general time reversible instantaneous rate matrix. Takes relative rates and base frequencies and produces an general time reversible rate matrix.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "rates",
@@ -2691,7 +3144,7 @@
     }, {
       "name" : "get",
       "description" : "Get the value from a map given a string ID as the key.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Object",
       "arguments" : [ {
         "name" : "key",
@@ -2700,14 +3153,14 @@
         "description" : "the key of the map as String"
       }, {
         "name" : "map",
-        "type" : "Object",
+        "type" : "Map",
         "required" : true,
         "description" : "the map"
       } ]
     }, {
       "name" : "gompertzPopFunc_f0",
       "description" : "Constructs a Gompertz population model (f0-parameterized) with optional NA and indicator I_na.",
-      "namespace" : "lphy.functions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
       "generatedType" : "PopulationFunction",
       "arguments" : [ {
         "name" : "b",
@@ -2738,7 +3191,7 @@
     }, {
       "name" : "gompertzPopFunc_t50",
       "description" : "Constructs a GompertzPopulation_t50 model with optional NA and an I_na indicator.",
-      "namespace" : "lphy.functions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
       "generatedType" : "PopulationFunction",
       "arguments" : [ {
         "name" : "t50",
@@ -2769,7 +3222,7 @@
     }, {
       "name" : "gtr",
       "description" : "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "rates",
@@ -2790,7 +3243,7 @@
     }, {
       "name" : "hammingWeight",
       "description" : "The sum of the true elements of the given boolean array",
-      "namespace" : "lphy.functions.prior",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Integer",
       "arguments" : [ {
         "name" : "array",
@@ -2801,7 +3254,7 @@
     }, {
       "name" : "hivb",
       "description" : "The HIVb instantaneous rate matrix for amino acids — between-host HIV evolution (Nickle et al. 2007).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2817,7 +3270,7 @@
     }, {
       "name" : "hivw",
       "description" : "The HIVw instantaneous rate matrix for amino acids — within-host HIV evolution (Nickle et al. 2007).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2833,7 +3286,7 @@
     }, {
       "name" : "hky",
       "description" : "The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optionally a total rate) and produces an HKY85 rate matrix.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "kappa",
@@ -2857,7 +3310,7 @@
     }, {
       "name" : "ifelse",
       "description" : "Return the 1st value if the condition is true, else return the 2nd value.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Object",
       "arguments" : [ {
         "name" : "0",
@@ -2878,7 +3331,7 @@
     }, {
       "name" : "informativeSites",
       "description" : "Return the array of site indices (start from 0), at the given alignment, which parsimony informative sites.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Integer[]",
       "arguments" : [ {
         "name" : "alignment",
@@ -2894,23 +3347,23 @@
     }, {
       "name" : "intersect",
       "description" : "A function to get intersection between two sets.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.base.function",
+      "generatedType" : "Object[]",
       "arguments" : [ {
         "name" : "0",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "set 1."
       }, {
         "name" : "1",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "set 2."
       } ]
     }, {
       "name" : "invariableSites",
       "description" : "Return the array of site indices (start from 0) at the given alignment, which are invariable sites.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Integer[]",
       "arguments" : [ {
         "name" : "alignment",
@@ -2926,7 +3379,7 @@
     }, {
       "name" : "jtt",
       "description" : "The JTT instantaneous rate matrix for amino acids (Jones, Taylor & Thornton 1992).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -2942,7 +3395,7 @@
     }, {
       "name" : "jukesCantor",
       "description" : "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "meanRate",
@@ -2953,7 +3406,7 @@
     }, {
       "name" : "k80",
       "description" : "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "kappa",
@@ -2969,7 +3422,7 @@
     }, {
       "name" : "labelClade",
       "description" : "Find the most recent common ancestor of given taxa names in the tree and give it a label.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.evolution.tree",
       "generatedType" : "TimeTree",
       "arguments" : [ {
         "name" : "tree",
@@ -2990,7 +3443,7 @@
     }, {
       "name" : "length",
       "description" : "the length of the argument",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Integer",
       "arguments" : [ {
         "name" : "0",
@@ -3001,7 +3454,7 @@
     }, {
       "name" : "lewisMK",
       "description" : "The LewisMK Q matrix construction function. Takes a mean rate and a number of states and produces a LewisMK Q matrix.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "numStates",
@@ -3017,7 +3470,7 @@
     }, {
       "name" : "lg",
       "description" : "The LG instantaneous rate matrix for amino acids (Le & Gascuel 2008).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -3033,7 +3486,7 @@
     }, {
       "name" : "localBranchRates",
       "description" : "A function that returns branch rates for the given tree, indicator mask and raw rates. Each branch takes on the rate of its node index if the indicator is true, or inherits the rate of its parent branch otherwise.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.evolution.branchrate",
       "generatedType" : "Double[]",
       "arguments" : [ {
         "name" : "tree",
@@ -3054,7 +3507,7 @@
     }, {
       "name" : "localClock",
       "description" : "Apply local clock in a phylogenetic tree to generate a tree with branch rates. The order of elements in clades and cladeRates array should match. The clades should not be overlapped with each other.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.evolution.branchrate",
       "generatedType" : "Double[]",
       "arguments" : [ {
         "name" : "tree",
@@ -3083,9 +3536,69 @@
         "description" : "whether to include stem of clades, defaults to true"
       } ]
     }, {
+      "name" : "log",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "log10",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "log1p",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "logFact",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "logGamma",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "logisticPopFunc",
       "description" : "Models population growth using a logistic growth function, with optional ancestral population size (NA) and indicator (I_na).",
-      "namespace" : "lphy.functions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
       "generatedType" : "PopulationFunction",
       "arguments" : [ {
         "name" : "t50",
@@ -3114,15 +3627,32 @@
         "description" : "Indicator for using NA (0 or 1)."
       } ]
     }, {
+      "name" : "logit",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "map",
       "description" : "A map defined by the argumentName=value pairs of its arguments.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
-      "arguments" : [ ]
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Map",
+      "arguments" : [ {
+        "name" : "*",
+        "type" : "Map<String, Object>",
+        "required" : false,
+        "description" : "Any number of name=value pairs (e.g. {a=1, b=2, c=\"three\"}); each name becomes a String key and each value (of any type, including another map) becomes the corresponding value in the resulting map."
+      } ]
     }, {
       "name" : "migrationMatrix",
       "description" : "This function constructs the population process rate matrix. Diagonals are the population sizes, off-diagonals are populated with the migration rate from pop i to pop j (backwards in time in units of expected migrants per generation).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "theta",
@@ -3138,7 +3668,7 @@
     }, {
       "name" : "mrca",
       "description" : "get the most recent common ancestor from given tree and taxa names.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.evolution.tree",
       "generatedType" : "TimeTreeNode",
       "arguments" : [ {
         "name" : "tree",
@@ -3154,7 +3684,7 @@
     }, {
       "name" : "mtArt",
       "description" : "The mtArt instantaneous rate matrix for amino acids in arthropod mitochondrial proteins (Abascal et al. 2007).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -3170,7 +3700,7 @@
     }, {
       "name" : "mtMam",
       "description" : "The mtMam instantaneous rate matrix for amino acids in mammalian mitochondrial proteins (Yang et al. 1998).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -3186,7 +3716,7 @@
     }, {
       "name" : "mtREV",
       "description" : "The mtREV instantaneous rate matrix for amino acids in mitochondrial proteins (Adachi & Hasegawa 1996).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -3202,7 +3732,7 @@
     }, {
       "name" : "nchar",
       "description" : "The number of sites in the given alignment.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Integer",
       "arguments" : [ {
         "name" : "sites",
@@ -3213,7 +3743,7 @@
     }, {
       "name" : "newick",
       "description" : "A function that parses a tree from a newick formatted string.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.function.tree",
       "generatedType" : "TimeTree",
       "arguments" : [ {
         "name" : "tree",
@@ -3224,7 +3754,7 @@
     }, {
       "name" : "ntaxa",
       "description" : "The number of taxa in the given taxa-dimensioned value (e.g. alignment, tree et cetera).",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function.taxa",
       "generatedType" : "Integer",
       "arguments" : [ {
         "name" : "taxa",
@@ -3235,7 +3765,7 @@
     }, {
       "name" : "nucleotideModel",
       "description" : "The instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.bmodeltest",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "modelSet",
@@ -3266,13 +3796,13 @@
     }, {
       "name" : "nucleotides",
       "description" : "The nucleotide data type.",
-      "namespace" : "lphy.functions.sequ_type",
+      "namespace" : "lphy.base.function.datatype",
       "generatedType" : "SequenceType",
       "arguments" : [ ]
     }, {
       "name" : "obama",
       "description" : "OBAMA-style averaging over an arbitrary subset of 15 empirical amino acid substitution models, selected by an integer indicator. Optional useExternalFreqs gates whether the supplied freq overrides the model's empirical frequencies.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "modelIndicator",
@@ -3303,7 +3833,7 @@
     }, {
       "name" : "parseInt",
       "description" : "A function to parse the given string to an integer.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Integer",
       "arguments" : [ {
         "name" : "str",
@@ -3312,9 +3842,33 @@
         "description" : "the string value to parse into an integer."
       } ]
     }, {
+      "name" : "phi",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "probit",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "pruneTree",
       "description" : "A tree pruned from a larger tree by retaining only nodes subtending nodes with non-null id's.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.function.tree",
       "generatedType" : "TimeTree",
       "arguments" : [ {
         "name" : "tree",
@@ -3325,7 +3879,7 @@
     }, {
       "name" : "rangeInt",
       "description" : "The range of integers from start to end. Boundaries are included.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.core.vectorization.operation",
       "generatedType" : "Integer[]",
       "arguments" : [ {
         "name" : "start",
@@ -3341,7 +3895,7 @@
     }, {
       "name" : "rateShiftTimes",
       "description" : "Computes rate shift times from date inputs and an interval format string, matching MASCOT's BEAUti rate shift editor. Returns times in 'time before most recent sample' units. The interval string uses Y-M-D format (e.g. \"0-1-0\" for monthly intervals).",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Double[]",
       "arguments" : [ {
         "name" : "mostRecentSampleDate",
@@ -3367,7 +3921,7 @@
     }, {
       "name" : "readDelim",
       "description" : "A function that loads values from a data delimited file and returns a map.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.io",
       "generatedType" : "Table",
       "arguments" : [ {
         "name" : "file",
@@ -3393,7 +3947,7 @@
     }, {
       "name" : "readFasta",
       "description" : "A function that parses an alignment from a fasta file.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.io",
       "generatedType" : "Alignment",
       "arguments" : [ {
         "name" : "file",
@@ -3402,7 +3956,7 @@
         "description" : "the name of fasta file including path, which contains an alignment."
       }, {
         "name" : "options",
-        "type" : "Object",
+        "type" : "Map",
         "required" : false,
         "description" : "the map containing optional arguments and their values for reuse."
       }, {
@@ -3414,7 +3968,7 @@
     }, {
       "name" : "readMpileup",
       "description" : "Read in a mpileup file and the taxa names that used to generate mpileup file.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function.io",
       "generatedType" : "Mpileup",
       "arguments" : [ {
         "name" : "file",
@@ -3430,7 +3984,7 @@
     }, {
       "name" : "readNexus",
       "description" : "A function that parses an alignment from a Nexus file.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.io",
       "generatedType" : "MetaDataAlignment",
       "arguments" : [ {
         "name" : "file",
@@ -3439,14 +3993,14 @@
         "description" : "the name of Nexus file including path."
       }, {
         "name" : "options",
-        "type" : "Object",
+        "type" : "Map",
         "required" : false,
         "description" : "the map containing optional arguments and their values for reuse."
       } ]
     }, {
       "name" : "readTrees",
       "description" : "A function that parses trees from either a Nexus (default) or Newick file.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.function.io",
       "generatedType" : "TimeTree[]",
       "arguments" : [ {
         "name" : "file",
@@ -3462,8 +4016,8 @@
     }, {
       "name" : "rep",
       "description" : "The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.base.function",
+      "generatedType" : "Object[]",
       "arguments" : [ {
         "name" : "element",
         "type" : "Object",
@@ -3478,11 +4032,11 @@
     }, {
       "name" : "repArray",
       "description" : "The replication function. Take an array and an integer representing the number of times to replicate the array. Return a vector of the value repeated the specified number of times.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.base.function",
+      "generatedType" : "Object[]",
       "arguments" : [ {
         "name" : "array",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "1d-array to replicate."
       }, {
@@ -3494,7 +4048,7 @@
     }, {
       "name" : "rmTaxa",
       "description" : "Remove a set of taxa from the given alignment.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Alignment",
       "arguments" : [ {
         "name" : "names",
@@ -3508,9 +4062,21 @@
         "description" : "the original alignment."
       } ]
     }, {
+      "name" : "round",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Integer",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "rtREV",
       "description" : "The rtREV instantaneous rate matrix for amino acids in retroviral reverse transcriptase (Dimmic et al. 2002).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -3526,11 +4092,11 @@
     }, {
       "name" : "sample",
       "description" : "The sample function uniformly sample the subset of a given size from an array of the elements either with or without the replacement.",
-      "namespace" : "lphy.distributions",
-      "generatedType" : "Distribution<Object>",
+      "namespace" : "lphy.base.distribution",
+      "generatedType" : "Distribution<Object[]>",
       "arguments" : [ {
         "name" : "array",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "1d-array to be sampled."
       }, {
@@ -3547,7 +4113,7 @@
     }, {
       "name" : "select",
       "description" : "A function to select a value if the indicator is true, or return 0 otherwise.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Number",
       "arguments" : [ {
         "name" : "x",
@@ -3563,7 +4129,7 @@
     }, {
       "name" : "selectSites",
       "description" : "Select the site where the fraction of unknown states are less than the threshold in that site.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Integer[]",
       "arguments" : [ {
         "name" : "unknownFracLess",
@@ -3579,23 +4145,23 @@
     }, {
       "name" : "setDifference",
       "description" : "Computes the difference between two arrays. The first parameter is the main set, and the second is the set of elements to subtract. Elements in the second set that are not found in the first set are ignored.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.base.function",
+      "generatedType" : "Object[]",
       "arguments" : [ {
         "name" : "mainSet",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "the primary set of elements from which to exclude"
       }, {
         "name" : "excludeSet",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "the set of elements to be excluded from the main set"
       } ]
     }, {
       "name" : "setInternalNodesID",
       "description" : "Assign IDs to internal nodes of a given tree. Use this to trigger the inclusion of internal node sequences in the simulated alignment generated by PhyloCTMC.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.function.tree",
       "generatedType" : "TimeTree",
       "arguments" : [ {
         "name" : "tree",
@@ -3611,24 +4177,36 @@
     }, {
       "name" : "setUnion",
       "description" : "Set the union of two given sets and remove all repeat elements.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.base.function",
+      "generatedType" : "Object[]",
       "arguments" : [ {
         "name" : "firstSet",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "the first set to put in the final set"
       }, {
         "name" : "secondSet",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "the second set to put in the final set"
       } ]
     }, {
+      "name" : "signum",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "simulate",
       "description" : "The function to simulate data from a given lphy script.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.core.simulator",
+      "generatedType" : "Map",
       "arguments" : [ {
         "name" : "lphy",
         "type" : "String",
@@ -3646,9 +4224,33 @@
         "description" : "the directory to output the simulated values. Default to the parent directory of the given lphy script."
       } ]
     }, {
+      "name" : "sin",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "sinh",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "slice",
       "description" : "A function to slice a subarray from an array.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.core.vectorization.operation",
       "generatedType" : "Object",
       "arguments" : [ {
         "name" : "start",
@@ -3662,14 +4264,14 @@
         "description" : "end index"
       }, {
         "name" : "array",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "array to retrieve element of"
       } ]
     }, {
       "name" : "slice",
       "description" : "A function to slice a subarray from an array.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.core.vectorization.operation",
       "generatedType" : "Object",
       "arguments" : [ {
         "name" : "start",
@@ -3690,11 +4292,11 @@
     }, {
       "name" : "sort",
       "description" : "The sort function sorts an array by increasing (as default) or decreasing order.",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.base.function",
+      "generatedType" : "Object[]",
       "arguments" : [ {
         "name" : "array",
-        "type" : "Object",
+        "type" : "Object[]",
         "required" : true,
         "description" : "1d-array to sort."
       }, {
@@ -3706,7 +4308,7 @@
     }, {
       "name" : "species",
       "description" : "extract the species from the given taxa object as a new taxa object. Useful to generate a species tree in the multispecies coalescent. The age of each species will be the youngest age of the taxa from that species.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.taxa",
       "generatedType" : "Taxa",
       "arguments" : [ {
         "name" : "0",
@@ -3717,7 +4319,7 @@
     }, {
       "name" : "split",
       "description" : "A function to split a given string at the regular expressions and return the i'th (starting from 0) substring of the resulting list.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "String",
       "arguments" : [ {
         "name" : "str",
@@ -3736,9 +4338,21 @@
         "description" : "the index (>=0) of the substring to return"
       } ]
     }, {
+      "name" : "sqrt",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "standard",
       "description" : "The Standard data type function. Takes a state count and produces a Standard data type with that number of states.",
-      "namespace" : "lphy.functions.sequ_type",
+      "namespace" : "lphy.base.function.datatype",
       "generatedType" : "SequenceType",
       "arguments" : [ {
         "name" : "numStates",
@@ -3747,9 +4361,21 @@
         "description" : "the number of distinct states in this data type."
       } ]
     }, {
+      "name" : "step",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
       "name" : "stochasticVariableSelection",
       "description" : "Models population using different growth models based on the indicator value.",
-      "namespace" : "lphy.functions.coal_tree",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
       "generatedType" : "SVSPopulation",
       "arguments" : [ {
         "name" : "indicator",
@@ -3765,7 +4391,7 @@
     }, {
       "name" : "strToDouble",
       "description" : "Cast string to double.",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Double",
       "arguments" : [ {
         "name" : "0",
@@ -3776,7 +4402,7 @@
     }, {
       "name" : "substituteClade",
       "description" : "Substitute a clade in a tree with a given node and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree.",
-      "namespace" : "lphy.functions.tree",
+      "namespace" : "lphy.base.evolution.tree",
       "generatedType" : "TimeTree",
       "arguments" : [ {
         "name" : "baseTree",
@@ -3807,7 +4433,7 @@
     }, {
       "name" : "sum",
       "description" : "The sum of the elements of the given array",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Number",
       "arguments" : [ {
         "name" : "array",
@@ -3818,7 +4444,7 @@
     }, {
       "name" : "sum",
       "description" : "Sums over an axis of the 2d array",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Number[]",
       "arguments" : [ {
         "name" : "array",
@@ -3834,7 +4460,7 @@
     }, {
       "name" : "sumCols",
       "description" : "Sums over each column of the given array",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Number[]",
       "arguments" : [ {
         "name" : "array",
@@ -3845,7 +4471,7 @@
     }, {
       "name" : "sumRows",
       "description" : "Sums over each row of the given array",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function",
       "generatedType" : "Number[]",
       "arguments" : [ {
         "name" : "array",
@@ -3854,20 +4480,33 @@
         "description" : "the 2d array to sum the elements of."
       } ]
     }, {
-      "name" : "taxa",
-      "description" : "The taxa of the given taxa-dimensioned object (e.g. alignment, tree et cetera).",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Taxa",
+      "name" : "tan",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
       "arguments" : [ {
-        "name" : "taxa",
-        "type" : "Object",
+        "name" : "x",
+        "type" : "Number",
         "required" : true,
-        "description" : "the taxa value (i.e. alignment or tree)."
-      } ]
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
+    }, {
+      "name" : "tanh",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Double",
+      "arguments" : [ {
+        "name" : "x",
+        "type" : "Number",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode1Arg"
     }, {
       "name" : "taxa",
       "description" : "A set of taxa with species and ages defined in parallel arrays.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.taxa",
       "generatedType" : "Taxa",
       "arguments" : [ {
         "name" : "names",
@@ -3886,9 +4525,20 @@
         "description" : "the ages of the taxa"
       } ]
     }, {
+      "name" : "taxa",
+      "description" : "The taxa of the given taxa-dimensioned object (e.g. alignment, tree et cetera).",
+      "namespace" : "lphy.base.function.taxa",
+      "generatedType" : "Taxa",
+      "arguments" : [ {
+        "name" : "taxa",
+        "type" : "Object",
+        "required" : true,
+        "description" : "the taxa value (i.e. alignment or tree)."
+      } ]
+    }, {
       "name" : "toDesignMatrix",
       "description" : "Convert a table from readDelim into a Double[][] design matrix for generalLinearFunction. Supports long formats (deme/interval or from/to/interval columns) and MASCOT matrix formats (Ne vector, Ne time-variant matrix, square migration matrix, time-variant migration matrix). Format is auto-detected from column names. Rows are sorted in canonical order. Use nIntervals to tile static predictors across time intervals for use with cbind.",
-      "namespace" : "lphy.functions",
+      "namespace" : "lphy.base.function.io",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "table",
@@ -3909,8 +4559,8 @@
     }, {
       "name" : "unique",
       "description" : "the unique set of the array",
-      "namespace" : "lphy.functions",
-      "generatedType" : "Object",
+      "namespace" : "lphy.base.function",
+      "generatedType" : "Object[]",
       "arguments" : [ {
         "name" : "arg",
         "type" : "Object",
@@ -3920,7 +4570,7 @@
     }, {
       "name" : "variableSites",
       "description" : "Return the array of site indices (start from 0), at the given alignment, which variable sites.",
-      "namespace" : "lphy.functions.taxa_alignment",
+      "namespace" : "lphy.base.function.alignment",
       "generatedType" : "Integer[]",
       "arguments" : [ {
         "name" : "alignment",
@@ -3936,7 +4586,7 @@
     }, {
       "name" : "vt",
       "description" : "The VT instantaneous rate matrix for amino acids (Müller & Vingron 2000).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -3952,7 +4602,7 @@
     }, {
       "name" : "wag",
       "description" : "The WAG instantaneous rate matrix for amino acids (Whelan & Goldman 2001).",
-      "namespace" : "lphy.functions.rate_matrix",
+      "namespace" : "lphy.base.evolution.substitutionmodel",
       "generatedType" : "Double[][]",
       "arguments" : [ {
         "name" : "freq",
@@ -3965,6 +4615,40 @@
         "required" : false,
         "description" : "the mean rate of the process. default 1.0"
       } ]
+    }, {
+      "name" : "|",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Integer",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Integer",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Integer",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
+    }, {
+      "name" : "||",
+      "description" : "",
+      "namespace" : "lphy.core.parser.function",
+      "generatedType" : "Boolean",
+      "arguments" : [ {
+        "name" : "a",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : ""
+      }, {
+        "name" : "b",
+        "type" : "Boolean",
+        "required" : true,
+        "description" : ""
+      } ],
+      "implementedVia" : "ExpressionNode2Args"
     } ]
   }
 }
