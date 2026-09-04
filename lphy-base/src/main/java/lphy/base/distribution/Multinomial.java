@@ -34,7 +34,7 @@ public class Multinomial extends ParametricDistribution<Integer[]> {
     protected void constructDistribution(RandomGenerator random) {
     }
 
-    @GeneratorInfo(name = "Multinomail", verbClause = "has", narrativeName = "multinomial prior",
+    @GeneratorInfo(name = "Multinomial", verbClause = "has", narrativeName = "multinomial prior",
             category = GeneratorCategory.PRIOR, examples = {"gt16ReadCountModel.lphy"},
             description = "The multinomial probability distribution.")
     @Override
