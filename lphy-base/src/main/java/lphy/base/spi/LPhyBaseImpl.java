@@ -53,7 +53,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 NegativeBinomial.class, Normal.class, NormalGamma.class, Poisson.class,
                 Uniform.class, UniformDiscrete.class, Weibull.class, WeightedDirichlet.class,
                 DirichletMultinomial.class,
-//                Multinomial.class,
+                Multinomial.class, // seem to fix #502 by adding @GeneratorInfo
                 // clock model
                 UCLNMean1.class, // => Beast ORC package
                 // tree distribution
