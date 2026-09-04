@@ -48,7 +48,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
     public List<Class<? extends GenerativeDistribution>> declareDistributions() {
         return Arrays.asList(
                 // probability distribution
-                Bernoulli.class, BernoulliMulti.class, Beta.class, Categorical.class, Cauchy.class, Dirichlet.class,
+                Bernoulli.class, BernoulliMulti.class, Beta.class, Binomial.class, Categorical.class, Cauchy.class, Dirichlet.class,
                 DiscretizedGamma.class, Exp.class, Gamma.class, Geometric.class, InverseGamma.class, LogNormal.class,
                 NegativeBinomial.class, Normal.class, NormalGamma.class, Poisson.class,
                 Uniform.class, UniformDiscrete.class, Weibull.class, WeightedDirichlet.class,
