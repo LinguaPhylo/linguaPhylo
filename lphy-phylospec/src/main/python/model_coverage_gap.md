@@ -10,8 +10,11 @@ This report matches types/generators between LPhy and PhyloSpec first by **exact
 | | LPhy | PhyloSpec | In both | LPhy only | PhyloSpec only |
 |---|---|---|---|---|---|
 | **Types** | 30 | 30 | 12 | 12 | 4 |
-| **Generators** (distinct names; overloads collapsed) | 210 | 77 | 52 | 157 | 25 |
+| **Generators** (distinct names; overloads collapsed) | 210 | 77 | 55 | 136 | 18 |
 | **Generators** (including overloads) | 236 | 92 | | | |
+| **Method calls** (distinct call shapes) | 41 | *(n/a)* | *(n/a)* | *(n/a)* | *(n/a)* |
+
+*(n/a): PhyloSpec has no dot-call method syntax at all, so LPhy's method calls -- unlike its types and constructor-based generators -- have nothing on the PhyloSpec side to be matched against or missing from; see the Method calls subsection under Generators below.*
 
 ## Types
 
@@ -68,7 +71,7 @@ This report matches types/generators between LPhy and PhyloSpec first by **exact
 
 *Note: some `Number` arguments in LPhy accept either a fixed literal or a random variable / expression at runtime; PhyloSpec's stricter types (e.g. `PositiveReal`, `Rate`, `Probability`) are the closest static equivalent, not a 1:1 match.*
 
-### In both (52)
+### In both (55)
 
 Split by generator kind, as identified on the LPhy side (whether the implementing class is a `GenerativeDistribution` or a `DeterministicFunction` -- see `is_lphy_distribution()`), since that's an unambiguous, already-exported signal regardless of what PhyloSpec calls the matched concept.
 
@@ -109,7 +112,137 @@ Split by generator kind, as identified on the LPhy side (whether the implementin
 </tbody>
 </table>
 
-#### Deterministic functions (26)
+#### Deterministic functions (23)
+
+<table>
+<colgroup><col width="35%" style="width:35%"><col width="35%" style="width:35%"><col width="30%" style="width:30%"></colgroup>
+<thead>
+<tr><th>LPhy</th><th>PhyloSpec</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>constantPopFunc</strong><br>(<strong>N0</strong>: <code>Double</code>) &rarr; <code>PopulationFunction</code></td><td><strong>constantPopulationFunction</strong><br>(<strong>populationSize</strong>: <code>PositiveReal</code>) &rarr; <code>PopulationFunction</code></td><td></td></tr>
+<tr><td><strong>exponentialPopFunc</strong><br>(<strong>GrowthRate</strong>: <code>Double</code>, <strong>N0</strong>: <code>Double</code>, NA: <code>Double</code>, I_na: <code>Integer</code>) &rarr; <code>PopulationFunction</code></td><td><strong>exponentialPopulationFunction</strong><br>(<strong>populationSize</strong>: <code>PositiveReal</code>, <strong>growthRate</strong>: <code>Real</code>) &rarr; <code>PopulationFunction</code></td><td></td></tr>
+<tr><td><strong>extractTrait</strong><br>(<strong>taxa</strong>: <code>Taxa</code>, <strong>sep</strong>: <code>String</code>, <strong>i</strong>: <code>Integer</code>, name: <code>String</code>) &rarr; <code>Alignment</code></td><td><strong>discreteTraitsFromTaxa</strong><br>(<strong>taxa</strong>: <code>Taxa</code>, <strong>trait</strong>: <code>Parser</code>) &rarr; <code>Alignment&lt;Character; numTaxa=taxa.num, numSites=1&gt;</code></td><td></td></tr>
+<tr><td><strong>f81</strong><br>(<strong>freq</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>f81</strong><br>(<strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
+<tr><td><strong>gtr</strong><br>(<strong>rates</strong>: <code>Double[]</code>, <strong>freq</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code><br><br><strong>generalTimeReversible</strong><br>(<strong>rates</strong>: <code>Double[]</code>, <strong>freq</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>gtr</strong><br>1. (<strong>rateAC</strong>: <code>Rate</code>, <strong>rateAG</strong>: <code>Rate</code>, <strong>rateAT</strong>: <code>Rate</code>, <strong>rateCG</strong>: <code>Rate</code>, <strong>rateCT</strong>: <code>Rate</code>, <strong>rateGT</strong>: <code>Rate</code>, <strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code><br>2. (<strong>relativeRates</strong>: <code>Simplex</code>, <strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td>LPhy splits GTR into a nucleotide-only gtr (fixed 4 states, 6 named rates) and a general n-state generalTimeReversible (rates dimensioned by numStates); PhyloSpec's second gtr overload (relativeRates: Simplex + baseFrequencies) is the same n-state generalization.</td></tr>
+<tr><td><strong>hky</strong><br>(<strong>kappa</strong>: <code>Number</code>, <strong>baseFrequencies</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>hky</strong><br>(<strong>kappa</strong>: <code>PositiveReal</code>, <strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
+<tr><td><strong>jtt</strong><br>(freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>jtt</strong><br>(baseFrequencies: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
+<tr><td><strong>jukesCantor</strong><br>(meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>jc69</strong><br>(<em>(no arguments)</em>) &rarr; <code>QMatrix</code></td><td>same equal-rates Jukes-Cantor substitution model; LPhy names it after the process, PhyloSpec after the 1969 paper.</td></tr>
+<tr><td><strong>k80</strong><br>(<strong>kappa</strong>: <code>Double</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>k80</strong><br>(<strong>kappa</strong>: <code>PositiveReal</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
+<tr><td><strong>lewisMK</strong><br>(<strong>numStates</strong>: <code>Integer</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>mk</strong><br>(rate: <code>PositiveReal</code> = <code>1</code>) &rarr; <code>QMatrix</code></td><td>both the Lewis-Mk model for discrete/multistate traits, but different parameterization: LPhy takes an explicit numStates argument, while PhyloSpec's mk infers the state count from context and only exposes an overall rate.</td></tr>
+<tr><td><strong>lg</strong><br>(freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>lg</strong><br>(baseFrequencies: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
+<tr><td><strong>logisticPopFunc</strong><br>(<strong>t50</strong>: <code>Double</code>, <strong>nCarryingCapacity</strong>: <code>Double</code>, <strong>b</strong>: <code>Double</code>, <strong>NA</strong>: <code>Double</code>, <strong>I_na</strong>: <code>Integer</code>) &rarr; <code>PopulationFunction</code></td><td><strong>logisticPopulationFunction</strong><br>(<strong>inflectionAge</strong>: <code>Age</code>, <strong>carryingCapacity</strong>: <code>PositiveReal</code>, <strong>growthRate</strong>: <code>Real</code>) &rarr; <code>PopulationFunction</code></td><td></td></tr>
+<tr><td><strong>mrca</strong><br>(<strong>tree</strong>: <code>TimeTree</code>, <strong>taxa</strong>: <code>String[]</code>) &rarr; <code>TimeTreeNode</code></td><td><strong>mrca</strong><br>(<strong>clade</strong>: <code>Vector&lt;String&gt;</code>, <strong>tree</strong>: <code>Tree</code>) &rarr; <code>Age</code></td><td></td></tr>
+<tr><td><strong>nchar</strong><br>(<strong>sites</strong>: <code>NChar</code>) &rarr; <code>Integer</code></td><td><strong>numSites</strong><br>1. (<strong>alignment</strong>: <code>Alignment</code>) &rarr; <code>PositiveInteger&lt;;value=alignment.numSites&gt;</code><br>2. (<strong>sequence</strong>: <code>Sequence&lt;A&gt;</code>) &rarr; <code>PositiveInteger&lt;;value=sequence.num&gt;</code></td><td>PhyloSpec's numSites takes an alignment or a sequence; LPhy's nchar takes any site-dimensioned object (or array of them) via its NChar type.</td></tr>
+<tr><td><strong>newick</strong><br>(<strong>tree</strong>: <code>String</code>) &rarr; <code>TimeTree</code></td><td><strong>fromNewick</strong><br>(<strong>newickString</strong>: <code>String</code>) &rarr; <code>Tree</code></td><td></td></tr>
+<tr><td><strong>ntaxa</strong><br>(<strong>taxa</strong>: <code>Taxa</code>) &rarr; <code>Integer</code></td><td><strong>numTaxa</strong><br>1. (<strong>alignment</strong>: <code>Alignment</code>) &rarr; <code>PositiveInteger&lt;;value=alignment.numTaxa&gt;</code><br>2. (<strong>tree</strong>: <code>Tree</code>) &rarr; <code>PositiveInteger&lt;;value=tree.numTaxa&gt;</code></td><td>PhyloSpec's numTaxa takes an alignment or tree; LPhy's ntaxa takes a Taxa object directly</td></tr>
+<tr><td><strong>readDelim</strong><br>(<strong>file</strong>: <code>String</code>, <strong>sep</strong>: <code>String</code>, header: <code>Boolean</code>, comment: <code>String</code>) &rarr; <code>Table</code></td><td><strong>fromCSV</strong><br>(<strong>file</strong>: <code>String</code>, delimiter: <code>String</code> = <code>,</code>, headers: <code>Vector&lt;String&gt;</code>) &rarr; <code>Vector&lt;Map&lt;String, String&gt;&gt;</code></td><td>different return shape: LPhy Table vs PhyloSpec Vector&lt;Map&lt;String,String&gt;&gt;</td></tr>
+<tr><td><strong>readFasta</strong><br>(<strong>file</strong>: <code>String</code>, options: <code>Map</code>, sequenceType: <code>SequenceType</code>) &rarr; <code>Alignment</code></td><td><strong>fromFasta</strong><br>1. (<strong>file</strong>: <code>String</code>, age: <code>Parser</code>, speciesName: <code>Parser</code>) &rarr; <code>Alignment&lt;Character&gt;</code><br>2. (<strong>file</strong>: <code>String</code>, date: <code>Parser</code>, speciesName: <code>Parser</code>) &rarr; <code>Alignment&lt;Character&gt;</code></td><td></td></tr>
+<tr><td><strong>readNexus</strong><br>(<strong>file</strong>: <code>String</code>, options: <code>Map</code>) &rarr; <code>MetaDataAlignment</code></td><td><strong>fromNexus</strong><br>1. (<strong>file</strong>: <code>String</code>, age: <code>Parser</code>, speciesName: <code>Parser</code>) &rarr; <code>Alignment&lt;Character&gt;</code><br>2. (<strong>file</strong>: <code>String</code>, date: <code>Parser</code>, speciesName: <code>Parser</code>) &rarr; <code>Alignment&lt;Character&gt;</code></td><td></td></tr>
+<tr><td><strong>readTrees</strong><br>(<strong>file</strong>: <code>String</code>, format: <code>String</code>) &rarr; <code>TimeTree[]</code></td><td><strong>fromTree</strong><br>(<strong>file</strong>: <code>String</code>) &rarr; <code>Tree</code></td><td>LPhy reads one or more trees with an explicit format; PhyloSpec reads a single tree, format inferred from extension</td></tr>
+<tr><td><strong>species</strong><br>(<strong>0</strong>: <code>Taxa</code>) &rarr; <code>Taxa</code></td><td><strong>species</strong><br>(<strong>taxon</strong>: <code>Taxon</code>) &rarr; <code>String</code></td><td></td></tr>
+<tr><td><strong>taxa</strong><br>1. (<strong>names</strong>: <code>Object[]</code>, species: <code>Object[]</code>, ages: <code>Double[]</code>) &rarr; <code>Taxa</code><br>2. (<strong>taxa</strong>: <code>Object</code>) &rarr; <code>Taxa</code></td><td><strong>taxa</strong><br>1. (<strong>alignment</strong>: <code>Alignment</code>) &rarr; <code>Taxa&lt;;num=alignment.numTaxa&gt;</code><br>2. (<strong>tree</strong>: <code>Tree</code>) &rarr; <code>Taxa&lt;;num=tree.numTaxa&gt;</code></td><td></td></tr>
+<tr><td><strong>wag</strong><br>(freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>wag</strong><br>(baseFrequencies: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
+</tbody>
+</table>
+
+#### Method calls (41)
+
+LPhy's third generator kind is the **method call** -- an instance method invoked with dot syntax on a value, like `tree.rootAge()` or `alignment.taxa()`, rather than as a stand-alone function. PhyloSpec has no dot-call syntax at all, so these aren't matched the way types and generators are above; instead, the "PhyloSpec equivalent" column below shows one directly wherever a close match exists -- usually the same idea as a plain function that takes the object as its first argument, e.g. `age(taxon)` instead of `taxon.age()`. A row can list more than one implementing class when several classes provide the exact same call: sometimes because one really overrides another's, sometimes just because two unrelated types happen to offer the same-named, same-shaped method (e.g. both `TimeTree` and `Alignment` have a `.taxa()`, with no shared ancestor behind it).
+
+<table>
+<colgroup><col width="32%" style="width:32%"><col width="24%" style="width:24%"><col width="44%" style="width:44%"></colgroup>
+<thead>
+<tr><th>LPhy method call</th><th>PhyloSpec equivalent</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>.ages</strong>() &rarr; <code>Double[]</code><br><strong>Taxa</strong> — <code>lphy.base.evolution</code></td><td></td><td>gets the ages of these taxa as an array of doubles.</td></tr>
+<tr><td><strong>.branchCount</strong>() &rarr; <code>Integer</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td><strong>numBranches</strong><br>(<strong>tree</strong>: <code>Tree</code>) &rarr; <code>PositiveInteger&lt;;value=tree.numBranches&gt;</code></td><td>Same value; PhyloSpec's numBranches() takes the tree as an argument instead.</td></tr>
+<tr><td><strong>.canonicalStateCount</strong>() &rarr; <code>int</code><br><strong>Alignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>the number of canonical states excluding ambiguous states in the alignment.</td></tr>
+<tr><td><strong>.canonicalStates</strong>() &rarr; <code>List</code><br><strong>Alignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>the canonical states excluding ambiguous states.</td></tr>
+<tr><td><strong>.charset</strong>(<code>String</code>) &rarr; <code>Alignment</code><br><strong>MetaDataAlignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>return a partition alignment. If the string doesn't match charset's syntax, then check if the …</td></tr>
+<tr><td><strong>.charsets</strong>() &rarr; <code>Alignment[]</code><br><strong>MetaDataAlignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>return an alignment array defined by charsets, which could be pre-defined in the nexus file.</td></tr>
+<tr><td><strong>.dataType</strong>() &rarr; <code>SequenceType</code><br><strong>Alignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>get the data type of this alignment.</td></tr>
+<tr><td><strong>.directAncestorCount</strong>() &rarr; <code>Integer</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>the total number of nodes in the tree that are direct ancestors (i.e. have a …</td></tr>
+<tr><td><strong>.extantCount</strong>() &rarr; <code>Integer</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>the total number of extant leaves in the tree (leaf nodes with age 0.0).</td></tr>
+<tr><td><strong>.getAge</strong>() &rarr; <code>double</code><br><strong>TimeTreeNode</strong> — <code>lphy.base.evolution.tree</code></td><td><strong>age</strong><br>1. (<strong>node</strong>: <code>String</code>, <strong>tree</strong>: <code>Tree</code>) &rarr; <code>Age</code><br>2. (<strong>taxon</strong>: <code>Taxon</code>) &rarr; <code>Age</code></td><td>Same idea; PhyloSpec's age() takes the node as an argument instead.</td></tr>
+<tr><td><strong>.getBranchRates</strong>() &rarr; <code>Double[]</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>get the array of all branch rates in the tree.</td></tr>
+<tr><td><strong>.getColumn</strong>(<code>Integer</code>) &rarr; <code>List</code><br><strong>Table</strong> — <code>lphy.core.model.datatype</code></td><td></td><td>Return the ith column values given its index which starts from 0.</td></tr>
+<tr><td><strong>.getColumn</strong>(<code>String</code>) &rarr; <code>List</code><br><strong>Table</strong> — <code>lphy.core.model.datatype</code></td><td></td><td>Return the column values given a column name.</td></tr>
+<tr><td><strong>.getColumnAsMatrix</strong>(<code>Integer[]</code>) &rarr; <code>Double[][]</code><br><strong>Table</strong> — <code>lphy.core.model.datatype</code></td><td></td><td>return the array of (array) records for selected column indices.</td></tr>
+<tr><td><strong>.getColumnName</strong>(<code>Integer</code>) &rarr; <code>String</code><br><strong>Table</strong> — <code>lphy.core.model.datatype</code></td><td></td><td>Return ith column name, where i starts from 0.</td></tr>
+<tr><td><strong>.getColumnNames</strong>() &rarr; <code>String[]</code><br><strong>Table</strong> — <code>lphy.core.model.datatype</code></td><td></td><td>Return the array of column names.</td></tr>
+<tr><td><strong>.getLabeledNode</strong>(<code>String</code>) &rarr; <code>TimeTreeNode</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>get the node by given label.</td></tr>
+<tr><td><strong>.getLeafNames</strong>() &rarr; <code>String[]</code><br><strong>TimeTreeNode</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>get all leaf node names under the node.</td></tr>
+<tr><td><strong>.getModelName</strong>(<code>Integer</code>) &rarr; <code>String</code><br><strong>BModelSet</strong> — <code>lphy.base.bmodeltest</code></td><td></td><td>the name of the given model indicator.</td></tr>
+<tr><td><strong>.getN0</strong>() &rarr; <code>double</code><br><strong>GompertzPopulation_t50</strong> — <code>lphy.base.evolution.coalescent.populationmodel</code></td><td></td><td>Get the initial population size N0 derived from t50</td></tr>
+<tr><td><strong>.getName</strong>() &rarr; <code>String</code><br><strong>BModelSet</strong> — <code>lphy.base.bmodeltest</code></td><td></td><td>the number of models in this model set.</td></tr>
+<tr><td><strong>.getOldestInternalNode</strong>(<code>Double</code>) &rarr; <code>TimeTreeNode</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>get the oldest internal node under the given maximum age.</td></tr>
+<tr><td><strong>.getProportionInvariable</strong>() &rarr; <code>Double</code><br><strong>SiteModel</strong> — <code>lphy.base.evolution.sitemodel</code></td><td></td><td>the proportion of invariable sites</td></tr>
+<tr><td><strong>.getQ</strong>() &rarr; <code>Double[][]</code><br><strong>SiteModel</strong> — <code>lphy.base.evolution.sitemodel</code></td><td></td><td>the Q matrix for this site model</td></tr>
+<tr><td><strong>.getTaxaNames</strong>() &rarr; <code>String[]</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code><br><strong>AbstractAlignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>get all taxa names / The names of the taxa.</td></tr>
+<tr><td><strong>.hasOrigin</strong>() &rarr; <code>boolean</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>returns true if this tree has an origin node (defined as a root node with …</td></tr>
+<tr><td><strong>.leafCount</strong>() &rarr; <code>Integer</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>the total number of leaf nodes in the tree (leaf nodes with any age, but …</td></tr>
+<tr><td><strong>.length</strong>() &rarr; <code>int</code><br><strong>Taxa</strong> — <code>lphy.base.evolution</code></td><td><strong>num</strong><br>(<strong>vector</strong>: <code>Vector&lt;T&gt;</code>) &rarr; <code>NonNegativeInteger&lt;;value=vector.num&gt;</code></td><td>Partial match: PhyloSpec's num() is generic; LPhy's length() is Taxa-only.</td></tr>
+<tr><td><strong>.nchar</strong>() &rarr; <code>Integer</code><br><strong>NChar</strong> — <code>lphy.base.evolution</code><br><strong>AbstractAlignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>The number of characters/sites.</td></tr>
+<tr><td><strong>.nodeCount</strong>() &rarr; <code>Integer</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>the total number of nodes in the tree (both leaf nodes and internal nodes).</td></tr>
+<tr><td><strong>.nodeCount</strong>() &rarr; <code>int</code><br><strong>Taxa</strong> — <code>lphy.base.evolution</code></td><td></td><td>the total number of nodes (left + internal) in a binary tree with these taxa.</td></tr>
+<tr><td><strong>.rootAge</strong>() &rarr; <code>Double</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td><strong>rootAge</strong><br>(<strong>tree</strong>: <code>Tree</code>) &rarr; <code>Age</code></td><td>Same name and value; PhyloSpec's rootAge() takes the tree as an argument.</td></tr>
+<tr><td><strong>.setTaxaAges</strong>(<code>Double[]</code>) &rarr; <code>Taxa</code><br><strong>Taxa</strong> — <code>lphy.base.evolution</code></td><td></td><td>set the ages to the taxa</td></tr>
+<tr><td><strong>.siteRates</strong>() &rarr; <code>Double[]</code><br><strong>SiteModel</strong> — <code>lphy.base.evolution.sitemodel</code></td><td></td><td>the raw site rates for this site model</td></tr>
+<tr><td><strong>.size</strong>() &rarr; <code>Integer</code><br><strong>BModelSet</strong> — <code>lphy.base.bmodeltest</code></td><td></td><td>the number of models in this model set.</td></tr>
+<tr><td><strong>.species</strong>() &rarr; <code>String[]</code><br><strong>Taxa</strong> — <code>lphy.base.evolution</code></td><td></td><td>gets the species of these taxa as an array of strings.</td></tr>
+<tr><td><strong>.stateCount</strong>() &rarr; <code>int</code><br><strong>Alignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>the number of possible states including ambiguous states in the alignment.</td></tr>
+<tr><td><strong>.states</strong>() &rarr; <code>List</code><br><strong>Alignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>the possible states including ambiguous states.</td></tr>
+<tr><td><strong>.taxa</strong>() &rarr; <code>Taxa</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code><br><strong>Alignment</strong> — <code>lphy.base.evolution.alignment</code><br><strong>AbstractAlignment</strong> — <code>lphy.base.evolution.alignment</code></td><td></td><td>the taxa of the tree. / the taxa of the alignment.</td></tr>
+<tr><td><strong>.taxaNames</strong>() &rarr; <code>String[]</code><br><strong>Taxa</strong> — <code>lphy.base.evolution</code></td><td></td><td>The names of the taxa.</td></tr>
+<tr><td><strong>.treeLength</strong>() &rarr; <code>Double</code><br><strong>TimeTree</strong> — <code>lphy.base.evolution.tree</code></td><td></td><td>the total length of the tree</td></tr>
+</tbody>
+</table>
+
+#### Math & Logic (6)
+
+LPhy and PhyloSpec handle operators (`+`, `<`, `&&`, ...) very differently:
+
+- **LPhy** treats every operator as an ordinary function named after its symbol -- `+` is really just a function called "+", the same way `abs` or `hky` are functions. It shows up in LPhy's library like any other generator, with its own argument and return types.
+- **PhyloSpec** treats operators as part of the language grammar, not as functions. Only 11 operators are built in (`+ - * / == != > >= < <= !`); a separate type-checking step decides the result type for each one (e.g. `PositiveReal + PositiveReal` stays `PositiveReal`, but `Real + Real` only gives `Real`).
+- Because PhyloSpec's operators aren't functions, they're never listed in its component library -- so they can never show up as a "matched" row anywhere in the Generators section of this report, no matter how the names line up.
+
+The table below maps every operator PhyloSpec supports to its LPhy equivalent. The last six rows are LPhy operators (`% ** & && | ||`) that PhyloSpec doesn't support at all -- not just unmatched, but not valid syntax in a PhyloSpec model. Notably, that means PhyloSpec currently has no way to combine two `Boolean` conditions into one (no `&&` or `||`).
+
+<table>
+<colgroup><col width="10%" style="width:10%"><col width="10%" style="width:10%"><col width="20%" style="width:20%"><col width="60%" style="width:60%"></colgroup>
+<thead>
+<tr><th>LPhy</th><th>PhyloSpec</th><th>Category</th><th>Note</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-</code></td><td><code>-</code></td><td>binary arithmetic</td><td>PhyloSpec also allows '-' as a unary sign, e.g. -x. LPhy's grammar allows it too, but negative numbers are handled as plain literals rather than an operator call.</td></tr>
+<tr><td><code>+</code></td><td><code>+</code></td><td>binary arithmetic</td><td>PhyloSpec's '+' can also join two strings together; LPhy's '+' is numeric only.</td></tr>
+<tr><td><code>*</code></td><td><code>*</code></td><td>binary arithmetic</td><td></td></tr>
+<tr><td><code>/</code></td><td><code>/</code></td><td>binary arithmetic</td><td>In PhyloSpec, dividing two whole numbers always gives back a decimal (Real), since the result isn't guaranteed to be a whole number.</td></tr>
+<tr><td><code>!</code></td><td><code>!</code></td><td>unary</td><td>Both mean logical NOT, e.g. !true is false.</td></tr>
+<tr><td><code>!=</code></td><td><code>!=</code></td><td>binary comparison</td><td></td></tr>
+<tr><td><code>==</code></td><td><code>==</code></td><td>binary comparison</td><td></td></tr>
+<tr><td><code>&gt;</code></td><td><code>&gt;</code></td><td>binary comparison</td><td></td></tr>
+<tr><td><code>&gt;=</code></td><td><code>&gt;=</code></td><td>binary comparison</td><td></td></tr>
+<tr><td><code>&lt;</code></td><td><code>&lt;</code></td><td>binary comparison</td><td></td></tr>
+<tr><td><code>&lt;=</code></td><td><code>&lt;=</code></td><td>binary comparison</td><td></td></tr>
+<tr><td><code>~</code></td><td><code>~</code></td><td>statement (stochastic draw)</td><td>Same meaning in both: draws a random value from a distribution, e.g. x ~ Normal(0,1).</td></tr>
+<tr><td><code>=</code></td><td><code>=</code></td><td>statement (assignment)</td><td>Same meaning in both: assigns a fixed value, e.g. x = 5.</td></tr>
+<tr><td><code>:</code></td><td><code>:</code></td><td>statement (range)</td><td>Same meaning in both: builds a range/sequence, e.g. 1:10 for the numbers 1 through 10.</td></tr>
+<tr><td><em>none</em></td><td><code>@</code></td><td>statement (decorator)</td><td>Adds metadata before a statement, e.g. @observed(...). LPhy has nothing like it.</td></tr>
+<tr><td><em>none</em></td><td><code>$</code></td><td>template variable</td><td>Marks a placeholder in a PhyloSpec model template, to be filled in later. LPhy has no template system.</td></tr>
+<tr><td><em>none</em></td><td><code>$$</code></td><td>template variable</td><td>Same as $, but the placeholder is optional.</td></tr>
+<tr><td><code>%</code></td><td><em>none</em></td><td>binary arithmetic</td><td>Modulo isn't supported in PhyloSpec at all.</td></tr>
+<tr><td><code>**</code></td><td><em>none</em></td><td>binary arithmetic</td><td>Exponentiation (power) isn't supported in PhyloSpec at all.</td></tr>
+<tr><td><code>&amp;</code></td><td><em>none</em></td><td>binary bitwise</td><td>Bitwise AND isn't supported in PhyloSpec at all.</td></tr>
+<tr><td><code>&amp;&amp;</code></td><td><em>none</em></td><td>binary logical</td><td>Logical AND isn't supported in PhyloSpec at all -- there's currently no way to combine two conditions.</td></tr>
+<tr><td><code>|</code></td><td><em>none</em></td><td>binary bitwise</td><td>Bitwise OR isn't supported in PhyloSpec at all.</td></tr>
+<tr><td><code>||</code></td><td><em>none</em></td><td>binary logical</td><td>Logical OR isn't supported in PhyloSpec at all.</td></tr>
+</tbody>
+</table>
+
+Since operators are never generators in PhyloSpec, the 6 matched rows below aren't operators at all -- they're LPhy's *named* math functions (`exp`, `log`, `sqrt`, `sum`, `range`, `repeat`) that happen to also exist as callable generators in PhyloSpec.
 
 <table>
 <colgroup><col width="35%" style="width:35%"><col width="35%" style="width:35%"><col width="30%" style="width:30%"></colgroup>
@@ -118,53 +251,20 @@ Split by generator kind, as identified on the LPhy side (whether the implementin
 </thead>
 <tbody>
 <tr><td><strong>arange</strong><br>(<strong>start</strong>: <code>Double</code>, <strong>stop</strong>: <code>Double</code>, <strong>step</strong>: <code>Double</code>) &rarr; <code>Double[]</code><br><br><strong>rangeInt</strong><br>(<strong>start</strong>: <code>Integer</code>, <strong>end</strong>: <code>Integer</code>) &rarr; <code>Integer[]</code></td><td><strong>range</strong><br>(<strong>start</strong>: <code>Integer</code>, <strong>end</strong>: <code>Integer</code>) &rarr; <code>Vector&lt;Integer&gt;</code></td><td>LPhy splits this into a general arange (float values, step argument) and an integer-only rangeInt; PhyloSpec has a single integer range</td></tr>
-<tr><td><strong>constantPopFunc</strong><br>(<strong>N0</strong>: <code>Double</code>) &rarr; <code>PopulationFunction</code></td><td><strong>constantPopulationFunction</strong><br>(<strong>populationSize</strong>: <code>PositiveReal</code>) &rarr; <code>PopulationFunction</code></td><td></td></tr>
 <tr><td><strong>exp</strong><br>(<strong>x</strong>: <code>Number</code>) &rarr; <code>Double</code></td><td><strong>exp</strong><br>(<strong>x</strong>: <code>Real</code>) &rarr; <code>PositiveReal</code></td><td></td></tr>
-<tr><td><strong>exponentialPopFunc</strong><br>(<strong>GrowthRate</strong>: <code>Double</code>, <strong>N0</strong>: <code>Double</code>, NA: <code>Double</code>, I_na: <code>Integer</code>) &rarr; <code>PopulationFunction</code></td><td><strong>exponentialPopulationFunction</strong><br>(<strong>populationSize</strong>: <code>PositiveReal</code>, <strong>growthRate</strong>: <code>Real</code>) &rarr; <code>PopulationFunction</code></td><td></td></tr>
-<tr><td><strong>extractTrait</strong><br>(<strong>taxa</strong>: <code>Taxa</code>, <strong>sep</strong>: <code>String</code>, <strong>i</strong>: <code>Integer</code>, name: <code>String</code>) &rarr; <code>Alignment</code></td><td><strong>discreteTraitsFromTaxa</strong><br>(<strong>taxa</strong>: <code>Taxa</code>, <strong>trait</strong>: <code>Parser</code>) &rarr; <code>Alignment&lt;Character; numTaxa=taxa.num, numSites=1&gt;</code></td><td></td></tr>
-<tr><td><strong>f81</strong><br>(<strong>freq</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>f81</strong><br>(<strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
-<tr><td><strong>gtr</strong><br>(<strong>rates</strong>: <code>Double[]</code>, <strong>freq</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>gtr</strong><br>1. (<strong>rateAC</strong>: <code>Rate</code>, <strong>rateAG</strong>: <code>Rate</code>, <strong>rateAT</strong>: <code>Rate</code>, <strong>rateCG</strong>: <code>Rate</code>, <strong>rateCT</strong>: <code>Rate</code>, <strong>rateGT</strong>: <code>Rate</code>, <strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code><br>2. (<strong>relativeRates</strong>: <code>Simplex</code>, <strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
-<tr><td><strong>hky</strong><br>(<strong>kappa</strong>: <code>Number</code>, <strong>baseFrequencies</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>hky</strong><br>(<strong>kappa</strong>: <code>PositiveReal</code>, <strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
-<tr><td><strong>jtt</strong><br>(freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>jtt</strong><br>(baseFrequencies: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
-<tr><td><strong>k80</strong><br>(<strong>kappa</strong>: <code>Double</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>k80</strong><br>(<strong>kappa</strong>: <code>PositiveReal</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
-<tr><td><strong>lg</strong><br>(freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>lg</strong><br>(baseFrequencies: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
 <tr><td><strong>log</strong><br>(<strong>x</strong>: <code>Number</code>) &rarr; <code>Double</code></td><td><strong>log</strong><br>(<strong>x</strong>: <code>PositiveReal</code>, base: <code>Integer</code>) &rarr; <code>Real</code></td><td></td></tr>
-<tr><td><strong>logisticPopFunc</strong><br>(<strong>t50</strong>: <code>Double</code>, <strong>nCarryingCapacity</strong>: <code>Double</code>, <strong>b</strong>: <code>Double</code>, <strong>NA</strong>: <code>Double</code>, <strong>I_na</strong>: <code>Integer</code>) &rarr; <code>PopulationFunction</code></td><td><strong>logisticPopulationFunction</strong><br>(<strong>inflectionAge</strong>: <code>Age</code>, <strong>carryingCapacity</strong>: <code>PositiveReal</code>, <strong>growthRate</strong>: <code>Real</code>) &rarr; <code>PopulationFunction</code></td><td></td></tr>
-<tr><td><strong>mrca</strong><br>(<strong>tree</strong>: <code>TimeTree</code>, <strong>taxa</strong>: <code>String[]</code>) &rarr; <code>TimeTreeNode</code></td><td><strong>mrca</strong><br>(<strong>clade</strong>: <code>Vector&lt;String&gt;</code>, <strong>tree</strong>: <code>Tree</code>) &rarr; <code>Age</code></td><td></td></tr>
-<tr><td><strong>newick</strong><br>(<strong>tree</strong>: <code>String</code>) &rarr; <code>TimeTree</code></td><td><strong>fromNewick</strong><br>(<strong>newickString</strong>: <code>String</code>) &rarr; <code>Tree</code></td><td></td></tr>
-<tr><td><strong>ntaxa</strong><br>(<strong>taxa</strong>: <code>Taxa</code>) &rarr; <code>Integer</code></td><td><strong>numTaxa</strong><br>1. (<strong>alignment</strong>: <code>Alignment</code>) &rarr; <code>PositiveInteger&lt;;value=alignment.numTaxa&gt;</code><br>2. (<strong>tree</strong>: <code>Tree</code>) &rarr; <code>PositiveInteger&lt;;value=tree.numTaxa&gt;</code></td><td>PhyloSpec's numTaxa takes an alignment or tree; LPhy's ntaxa takes a Taxa object directly</td></tr>
-<tr><td><strong>readDelim</strong><br>(<strong>file</strong>: <code>String</code>, <strong>sep</strong>: <code>String</code>, header: <code>Boolean</code>, comment: <code>String</code>) &rarr; <code>Table</code></td><td><strong>fromCSV</strong><br>(<strong>file</strong>: <code>String</code>, delimiter: <code>String</code> = <code>,</code>, headers: <code>Vector&lt;String&gt;</code>) &rarr; <code>Vector&lt;Map&lt;String, String&gt;&gt;</code></td><td>different return shape: LPhy Table vs PhyloSpec Vector&lt;Map&lt;String,String&gt;&gt;</td></tr>
-<tr><td><strong>readFasta</strong><br>(<strong>file</strong>: <code>String</code>, options: <code>Map</code>, sequenceType: <code>SequenceType</code>) &rarr; <code>Alignment</code></td><td><strong>fromFasta</strong><br>1. (<strong>file</strong>: <code>String</code>, age: <code>Parser</code>, speciesName: <code>Parser</code>) &rarr; <code>Alignment&lt;Character&gt;</code><br>2. (<strong>file</strong>: <code>String</code>, date: <code>Parser</code>, speciesName: <code>Parser</code>) &rarr; <code>Alignment&lt;Character&gt;</code></td><td></td></tr>
-<tr><td><strong>readNexus</strong><br>(<strong>file</strong>: <code>String</code>, options: <code>Map</code>) &rarr; <code>MetaDataAlignment</code></td><td><strong>fromNexus</strong><br>1. (<strong>file</strong>: <code>String</code>, age: <code>Parser</code>, speciesName: <code>Parser</code>) &rarr; <code>Alignment&lt;Character&gt;</code><br>2. (<strong>file</strong>: <code>String</code>, date: <code>Parser</code>, speciesName: <code>Parser</code>) &rarr; <code>Alignment&lt;Character&gt;</code></td><td></td></tr>
-<tr><td><strong>readTrees</strong><br>(<strong>file</strong>: <code>String</code>, format: <code>String</code>) &rarr; <code>TimeTree[]</code></td><td><strong>fromTree</strong><br>(<strong>file</strong>: <code>String</code>) &rarr; <code>Tree</code></td><td>LPhy reads one or more trees with an explicit format; PhyloSpec reads a single tree, format inferred from extension</td></tr>
 <tr><td><strong>rep</strong><br>(<strong>element</strong>: <code>Object</code>, <strong>times</strong>: <code>Integer</code>) &rarr; <code>Object[]</code></td><td><strong>repeat</strong><br>(<strong>value</strong>: <code>T</code>, <strong>num</strong>: <code>PositiveInteger</code>) &rarr; <code>Vector&lt;T; num=num.value&gt;</code></td><td></td></tr>
-<tr><td><strong>species</strong><br>(<strong>0</strong>: <code>Taxa</code>) &rarr; <code>Taxa</code></td><td><strong>species</strong><br>(<strong>taxon</strong>: <code>Taxon</code>) &rarr; <code>String</code></td><td></td></tr>
 <tr><td><strong>sqrt</strong><br>(<strong>x</strong>: <code>Number</code>) &rarr; <code>Double</code></td><td><strong>sqrt</strong><br>(<strong>x</strong>: <code>NonNegativeReal</code>) &rarr; <code>NonNegativeReal</code></td><td></td></tr>
 <tr><td><strong>sum</strong><br>1. (<strong>array</strong>: <code>Number[]</code>) &rarr; <code>Number</code><br>2. (<strong>array</strong>: <code>Number[][]</code>, <strong>axis</strong>: <code>Integer</code>) &rarr; <code>Number[]</code></td><td><strong>sum</strong><br>1. (<strong>vector</strong>: <code>Vector&lt;Real&gt;</code>) &rarr; <code>Real</code><br>2. (<strong>vector</strong>: <code>Vector&lt;Integer&gt;</code>) &rarr; <code>Integer</code></td><td></td></tr>
-<tr><td><strong>taxa</strong><br>1. (<strong>names</strong>: <code>Object[]</code>, species: <code>Object[]</code>, ages: <code>Double[]</code>) &rarr; <code>Taxa</code><br>2. (<strong>taxa</strong>: <code>Object</code>) &rarr; <code>Taxa</code></td><td><strong>taxa</strong><br>1. (<strong>alignment</strong>: <code>Alignment</code>) &rarr; <code>Taxa&lt;;num=alignment.numTaxa&gt;</code><br>2. (<strong>tree</strong>: <code>Tree</code>) &rarr; <code>Taxa&lt;;num=tree.numTaxa&gt;</code></td><td></td></tr>
-<tr><td><strong>wag</strong><br>(freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code></td><td><strong>wag</strong><br>(baseFrequencies: <code>Simplex</code>) &rarr; <code>QMatrix</code></td><td></td></tr>
 </tbody>
 </table>
 
-### LPhy only (157)
+### LPhy only (136)
+
+LPhy's 17 symbolic operators (`+ - * / % ** == != < <= > >= && || ! & |`) are excluded from this table -- they're already covered, matched or not, by the operator table in the Math & Logic section above.
 
 | Generator | LPhy signature(s) &rarr; return type | Description |
 |---|---|---|
-| <strong>!</strong> | (<strong>x</strong>: <code>Number</code>) &rarr; <code>Number</code> |  |
-| <strong>!=</strong> | (<strong>a</strong>: <code>Object</code>, <strong>b</strong>: <code>Object</code>) &rarr; <code>Boolean</code> |  |
-| <strong>%</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Number</code> |  |
-| <strong>&amp;</strong> | (<strong>a</strong>: <code>Integer</code>, <strong>b</strong>: <code>Integer</code>) &rarr; <code>Integer</code> |  |
-| <strong>&amp;&amp;</strong> | (<strong>a</strong>: <code>Boolean</code>, <strong>b</strong>: <code>Boolean</code>) &rarr; <code>Boolean</code> |  |
-| <strong>*</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Number</code> |  |
-| <strong>**</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Number</code> |  |
-| <strong>+</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Number</code> |  |
-| <strong>-</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Number</code> |  |
-| <strong>/</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Number</code> |  |
-| <strong>&lt;</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Boolean</code> |  |
-| <strong>&lt;=</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Boolean</code> |  |
-| <strong>==</strong> | (<strong>a</strong>: <code>Object</code>, <strong>b</strong>: <code>Object</code>) &rarr; <code>Boolean</code> |  |
-| <strong>&gt;</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Boolean</code> |  |
-| <strong>&gt;=</strong> | (<strong>a</strong>: <code>Number</code>, <strong>b</strong>: <code>Number</code>) &rarr; <code>Boolean</code> |  |
 | <strong>abs</strong> | (<strong>x</strong>: <code>Number</code>) &rarr; <code>Double</code> |  |
 | <strong>acos</strong> | (<strong>x</strong>: <code>Number</code>) &rarr; <code>Double</code> |  |
 | <strong>acosh</strong> | (<strong>x</strong>: <code>Number</code>) &rarr; <code>Double</code> |  |
@@ -217,7 +317,6 @@ Split by generator kind, as identified on the LPhy side (whether the implementin
 | <strong>FullBirthDeath</strong> | (<strong>lambda</strong>: <code>Number</code>, <strong>mu</strong>: <code>Number</code>, rootAge: <code>Number</code>, originAge: <code>Number</code>) &rarr; <code>Distribution&lt;TimeTree&gt;</code> | A birth-death tree with both extant and extinct species.<br>Conditioned on age of root or origin. |
 | <strong>GaussianRandomWalk</strong> | (initialMean: <code>Double</code>, firstValue: <code>Double</code>, <strong>sd</strong>: <code>Double</code>, <strong>n</strong>: <code>Integer</code>) &rarr; <code>Distribution&lt;Double[]&gt;</code> | A chain of random variables. X[0] ~ Normal(mean=initialMean, sd=sd) or X[0] supplied via firstValue; X[i+1] ~ Normal(X[i], sd). |
 | <strong>generalLinearFunction</strong> | (<strong>beta</strong>: <code>Double[]</code>, <strong>x</strong>: <code>Double[]</code>, link: <code>String</code>, scale: <code>Double</code>, indicator: <code>Boolean[]</code>, error: <code>Double</code>) &rarr; <code>Double</code> | The general linear function: y = scale × g^{-1}(sum_j indicator_j * beta_j * x_j + error) where g^{-1} is the inverse link function, scale is an optional multiplier (default 1.0), indicator is an optional Boolean array for BSSVS predictor selection (default all true), and error is an optional additive term on the linear predictor (default 0.0). When x is a matrix (Double[][]), vectorisation applies the function to each row, returning Double[] - useful for computing multiple GLM predictions from a design matrix. |
-| <strong>generalTimeReversible</strong> | (<strong>rates</strong>: <code>Double[]</code>, <strong>freq</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code> | The general time reversible instantaneous rate matrix. Takes relative rates and base frequencies and produces an general time reversible rate matrix. |
 | <strong>get</strong> | (<strong>key</strong>: <code>String</code>, <strong>map</strong>: <code>Map</code>) &rarr; <code>Object</code> | Get the value from a map given a string ID as the key. |
 | <strong>GLM</strong> | (<strong>beta</strong>: <code>Number[]</code>, <strong>x</strong>: <code>Number[]</code>, <strong>sd</strong>: <code>Number</code>, link: <code>String</code>, scale: <code>Number</code>) &rarr; <code>Distribution&lt;Double&gt;</code> | The general linear model with optional link function and scale. Error is on the link scale: y = scale × g^{-1}(β·x + ε) where ε ~ Normal(0, σ). When x is a matrix (Double[][]), vectorisation applies the model to each row, returning Double[] - useful for sampling multiple GLM responses from a design matrix. |
 | <strong>gompertzPopFunc_f0</strong> | (<strong>b</strong>: <code>Double</code>, <strong>N0</strong>: <code>Double</code>, <strong>f0</strong>: <code>Double</code>, <strong>NA</strong>: <code>Double</code>, <strong>I_na</strong>: <code>Integer</code>) &rarr; <code>PopulationFunction</code> | Constructs a Gompertz population model (f0-parameterized) with optional NA and indicator I_na. |
@@ -230,11 +329,9 @@ Split by generator kind, as identified on the LPhy side (whether the implementin
 | <strong>intersect</strong> | (<strong>0</strong>: <code>Object[]</code>, <strong>1</strong>: <code>Object[]</code>) &rarr; <code>Object[]</code> | A function to get intersection between two sets. |
 | <strong>invariableSites</strong> | (<strong>alignment</strong>: <code>Alignment</code>, ignoreUnknown: <code>Boolean</code>) &rarr; <code>Integer[]</code> | Return the array of site indices (start from 0) at the given alignment, which are invariable sites. |
 | <strong>InverseGamma</strong> | (<strong>alpha</strong>: <code>Number</code>, <strong>beta</strong>: <code>Number</code>) &rarr; <code>Distribution&lt;Double&gt;</code> | The inverse-gamma probability distribution. |
-| <strong>jukesCantor</strong> | (meanRate: <code>Number</code>) &rarr; <code>Double[][]</code> | The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix. |
 | <strong>labelClade</strong> | (<strong>tree</strong>: <code>TimeTree</code>, <strong>taxa</strong>: <code>String[]</code>, <strong>label</strong>: <code>String</code>) &rarr; <code>TimeTree</code> | Find the most recent common ancestor of given taxa names in the tree and give it a label. |
 | <strong>LeafCalibrations</strong> | (<strong>file</strong>: <code>String</code>) &rarr; <code>Distribution&lt;Double[]&gt;</code> | Get a double array of ages for the tip dates according to the calibrations in the nexus file, ordered to match the sequence order in the DATA block. |
 | <strong>length</strong> | (<strong>0</strong>: <code>Object</code>) &rarr; <code>Integer</code> | the length of the argument |
-| <strong>lewisMK</strong> | (<strong>numStates</strong>: <code>Integer</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code> | The LewisMK Q matrix construction function. Takes a mean rate and a number of states and produces a LewisMK Q matrix. |
 | <strong>localBranchRates</strong> | (<strong>tree</strong>: <code>TimeTree</code>, <strong>indicators</strong>: <code>Boolean[]</code>, <strong>rates</strong>: <code>Double[]</code>) &rarr; <code>Double[]</code> | A function that returns branch rates for the given tree, indicator mask and raw rates. Each branch takes on the rate of its node index if the indicator is true, or inherits the rate of its parent branch otherwise. |
 | <strong>localClock</strong> | (<strong>tree</strong>: <code>TimeTree</code>, <strong>clades</strong>: <code>Object[]</code>, <strong>cladeRates</strong>: <code>Double[]</code>, <strong>rootRate</strong>: <code>Double</code>, includeStem: <code>Boolean</code>) &rarr; <code>Double[]</code> | Apply local clock in a phylogenetic tree to generate a tree with branch rates. The order of elements in clades and cladeRates array should match. The clades should not be overlapped with each other. |
 | <strong>log10</strong> | (<strong>x</strong>: <code>Number</code>) &rarr; <code>Double</code> |  |
@@ -249,7 +346,6 @@ Split by generator kind, as identified on the LPhy side (whether the implementin
 | <strong>mtMam</strong> | (freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code> | The mtMam instantaneous rate matrix for amino acids in mammalian mitochondrial proteins (Yang et al. 1998). |
 | <strong>mtREV</strong> | (freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code> | The mtREV instantaneous rate matrix for amino acids in mitochondrial proteins (Adachi & Hasegawa 1996). |
 | <strong>MultispeciesCoalescent</strong> | (<strong>theta</strong>: <code>Double[]</code>, n: <code>Integer[]</code>, taxa: <code>Taxa</code>, <strong>S</strong>: <code>TimeTree</code>) &rarr; <code>Distribution&lt;TimeTree&gt;</code> | The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree. The (optional) taxa object provides for non-trivial mappings from individuals to species, and not all species have to have representatives. The (optional) numLoci parameter can be used to produce more than one gene tree from this distribution. |
-| <strong>nchar</strong> | (<strong>sites</strong>: <code>NChar</code>) &rarr; <code>Integer</code> | The number of sites in the given alignment. |
 | <strong>NegativeBinomial</strong> | (<strong>r</strong>: <code>Integer</code>, <strong>p</strong>: <code>Double</code>) &rarr; <code>Distribution&lt;Integer&gt;</code> | It uses the Pascal distribution with the given number of successes (integer) and probability of success. |
 | <strong>NormalGamma</strong> | (<strong>shape</strong>: <code>Number</code>, <strong>scale</strong>: <code>Number</code>, <strong>mean</strong>: <code>Number</code>, <strong>precision</strong>: <code>Number</code>) &rarr; <code>Distribution&lt;Double[]&gt;</code> | The normal-gamma probability distribution. |
 | <strong>nucleotideModel</strong> | (<strong>modelSet</strong>: <code>BModelSet</code>, <strong>modelIndicator</strong>: <code>Integer</code>, <strong>rates</strong>: <code>Double[]</code>, <strong>freq</strong>: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code> | The instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix. |
@@ -305,52 +401,26 @@ Split by generator kind, as identified on the LPhy side (whether the implementin
 | <strong>vt</strong> | (freq: <code>Double[]</code>, meanRate: <code>Number</code>) &rarr; <code>Double[][]</code> | The VT instantaneous rate matrix for amino acids (Müller & Vingron 2000). |
 | <strong>Weibull</strong> | (<strong>alpha</strong>: <code>Number</code>, <strong>beta</strong>: <code>Number</code>) &rarr; <code>Distribution&lt;Double&gt;</code> | The Weibull distribution. |
 | <strong>WeightedDirichlet</strong> | (<strong>conc</strong>: <code>Number[]</code>, <strong>weights</strong>: <code>Integer[]</code>, mean: <code>Number</code>) &rarr; <code>Distribution&lt;Double[]&gt;</code> | The scaled dirichlet probability distribution. The weighted mean of values must equal to the expected weighted mean (default to 1). |
-| <strong>|</strong> | (<strong>a</strong>: <code>Integer</code>, <strong>b</strong>: <code>Integer</code>) &rarr; <code>Integer</code> |  |
-| <strong>||</strong> | (<strong>a</strong>: <code>Boolean</code>, <strong>b</strong>: <code>Boolean</code>) &rarr; <code>Boolean</code> |  |
 
-### PhyloSpec only (25)
+### PhyloSpec only (18)
 
 | Generator | PhyloSpec signature(s) &rarr; return type | Description |
 |---|---|---|
-| <strong>age</strong> | 1. (<strong>node</strong>: <code>String</code>, <strong>tree</strong>: <code>Tree</code>) &rarr; <code>Age</code><br>2. (<strong>taxon</strong>: <code>Taxon</code>) &rarr; <code>Age</code> | Get the age of a taxon in a tree / Get the age of a taxon |
 | <strong>compoundPopulationFunction</strong> | (<strong>functions</strong>: <code>Vector&lt;PopulationFunction&gt;</code>, <strong>changeTimes</strong>: <code>Vector&lt;PositiveReal&gt;</code>) &rarr; <code>PopulationFunction</code> | Combines several population functions in a piece-wise manner |
 | <strong>continuousTraitsFromTaxa</strong> | (<strong>taxa</strong>: <code>Taxa</code>, <strong>trait</strong>: <code>Parser</code>) &rarr; <code>Alignment&lt;Real; numTaxa=taxa.num, numSites=1&gt;</code> | Retrieves an alignment with a single trait from taxa names. |
 | <strong>DiscreteGammaInv</strong> | (<strong>shape</strong>: <code>PositiveReal</code>, <strong>numCategories</strong>: <code>PositiveInteger</code>, invariantProportion: <code>Probability</code> = <code>0</code>, <strong>numSites</strong>: <code>NonNegativeInteger</code>) &rarr; <code>Distribution&lt;Vector&lt;Rate; num=numSites.value&gt;&gt;</code> | Discrete gamma site rates with a proportion of invariant sites |
 | <strong>env</strong> | (<strong>variable</strong>: <code>String</code>) &rarr; <code>String</code> | Reads an env variable. |
 | <strong>gy94</strong> | (<strong>kappa</strong>: <code>PositiveReal</code>, <strong>omega</strong>: <code>PositiveReal</code>, <strong>baseFrequencies</strong>: <code>Simplex</code>) &rarr; <code>QMatrix</code> | The M0 (GY94) codon substitution model |
 | <strong>IID</strong> | (<strong>base</strong>: <code>Distribution&lt;T&gt;</code>, <strong>num</strong>: <code>PositiveInteger</code>) &rarr; <code>Distribution&lt;Vector&lt;T; num=num.value&gt;&gt;</code> | Vector of independent and identically distributed random variables |
-| <strong>jc69</strong> | (<em>(no arguments)</em>) &rarr; <code>QMatrix</code> | Jukes-Cantor model (equal rates) |
 | <strong>linspace</strong> | (<strong>start</strong>: <code>Real</code>, <strong>end</strong>: <code>Real</code>, <strong>num</strong>: <code>PositiveInteger</code>) &rarr; <code>Vector&lt;Real; num=num.value&gt;</code> | Generate a vector of evenly spaced values over a specified interval |
-| <strong>mk</strong> | (rate: <code>PositiveReal</code> = <code>1</code>) &rarr; <code>QMatrix</code> | The Lewis-Mk model for discrete traits |
 | <strong>MultivariateNormal</strong> | (<strong>mean</strong>: <code>Vector&lt;Real&gt;</code>, <strong>covariance</strong>: <code>Matrix&lt;Real&gt;</code>) &rarr; <code>Distribution&lt;Vector&lt;Real; num=mean.num&gt;&gt;</code> | Multivariate normal for correlated values |
 | <strong>name</strong> | (<strong>taxon</strong>: <code>Taxon</code>) &rarr; <code>String</code> | Get the name of a taxon |
-| <strong>num</strong> | (<strong>vector</strong>: <code>Vector&lt;T&gt;</code>) &rarr; <code>NonNegativeInteger&lt;;value=vector.num&gt;</code> | Count the number of elements in a vector |
-| <strong>numBranches</strong> | (<strong>tree</strong>: <code>Tree</code>) &rarr; <code>PositiveInteger&lt;;value=tree.numBranches&gt;</code> | Count the number of branches in a tree |
 | <strong>numCols</strong> | (<strong>matrix</strong>: <code>Matrix&lt;T&gt;</code>) &rarr; <code>PositiveInteger&lt;;value=matrix.numCols&gt;</code> | Count the number of columns in a matrix |
 | <strong>numRows</strong> | (<strong>matrix</strong>: <code>Matrix&lt;T&gt;</code>) &rarr; <code>PositiveInteger&lt;;value=matrix.numRows&gt;</code> | Count the number of rows in a matrix |
-| <strong>numSites</strong> | 1. (<strong>alignment</strong>: <code>Alignment</code>) &rarr; <code>PositiveInteger&lt;;value=alignment.numSites&gt;</code><br>2. (<strong>sequence</strong>: <code>Sequence&lt;A&gt;</code>) &rarr; <code>PositiveInteger&lt;;value=sequence.num&gt;</code> | Count the number of sites in an alignment / Count the number of sites in a sequence |
 | <strong>Offset</strong> | (<strong>base</strong>: <code>Distribution&lt;Real&gt;</code>, <strong>offset</strong>: <code>Real</code>) &rarr; <code>Distribution&lt;Real&gt;</code> | Offset version of the given distribution on reals |
 | <strong>parse</strong> | 1. (<strong>delimiter</strong>: <code>String</code>, <strong>part</strong>: <code>PositiveInteger</code>) &rarr; <code>Parser</code><br>2. (<strong>regex</strong>: <code>String</code>) &rarr; <code>Parser</code> | Creates a parser to extract information out of a delimited string / Creates a parser to extract information out of a string using regex |
 | <strong>RelaxedClock</strong> | (<strong>base</strong>: <code>Distribution&lt;Rate&gt;</code>, <strong>clockRate</strong>: <code>Rate</code>, <strong>tree</strong>: <code>Tree</code>) &rarr; <code>Distribution&lt;Vector&lt;Rate; num=tree.numBranches&gt;&gt;</code> | Relaxed clock model for branch rates |
-| <strong>rootAge</strong> | (<strong>tree</strong>: <code>Tree</code>) &rarr; <code>Age</code> | Get the age of the root node in a tree |
 | <strong>StrictClock</strong> | (clockRate: <code>Rate</code> = <code>1</code>, <strong>tree</strong>: <code>Tree</code>) &rarr; <code>Distribution&lt;Vector&lt;Rate; num=tree.numBranches&gt;&gt;</code> | Strict clock model for branch rates |
 | <strong>subset</strong> | (<strong>alignment</strong>: <code>Alignment&lt;T&gt;</code>, start: <code>PositiveInteger</code>, end: <code>PositiveInteger</code>, codonPosition: <code>PositiveInteger</code>) &rarr; <code>Alignment&lt;T; numTaxa=alignment.numTaxa&gt;</code> | Extract a subset of sites from an alignment |
 | <strong>taxon</strong> | (<strong>name</strong>: <code>String</code>, species: <code>String</code>, age: <code>Age</code> = <code>0</code>) &rarr; <code>Taxon</code> | Create a taxon from a name, an optional species name and an optional age. *LPhy has no equivalent single-Taxon constructor -- it always builds the whole Taxa collection at once via taxa(names=..., ...), never taxon-by-taxon.* |
 | <strong>Truncated</strong> | (<strong>base</strong>: <code>Distribution&lt;Real&gt;</code>, lower: <code>T</code> = <code>-Inf</code>, upper: <code>T</code> = <code>+Inf</code>) &rarr; <code>Distribution&lt;T&gt;</code> | Truncated version of the given distribution on reals |
-
-## Unmatched near-miss candidates
-
-Output of the string-similarity heuristic over what's *still* left in the LPhy-only / PhyloSpec-only tables above, after the curated equivalences are already applied. These are candidates for a manual look -- some will be real renames worth promoting into the curated list, most will be coincidence (e.g. `sort` / `sqrt`).
-
-### Types
-
-*(none detected)*
-
-### Generators
-
-| LPhy name | PhyloSpec name |
-|---|---|
-| `parseInt` | `parse` |
-| `sumCols` | `numCols` |
-| `sumRows` | `numRows` |
-| `tan` | `taxon` |

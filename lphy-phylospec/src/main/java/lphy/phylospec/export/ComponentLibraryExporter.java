@@ -6,6 +6,7 @@ import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.annotation.TypeInfo;
 import lphy.core.parser.argument.ArgumentValue;
@@ -38,6 +39,9 @@ public class ComponentLibraryExporter {
     // relative to this module's own basedir (exec:java's working directory), not the repo root
     private static final String DEFAULT_OUTPUT =
             "src/main/resources/phylospec-lphy-component-library.json";
+
+    // Written alongside DEFAULT_OUTPUT, in the same directory - see buildMethodCalls().
+    private static final String METHOD_CALLS_OUTPUT_FILENAME = "lphy-method-calls.json";
 
     /**
      * The extensions this "LPhy" component library actually covers: core plus the standard
@@ -98,6 +102,22 @@ public class ComponentLibraryExporter {
 
         System.out.println("Wrote " + library.getTypes().size() + " types and "
                 + library.getGenerators().size() + " generators to " + outFile.getAbsolutePath());
+
+        List<Map<String, Object>> methodCalls = buildMethodCalls();
+        Map<String, Object> methodCallLibrary = new LinkedHashMap<>();
+        methodCallLibrary.put("name", "LPhy method calls");
+        methodCallLibrary.put("description",
+                "LPhy's third generator kind: instance methods invoked via dot-call syntax "
+                        + "(e.g. tree.rootAge()), exposed to scripts wherever a public method carries "
+                        + "@MethodInfo (lphy.core.model.annotation.MethodInfo). PhyloSpec has no equivalent "
+                        + "construct (no dot-call syntax at all), so this is its own file rather than part "
+                        + "of the PhyloSpec-schema-shaped component library above.");
+        methodCallLibrary.put("methodCalls", methodCalls);
+
+        File methodCallsFile = new File(parent != null ? parent : new File("."), METHOD_CALLS_OUTPUT_FILENAME);
+        mapper.writeValue(methodCallsFile, methodCallLibrary);
+        System.out.println("Wrote " + methodCalls.size() + " method-call signatures to "
+                + methodCallsFile.getAbsolutePath());
     }
 
     /**
@@ -422,5 +442,231 @@ public class ComponentLibraryExporter {
                         + "a String key and each value (of any type, including another map) becomes "
                         + "the corresponding value in the resulting map.");
         return argument;
+    }
+
+    /**
+     * LPhy's third generator kind, alongside constructor-based generators ({@link #buildGenerators})
+     * and symbol-bound operators ({@link #buildExpressionOperatorGenerators}): an instance method
+     * invoked via dot-call syntax on a value, e.g. {@code tree.rootAge()}. {@link MethodCall} (in
+     * {@code lphy-core}) is the runtime dispatcher: given a receiver value and a method name, it
+     * resolves {@code c = value.value().getClass(); method = c.getMethod(methodName, paramTypes)} -
+     * ordinary Java method resolution against the value's actual <em>runtime</em> class - then
+     * requires the resolved {@link Method} to itself carry {@code @MethodInfo}, with no fallback to
+     * an ancestor's annotation (see that class's own "TODO should we check super classes here?" -
+     * there isn't one; ​an override that changes behavior without re-declaring {@code @MethodInfo}
+     * is silently uncallable from an LPhy script, even though the same-named method still works
+     * fine as ordinary Java on the un-overriding declaring class).
+     * <p>
+     * Unlike the other two generator kinds, there is no existing registry of "every class that
+     * might declare one of these" to iterate ({@link LPhyExtension} only tracks distribution/
+     * function classes, not arbitrary value types like {@code TimeTree} or {@code Alignment}) - so
+     * this scans the runtime classpath itself ({@link #findLphyClasses}) rather than relying on a
+     * hand-maintained list, so a future {@code @MethodInfo} method anywhere under the {@code lphy.}
+     * package prefix is picked up automatically the next time this exporter runs.
+     * <p>
+     * Grouped by (method name, return type, ordered argument types): from an LPhy script's point of
+     * view, "the same method call" is exactly this signature, regardless of which class in a
+     * hierarchy actually provides it for a given value - e.g. {@code Alignment}'s own default
+     * {@code taxa()} and {@code AbstractAlignment}'s override of it collapse into one row listing
+     * both declaring classes, rather than being reported as two unrelated methods. Scans
+     * {@link Class#getDeclaredMethods()} (not {@code getMethods()}) on every candidate class: this
+     * mirrors {@code MethodCall}'s own resolution exactly - only a class that directly carries its
+     * own {@code @MethodInfo}-annotated declaration is credited with "implementing" the call, so an
+     * inherited-but-not-overridden method is correctly attributed to its one real declaring class,
+     * and a subclass whose override dropped the annotation is correctly left out (it can't actually
+     * be called there).
+     */
+    private static List<Map<String, Object>> buildMethodCalls() {
+        Map<String, Map<String, Object>> groups = new LinkedHashMap<>();
+
+        for (Class<?> c : findLphyClasses()) {
+            for (Method m : c.getDeclaredMethods()) {
+                if (!Modifier.isPublic(m.getModifiers())) continue;
+                MethodInfo info = m.getAnnotation(MethodInfo.class);
+                if (info == null) continue;
+
+                String returnType = m.getReturnType().getSimpleName();
+                String[] paramTypes = Arrays.stream(m.getParameterTypes())
+                        .map(Class::getSimpleName).toArray(String[]::new);
+                // Signature, not just name: e.g. two unrelated one-arg methods that happen to
+                // share a name but differ in return/argument type must stay separate rows.
+                String key = m.getName() + "(" + String.join(",", paramTypes) + "):" + returnType;
+
+                Map<String, Object> group = groups.computeIfAbsent(key, k -> {
+                    Map<String, Object> g = new LinkedHashMap<>();
+                    g.put("name", m.getName());
+                    g.put("returnType", returnType);
+                    List<Map<String, String>> args = new ArrayList<>();
+                    for (String paramType : paramTypes) {
+                        Map<String, String> arg = new LinkedHashMap<>();
+                        // LPhy method-call arguments are always positional, never named - see
+                        // MethodCall#argParamName ("arg" + i), which is the only name they ever
+                        // get even internally. No @ParameterInfo-equivalent exists for them
+                        // (unlike constructor arguments), so there's no real name to reflect.
+                        arg.put("type", paramType);
+                        args.add(arg);
+                    }
+                    g.put("arguments", args);
+                    g.put("classes", new ArrayList<Map<String, String>>());
+                    return g;
+                });
+
+                @SuppressWarnings("unchecked")
+                List<Map<String, String>> classEntries = (List<Map<String, String>>) group.get("classes");
+                Map<String, String> classEntry = new LinkedHashMap<>();
+                classEntry.put("class", c.getSimpleName());
+                classEntry.put("namespace", c.getPackageName());
+                classEntry.put("description", info.description());
+                classEntries.add(classEntry);
+            }
+        }
+
+        List<Map<String, Object>> result = new ArrayList<>(groups.values());
+        result.sort(Comparator.comparing(g -> ((String) g.get("name")).toLowerCase()));
+        return result;
+    }
+
+    /**
+     * Every loadable class on the runtime classpath under the {@code lphy.} package prefix. Two
+     * independent axes of "which classpath, exactly":
+     * <p>
+     * 1. <b>Where the roots come from.</b> {@link #classpathRootsFromProperty} (the
+     * {@code java.class.path} system property) covers a real forked JVM - {@code exec:exec}, or
+     * plain {@code java -cp}. It does <em>not</em> cover this module's own README-documented
+     * {@code mvn exec:java}: that goal runs {@link #main} in-process under an isolated
+     * {@link java.net.URLClassLoader} built from the resolved dependency graph, without ever
+     * touching {@code java.class.path} - confirmed by running it: an earlier version of this scan
+     * using only that property wrote 0 method-call signatures. {@link #classpathRootsFromClassLoaders}
+     * covers that case instead, by reading {@code getURLs()} off every {@code URLClassLoader} found
+     * walking up this class's own loader chain plus the current thread's context loader. Both are
+     * always tried and merged (deduped): cheap, and safe against future exec-plugin version changes
+     * shifting which one is actually in play.
+     * <p>
+     * 2. <b>What shape each root is.</b> Checked as both a directory of {@code .class} files and a
+     * JAR of them (see {@link #collectClassesFromDirectory}/{@link #collectClassesFromJar}), because
+     * {@code lphy}/{@code lphy-base}'s shape depends on how this module was invoked: run standalone
+     * ({@code cd lphy-phylospec; mvn exec:java}), Maven resolves them as ordinary dependencies from
+     * the local repository - JAR files; run as part of a combined multi-module reactor build
+     * ({@code mvn -pl lphy-phylospec -am ...}), Maven substitutes each sibling module's own
+     * {@code target/classes} output directory instead.
+     * <p>
+     * Both axes fail silently (empty result, not an error) if their assumption is wrong, which is
+     * why every combination is handled rather than picking one. The exec-maven-plugin config in this
+     * module's {@code pom.xml} runs {@link #main} in plain classpath mode (not module-path), so
+     * there's no JPMS export/opens boundary to fight regardless. Dependency JARs unrelated to LPhy
+     * (jackson, phylospec-core, ...) are cheap to open and skip: only entries under the
+     * {@code lphy.} package prefix are ever loaded. Nested ({@code $}) classes are skipped: every
+     * current {@code @MethodInfo} declaration lives on a top-level class (verified against the whole
+     * source tree), and skipping them avoids the extra risk of loading synthetic/anonymous classes
+     * never meant to be loaded standalone. A class that fails to load (e.g. depends on an optional
+     * dependency not on this classpath) is skipped rather than failing the whole export - this is a
+     * best-effort documentation scan, not a correctness-critical path.
+     */
+    private static List<Class<?>> findLphyClasses() {
+        List<Class<?>> classes = new ArrayList<>();
+        ClassLoader loader = ComponentLibraryExporter.class.getClassLoader();
+        Set<File> roots = new LinkedHashSet<>();
+        for (File root : classpathRootsFromProperty()) roots.add(root);
+        for (File root : classpathRootsFromClassLoaders()) roots.add(root);
+        for (File root : roots) {
+            if (root.isDirectory()) {
+                collectClassesFromDirectory(root, root, loader, classes);
+            } else if (root.isFile() && root.getName().endsWith(".jar")) {
+                collectClassesFromJar(root, loader, classes);
+            }
+        }
+        return classes;
+    }
+
+    // Covers `exec:exec` (forks a real `java -cp ...` process) and any plain `java -cp` invocation:
+    // both set this system property to the real launch classpath.
+    private static List<File> classpathRootsFromProperty() {
+        String classpath = System.getProperty("java.class.path");
+        if (classpath == null) return List.of();
+        List<File> roots = new ArrayList<>();
+        for (String entry : classpath.split(File.pathSeparator)) {
+            roots.add(new File(entry));
+        }
+        return roots;
+    }
+
+    // Covers `exec:java` (the default `mvn exec:java`, and this module's own README-documented
+    // invocation): it runs the main class in-process under an isolated URLClassLoader built from
+    // the resolved dependency graph, WITHOUT touching `java.class.path` - so that property alone
+    // silently misses lphy/lphy-base entirely in that mode (verified: an earlier version of this
+    // scan using only java.class.path wrote 0 method-call signatures under a real `mvn exec:java`
+    // run). Walks up the classloader delegation chain collecting every URLClassLoader's URLs, since
+    // exec:java's isolated loader (or a plugin-version-dependent ancestor of it) is where the real
+    // dependency classpath actually lives.
+    private static List<File> classpathRootsFromClassLoaders() {
+        List<File> roots = new ArrayList<>();
+        Set<ClassLoader> seen = new LinkedHashSet<>();
+        for (ClassLoader l = ComponentLibraryExporter.class.getClassLoader(); l != null; l = l.getParent()) {
+            if (!seen.add(l)) break; // cycle guard, shouldn't happen but no reason to trust it won't
+            if (l instanceof java.net.URLClassLoader urlLoader) {
+                for (java.net.URL url : urlLoader.getURLs()) {
+                    try {
+                        roots.add(new File(url.toURI()));
+                    } catch (java.net.URISyntaxException ignored) {
+                        // not a file:// URL (e.g. a remote repository proxy) - not scannable, skip
+                    }
+                }
+            }
+        }
+        ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+        if (contextLoader instanceof java.net.URLClassLoader urlLoader && seen.add(contextLoader)) {
+            for (java.net.URL url : urlLoader.getURLs()) {
+                try {
+                    roots.add(new File(url.toURI()));
+                } catch (java.net.URISyntaxException ignored) {
+                    // as above
+                }
+            }
+        }
+        return roots;
+    }
+
+    // Package-relative path (directory-walk relative path, or JAR entry name) -> loadable class
+    // name, or null to skip: shared by both collectClassesFrom* methods so the ".class" stripping,
+    // "/"-or-File.separator normalization, "lphy." scoping, and $-nested-class exclusion stay
+    // identical regardless of which classpath shape found the entry.
+    private static String candidateClassName(String relativePath) {
+        if (!relativePath.endsWith(".class") || relativePath.contains("$")) return null;
+        String className = relativePath.substring(0, relativePath.length() - ".class".length())
+                .replace('/', '.').replace(File.separatorChar, '.');
+        return className.startsWith("lphy.") ? className : null;
+    }
+
+    private static void loadIfLphyClass(String relativePath, ClassLoader loader, List<Class<?>> out) {
+        String className = candidateClassName(relativePath);
+        if (className == null) return;
+        try {
+            out.add(Class.forName(className, false, loader));
+        } catch (Throwable ignored) {
+            // package-info-like or unloadable class - not a real class to scan, skip it
+        }
+    }
+
+    private static void collectClassesFromDirectory(File root, File dir, ClassLoader loader, List<Class<?>> out) {
+        File[] files = dir.listFiles();
+        if (files == null) return;
+        for (File f : files) {
+            if (f.isDirectory()) {
+                collectClassesFromDirectory(root, f, loader, out);
+            } else {
+                loadIfLphyClass(root.toPath().relativize(f.toPath()).toString(), loader, out);
+            }
+        }
+    }
+
+    private static void collectClassesFromJar(File jarFile, ClassLoader loader, List<Class<?>> out) {
+        try (java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile)) {
+            Enumeration<java.util.jar.JarEntry> entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                loadIfLphyClass(entries.nextElement().getName(), loader, out);
+            }
+        } catch (IOException ignored) {
+            // not a readable JAR (or not actually one despite the .jar extension) - skip it
+        }
     }
 }

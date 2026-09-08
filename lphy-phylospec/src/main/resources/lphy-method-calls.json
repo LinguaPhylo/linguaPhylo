@@ -1,0 +1,408 @@
+{
+  "name" : "LPhy method calls",
+  "description" : "LPhy's third generator kind: instance methods invoked via dot-call syntax (e.g. tree.rootAge()), exposed to scripts wherever a public method carries @MethodInfo (lphy.core.model.annotation.MethodInfo). PhyloSpec has no equivalent construct (no dot-call syntax at all), so this is its own file rather than part of the PhyloSpec-schema-shaped component library above.",
+  "methodCalls" : [ {
+    "name" : "ages",
+    "returnType" : "Double[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Taxa",
+      "namespace" : "lphy.base.evolution",
+      "description" : "gets the ages of these taxa as an array of doubles."
+    } ]
+  }, {
+    "name" : "branchCount",
+    "returnType" : "Integer",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "the total number of branches in the tree (returns nodeCount() - 1)"
+    } ]
+  }, {
+    "name" : "canonicalStateCount",
+    "returnType" : "int",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Alignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "the number of canonical states excluding ambiguous states in the alignment."
+    } ]
+  }, {
+    "name" : "canonicalStates",
+    "returnType" : "List",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Alignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "the canonical states excluding ambiguous states."
+    } ]
+  }, {
+    "name" : "charset",
+    "returnType" : "Alignment",
+    "arguments" : [ {
+      "type" : "String"
+    } ],
+    "classes" : [ {
+      "class" : "MetaDataAlignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "return a partition alignment. If the string doesn't match charset's syntax, then check if the string matches a defined name in the nexus file. Otherwise it is an error. The string is referred to one partition at a call, but can be multiple blocks, such as a dummy example: d.charset([\"2-457\\3\", \"660-896\\3\", \"1-.\\3\"])."
+    } ]
+  }, {
+    "name" : "charsets",
+    "returnType" : "Alignment[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "MetaDataAlignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "return an alignment array defined by charsets, which could be pre-defined in the nexus file."
+    } ]
+  }, {
+    "name" : "dataType",
+    "returnType" : "SequenceType",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Alignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "get the data type of this alignment."
+    } ]
+  }, {
+    "name" : "directAncestorCount",
+    "returnType" : "Integer",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "the total number of nodes in the tree that are direct ancestors (i.e. have a single parent and a single child, or have one child that is a zero-branch-length leaf)."
+    } ]
+  }, {
+    "name" : "extantCount",
+    "returnType" : "Integer",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "the total number of extant leaves in the tree (leaf nodes with age 0.0)."
+    } ]
+  }, {
+    "name" : "getAge",
+    "returnType" : "double",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTreeNode",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "Age of the node."
+    } ]
+  }, {
+    "name" : "getBranchRates",
+    "returnType" : "Double[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "get the array of all branch rates in the tree."
+    } ]
+  }, {
+    "name" : "getColumn",
+    "returnType" : "List",
+    "arguments" : [ {
+      "type" : "Integer"
+    } ],
+    "classes" : [ {
+      "class" : "Table",
+      "namespace" : "lphy.core.model.datatype",
+      "description" : "Return the ith column values given its index which starts from 0."
+    } ]
+  }, {
+    "name" : "getColumn",
+    "returnType" : "List",
+    "arguments" : [ {
+      "type" : "String"
+    } ],
+    "classes" : [ {
+      "class" : "Table",
+      "namespace" : "lphy.core.model.datatype",
+      "description" : "Return the column values given a column name."
+    } ]
+  }, {
+    "name" : "getColumnAsMatrix",
+    "returnType" : "Double[][]",
+    "arguments" : [ {
+      "type" : "Integer[]"
+    } ],
+    "classes" : [ {
+      "class" : "Table",
+      "namespace" : "lphy.core.model.datatype",
+      "description" : "return the array of (array) records for selected column indices."
+    } ]
+  }, {
+    "name" : "getColumnName",
+    "returnType" : "String",
+    "arguments" : [ {
+      "type" : "Integer"
+    } ],
+    "classes" : [ {
+      "class" : "Table",
+      "namespace" : "lphy.core.model.datatype",
+      "description" : "Return ith column name, where i starts from 0."
+    } ]
+  }, {
+    "name" : "getColumnNames",
+    "returnType" : "String[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Table",
+      "namespace" : "lphy.core.model.datatype",
+      "description" : "Return the array of column names."
+    } ]
+  }, {
+    "name" : "getLabeledNode",
+    "returnType" : "TimeTreeNode",
+    "arguments" : [ {
+      "type" : "String"
+    } ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "get the node by given label."
+    } ]
+  }, {
+    "name" : "getLeafNames",
+    "returnType" : "String[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTreeNode",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "get all leaf node names under the node."
+    } ]
+  }, {
+    "name" : "getModelName",
+    "returnType" : "String",
+    "arguments" : [ {
+      "type" : "Integer"
+    } ],
+    "classes" : [ {
+      "class" : "BModelSet",
+      "namespace" : "lphy.base.bmodeltest",
+      "description" : "the name of the given model indicator."
+    } ]
+  }, {
+    "name" : "getN0",
+    "returnType" : "double",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "GompertzPopulation_t50",
+      "namespace" : "lphy.base.evolution.coalescent.populationmodel",
+      "description" : "Get the initial population size N0 derived from t50"
+    } ]
+  }, {
+    "name" : "getName",
+    "returnType" : "String",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "BModelSet",
+      "namespace" : "lphy.base.bmodeltest",
+      "description" : "the number of models in this model set."
+    } ]
+  }, {
+    "name" : "getOldestInternalNode",
+    "returnType" : "TimeTreeNode",
+    "arguments" : [ {
+      "type" : "Double"
+    } ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "get the oldest internal node under the given maximum age."
+    } ]
+  }, {
+    "name" : "getProportionInvariable",
+    "returnType" : "Double",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "SiteModel",
+      "namespace" : "lphy.base.evolution.sitemodel",
+      "description" : "the proportion of invariable sites"
+    } ]
+  }, {
+    "name" : "getQ",
+    "returnType" : "Double[][]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "SiteModel",
+      "namespace" : "lphy.base.evolution.sitemodel",
+      "description" : "the Q matrix for this site model"
+    } ]
+  }, {
+    "name" : "getTaxaNames",
+    "returnType" : "String[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "get all taxa names"
+    }, {
+      "class" : "AbstractAlignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "The names of the taxa."
+    } ]
+  }, {
+    "name" : "hasOrigin",
+    "returnType" : "boolean",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "returns true if this tree has an origin node (defined as a root node with a single child."
+    } ]
+  }, {
+    "name" : "leafCount",
+    "returnType" : "Integer",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "the total number of leaf nodes in the tree (leaf nodes with any age, but excluding zero-branch-length leaf nodes, which are logically direct ancestors)."
+    } ]
+  }, {
+    "name" : "length",
+    "returnType" : "int",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Taxa",
+      "namespace" : "lphy.base.evolution",
+      "description" : "gets the number of taxa."
+    } ]
+  }, {
+    "name" : "nchar",
+    "returnType" : "Integer",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "NChar",
+      "namespace" : "lphy.base.evolution",
+      "description" : "The number of characters/sites."
+    }, {
+      "class" : "AbstractAlignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "The number of characters/sites."
+    } ]
+  }, {
+    "name" : "nodeCount",
+    "returnType" : "Integer",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "the total number of nodes in the tree (both leaf nodes and internal nodes)."
+    } ]
+  }, {
+    "name" : "nodeCount",
+    "returnType" : "int",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Taxa",
+      "namespace" : "lphy.base.evolution",
+      "description" : "the total number of nodes (left + internal) in a binary tree with these taxa."
+    } ]
+  }, {
+    "name" : "rootAge",
+    "returnType" : "Double",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "the age of the root of the tree."
+    } ]
+  }, {
+    "name" : "setTaxaAges",
+    "returnType" : "Taxa",
+    "arguments" : [ {
+      "type" : "Double[]"
+    } ],
+    "classes" : [ {
+      "class" : "Taxa",
+      "namespace" : "lphy.base.evolution",
+      "description" : "set the ages to the taxa"
+    } ]
+  }, {
+    "name" : "siteRates",
+    "returnType" : "Double[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "SiteModel",
+      "namespace" : "lphy.base.evolution.sitemodel",
+      "description" : "the raw site rates for this site model"
+    } ]
+  }, {
+    "name" : "size",
+    "returnType" : "Integer",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "BModelSet",
+      "namespace" : "lphy.base.bmodeltest",
+      "description" : "the number of models in this model set."
+    } ]
+  }, {
+    "name" : "species",
+    "returnType" : "String[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Taxa",
+      "namespace" : "lphy.base.evolution",
+      "description" : "gets the species of these taxa as an array of strings."
+    } ]
+  }, {
+    "name" : "stateCount",
+    "returnType" : "int",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Alignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "the number of possible states including ambiguous states in the alignment."
+    } ]
+  }, {
+    "name" : "states",
+    "returnType" : "List",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Alignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "the possible states including ambiguous states."
+    } ]
+  }, {
+    "name" : "taxa",
+    "returnType" : "Taxa",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "the taxa of the tree."
+    }, {
+      "class" : "Alignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "the taxa of the alignment."
+    }, {
+      "class" : "AbstractAlignment",
+      "namespace" : "lphy.base.evolution.alignment",
+      "description" : "the taxa of the alignment."
+    } ]
+  }, {
+    "name" : "taxaNames",
+    "returnType" : "String[]",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "Taxa",
+      "namespace" : "lphy.base.evolution",
+      "description" : "The names of the taxa."
+    } ]
+  }, {
+    "name" : "treeLength",
+    "returnType" : "Double",
+    "arguments" : [ ],
+    "classes" : [ {
+      "class" : "TimeTree",
+      "namespace" : "lphy.base.evolution.tree",
+      "description" : "the total length of the tree"
+    } ]
+  } ]
+}
