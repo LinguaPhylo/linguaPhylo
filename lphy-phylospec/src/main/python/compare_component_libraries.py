@@ -188,7 +188,7 @@ def validate_operators(operators: list, lphy_gen_names: set):
 def operator_lphy_names(operators: list) -> set:
     """The set of every LPhy operator name that appears in curated_equivalences.json's
     operators list (all 17 symbolic operators, whether or not they have a
-    PhyloSpec counterpart -- see render_operators_table). Used to keep those
+    PhyloSpec counterpart -- see render_math_logic_table). Used to keep those
     names out of the "LPhy only" generators table: they already have a
     complete, dedicated comparison in the Math & Logic section's operator
     table, so repeating them in the generic gap table would just be the same
@@ -211,23 +211,45 @@ def method_call_phylospec_names(method_call_equivalent_entries: list) -> set:
     return {p for entry in method_call_equivalent_entries for p in entry["phylospec"]}
 
 
-def render_operators_table(operators: list) -> str:
-    """Raw HTML table, like render_html_table's other callers -- NOT a plain
-    Markdown pipe-table. A plain Markdown table row is split on every
-    unescaped `|` in the raw line with no regard for surrounding backticks
-    (an earlier version of this function assumed a backtick code span would
-    protect a literal `|`/`||` inside it; it doesn't -- the row for those two
-    LPhy operators rendered with extra, broken columns). A real `<table>` has
-    no such ambiguity: a `|` inside a `<td>` is just a character."""
+def render_math_logic_table(operators: list, math_logic_rows: list) -> str:
+    """One merged HTML table for the whole Math & Logic section -- raw HTML, like
+    render_html_table's other callers, NOT a plain Markdown pipe-table (a plain Markdown table
+    row is split on every unescaped `|` in the raw line with no regard for surrounding backticks;
+    an earlier version of this function assumed a backtick code span would protect a literal
+    `|`/`||` inside it, but it doesn't -- the row for those two LPhy operators rendered with
+    extra, broken columns. A real `<table>` has no such ambiguity: a `|` inside a `<td>` is just
+    a character).
+
+    Two very different comparisons share this one table, distinguished by the Category column:
+    curated_equivalences.json's symbolic operators (`+`, `<`, `&&`, ...), each on its own row with
+    its real category ("binary arithmetic", "unary", ...); and math_logic_rows -- the LPhy *named*
+    math functions that also exist as callable PhyloSpec generators (`exp`, `log`, `sqrt`, `sum`,
+    `range`, `repeat`) -- appended afterwards, tagged "math function". A side with nothing to show
+    (an operator with no counterpart on the other side) gets an empty cell, not a placeholder like
+    "none" -- consistent with how an absent Notes cell reads elsewhere in this report."""
     headers = ["LPhy", "PhyloSpec", "Category", "Note"]
-    widths = ["10%", "10%", "20%", "60%"]
+    widths = ["22%", "22%", "16%", "40%"]
     rows = []
     for op in operators:
-        p = code(op["phylospec"]) if op.get("phylospec") else em("none")
-        l = code(op["lphy"]) if op.get("lphy") else em("none")
+        l = code(op["lphy"]) if op.get("lphy") else ""
+        p = code(op["phylospec"]) if op.get("phylospec") else ""
         note = esc(op.get("note", ""))
         rows.append([l, p, op["kind"], note])
+    for l_cell, p_cell, note in math_logic_rows:
+        rows.append([l_cell, p_cell, "math function", note])
     return render_html_table(headers, rows, widths)
+
+
+def operator_stats(operators: list) -> tuple:
+    """(lphy_total, phylo_total, both, lphy_only, phylo_only) across curated_equivalences.json's
+    operators list -- the same breakdown build_match_groups produces for types/generators, just
+    computed directly from the hand-written operators list instead (PhyloSpec has no component-
+    library entries for operators to match against, see validate_operators), for the Summary
+    table's combined Math & Logic row."""
+    has_lphy = sum(1 for o in operators if o.get("lphy"))
+    has_phylo = sum(1 for o in operators if o.get("phylospec"))
+    both = sum(1 for o in operators if o.get("lphy") and o.get("phylospec"))
+    return has_lphy, has_phylo, both, has_lphy - both, has_phylo - both
 
 
 def append_note(description: str, note: str) -> str:
@@ -419,7 +441,7 @@ def resolve_method_call_equivalents(entries: list, method_calls: list, phylo_gen
 
 
 def render_method_calls_table(method_calls: list, phylo_grouped: dict, method_call_equivalents: dict) -> str:
-    """Raw HTML table (see render_operators_table's docstring for why: a plain Markdown pipe-table
+    """Raw HTML table (see render_math_logic_table's docstring for why: a plain Markdown pipe-table
     row silently breaks on an unescaped `|` even inside backticks, and while no method name here
     happens to contain one today, there's no reason to leave that trap for whatever gets added to
     lphy-method-calls.json next). One row per distinct (name, return type, argument types) shape,
@@ -643,39 +665,86 @@ def is_phylospec_math_logic(entries: list) -> bool:
     range, repeat, linspace) -- check that namespace on the PhyloSpec side
     rather than inventing a parallel LPhy-side classification, since LPhy's
     own GeneratorCategory enum has no math bucket at all (these generators
-    all fall under its catch-all NONE/unclassified category there). Only
-    ever reached for matched ("both") groups: LPhy's raw operators (+, -,
-    ==, &&, !, ...) never appear here, because PhyloSpec has no generator
-    counterpart for them at all -- it resolves them in the parser's operator
-    rule table (Parser.visitBinary/visitUnary via TypeResolver), not as
-    named, callable generators -- so they only ever show up in the LPhy-only
-    table, not this one."""
+    all fall under its catch-all NONE/unclassified category there). Used two
+    ways: for matched ("both") groups, to split them into the Math & Logic
+    subset (LPhy's raw operators -- +, -, ==, &&, ! -- never appear here,
+    because PhyloSpec has no generator counterpart for them at all -- it
+    resolves them in the parser's operator rule table via TypeResolver, not
+    as named, callable generators -- so they only ever show up in the LPhy-
+    only table, never this path); and, unchanged, for names that didn't
+    match anything on the LPhy side at all (e.g. `linspace`), to split those
+    out of the generic PhyloSpec-only table into their own math-function one
+    in the Math & Logic section instead."""
     return any(e.get("namespace", "") == "phylospec.functions.math" for e in entries)
+
+
+def is_lphy_math_function(entries: list) -> bool:
+    """Mirrors is_phylospec_math_logic, one side over: LPhy files its own built-in operators
+    *and* named math/logic functions (`abs`, `sin`, `logit`, `probit`, `step`, ...) under one
+    `lphy.core.parser.function` namespace -- the same namespace the 17 symbolic operators live
+    in (see operator_lphy_names), just without a PhyloSpec match for these ones. But that
+    namespace isn't purely math -- it's LPhy's whole "built into the expression parser" bucket,
+    which also holds `map` (a general-purpose Map<String, Object> -> Map builder, package
+    lphy.core.parser.function purely because that's where its own MapFunction.java class lives)
+    with nothing math-y about it -- so namespace alone over-matches, coincidentally.
+
+    Rather than guess from shape (return type, arity, ...), this checks a real signal the Java
+    exporter already provides for exactly this purpose: ComponentLibraryExporter's
+    buildExpressionOperatorGenerators() (lphy-phylospec's ComponentLibraryExporter.java) builds
+    every genuine operator and math function from one fixed, hand-written list of parser-level
+    methods and stamps each with an `implementedVia` field (the wrapper class that implements it,
+    ExpressionNode1Arg or ExpressionNode2Args) specifically "so a JSON consumer isn't left
+    wondering why e.g. abs/sqrt/log all report the identical namespace" (see that method's own
+    comment). `map`, built via the ordinary buildGenerators(Class, boolean) path like any other
+    LPhy extension function, never gets that field -- so `implementedVia`'s presence is the
+    authoritative, Java-derived "is this really one of the parser's built-in operators/math
+    functions" signal, confirmed against every one of the 49 entries actually in this namespace
+    today (all 49 minus `map` carry it; `map` alone doesn't). Checked only for names already
+    known to be LPhy-only (never matched, and never a bare operator symbol -- those are filtered
+    out earlier via exclude_lphy_only), so every name this returns True for is a genuine named
+    math function with no PhyloSpec counterpart at all, to move into its own table in the Math &
+    Logic section rather than the generic LPhy-only generators table."""
+    return any(
+        e.get("namespace", "") == "lphy.core.parser.function" and e.get("implementedVia")
+        for e in entries
+    )
 
 
 def build_generators_tables(
     lphy_gens: list, phylo_gens: list, curated_generators: list, generator_notes: dict,
     exclude_lphy_only: set = frozenset(), exclude_phylo_only: set = frozenset(),
+    math_function_exceptions: dict = None,
 ):
     """Returns the same shape as build_types_tables, except the "both" slot is
-    itself a (distributions_md, functions_md, math_logic_md) triple: the "In
-    both" table is split first into Distribution vs DeterministicFunction
+    itself a (distributions_md, functions_md, math_logic_rows) triple -- the first two already
+    rendered as HTML tables, the third left as raw [lphy_cell, phylospec_cell, note] rows for the
+    caller to merge into the Math & Logic section's combined table (see render_math_logic_table):
+    the "In both" table is split first into Distribution vs DeterministicFunction
     generators, classified by the LPhy side (see is_lphy_distribution) since
     that's the side with an unambiguous, already-exported signal for it, and
     then the non-distribution remainder is further split into ordinary
     DeterministicFunction generators vs "Math & Logic" ones, classified by
     the PhyloSpec side (see is_phylospec_math_logic) since PhyloSpec is the
-    side with an explicit namespace for that grouping. LPhy-only/PhyloSpec-only
-    stay single tables, unsplit -- except exclude_lphy_only/exclude_phylo_only,
-    which drop any name already covered by its own dedicated table elsewhere
-    in the report (currently: operator_lphy_names() on the LPhy side, since
-    the Math & Logic section's operator table is a complete, standalone
-    comparison for those names; method_call_phylospec_names() on the
-    PhyloSpec side, since the Method calls table's PhyloSpec-equivalent
-    column already covers those) rather than also listing them here with
-    nothing on the other side to show. A MatchConsistencyChecker verifies
-    that exclusion actually took (see its own docstring for why that's worth
-    checking independently rather than trusting the subtraction below)."""
+    side with an explicit namespace for that grouping. LPhy-only and PhyloSpec-only each pass
+    through two rounds of filtering before what's left renders as the generic tables below:
+    exclude_phylo_only/exclude_lphy_only each first drop
+    any name already covered by its own dedicated table elsewhere (method_call_phylospec_names()
+    on the PhyloSpec side, since the Method calls table's PhyloSpec-equivalent column already
+    covers those; operator_lphy_names() on the LPhy side, since the Math & Logic section's table
+    already covers every symbolic operator) rather than also listing it here with nothing on the
+    other side to show. What's left on each side is then split again in two by namespace: LPhy
+    names in `lphy.core.parser.function` (see is_lphy_math_function) and PhyloSpec names in
+    `phylospec.functions.math` (see is_phylospec_math_logic, reused here for unmatched names too)
+    are named math functions with no counterpart on the other side at all, moved into their own
+    tables in the Math & Logic section rather than the generic LPhy-only/PhyloSpec-only generators
+    tables below -- except any name listed in math_function_exceptions (curated_equivalences.json's
+    mathFunctionExceptions: names that share the math namespace but aren't math functions, e.g.
+    LPhy's `map` or PhyloSpec's `linspace`), which stays in the generic table instead. Everything
+    else stays in the generic tables. A MatchConsistencyChecker verifies
+    the matched/only exclusions actually took (see its own
+    docstring for why that's worth checking independently rather than trusting the subtraction
+    below) -- the further LPhy-only/math-function split isn't matched/only overlap, so it isn't
+    part of that check."""
     lphy_grouped = group_by_name(lphy_gens)
     phylo_grouped = group_by_name(phylo_gens)
     groups, lphy_only_names, phylo_only_names = build_match_groups(
@@ -683,6 +752,33 @@ def build_generators_tables(
     )
     lphy_only_names = [n for n in lphy_only_names if n not in exclude_lphy_only]
     phylo_only_names = [n for n in phylo_only_names if n not in exclude_phylo_only]
+    math_function_exceptions = math_function_exceptions or {}
+    lphy_math_exceptions = set(math_function_exceptions.get("lphy", []))
+    phylo_math_exceptions = set(math_function_exceptions.get("phylospec", []))
+
+    lphy_math_candidates = {n for n in lphy_only_names if is_lphy_math_function(lphy_grouped[n])}
+    for n in lphy_math_exceptions:
+        if n not in lphy_math_candidates:
+            raise ValueError(
+                f"mathFunctionExceptions: LPhy name '{n}' is not currently an LPhy-only "
+                f"lphy.core.parser.function generator (renamed, removed, matched, or no longer "
+                f"in that namespace?)"
+            )
+    lphy_math_only_names = [n for n in lphy_only_names if n in lphy_math_candidates and n not in lphy_math_exceptions]
+    lphy_only_names = [n for n in lphy_only_names if n not in lphy_math_only_names]
+
+    # is_phylospec_math_logic is reused here even though it was written for matched groups (see
+    # its own docstring) -- the namespace check itself doesn't care whether the name was matched.
+    phylo_math_candidates = {n for n in phylo_only_names if is_phylospec_math_logic(phylo_grouped[n])}
+    for n in phylo_math_exceptions:
+        if n not in phylo_math_candidates:
+            raise ValueError(
+                f"mathFunctionExceptions: PhyloSpec name '{n}' is not currently a PhyloSpec-only "
+                f"phylospec.functions.math generator (renamed, removed, matched, or no longer in "
+                f"that namespace?)"
+            )
+    phylo_math_only_names = [n for n in phylo_only_names if n in phylo_math_candidates and n not in phylo_math_exceptions]
+    phylo_only_names = [n for n in phylo_only_names if n not in phylo_math_only_names]
 
     has_notes = any(g["note"] for g in groups)
     headers = ["LPhy", "PhyloSpec", "Notes"] if has_notes else ["LPhy", "PhyloSpec"]
@@ -713,7 +809,18 @@ def build_generators_tables(
             function_groups.append(g)
     both_distributions_md = render_group_table(distribution_groups)
     both_functions_md = render_group_table(function_groups)
-    both_math_logic_md = render_group_table(math_logic_groups)
+    # Not rendered here as its own table (unlike distributions/functions above) -- these rows
+    # are merged into the Math & Logic section's single combined table alongside the operators
+    # list, via render_math_logic_table, so only the raw [lphy_cell, phylospec_cell, note] rows
+    # are returned.
+    math_logic_rows = [
+        [
+            "<br><br>".join(f"{strong(n)}<br>{fmt_overloads(lphy_grouped[n])}" for n in g["lphy"]),
+            "<br><br>".join(f"{strong(n)}<br>{fmt_overloads(phylo_grouped[n])}" for n in g["phylospec"]),
+            esc(g["note"]) if g["note"] else "",
+        ]
+        for g in math_logic_groups
+    ]
 
     lphy_only_rows = ["| Generator | LPhy signature(s) &rarr; return type | Description |", "|---|---|---|"]
     for name in lphy_only_names:
@@ -722,10 +829,28 @@ def build_generators_tables(
             f"| {md_table_cell(strong(name))} | {fmt_overloads(lphy_grouped[name])} | {description} |"
         )
 
+    # Same shape as lphy_only_rows above -- rendered as its own table, but placed in the Math &
+    # Logic section (see main()) rather than here, alongside that section's other tables.
+    lphy_math_only_rows = ["| Generator | LPhy signature(s) &rarr; return type | Description |", "|---|---|---|"]
+    for name in lphy_math_only_names:
+        description = fmt_group_description(lphy_grouped[name])
+        lphy_math_only_rows.append(
+            f"| {md_table_cell(strong(name))} | {fmt_overloads(lphy_grouped[name])} | {description} |"
+        )
+
     phylo_only_rows = ["| Generator | PhyloSpec signature(s) &rarr; return type | Description |", "|---|---|---|"]
     for name in phylo_only_names:
         description = append_note(fmt_group_description(phylo_grouped[name]), generator_notes["phylospec"].get(name))
         phylo_only_rows.append(
+            f"| {md_table_cell(strong(name))} | {fmt_overloads(phylo_grouped[name])} | {description} |"
+        )
+
+    # Same shape as phylo_only_rows above -- rendered as its own table, but placed in the Math &
+    # Logic section (see main()) rather than here, alongside that section's other tables.
+    phylo_math_only_rows = ["| Generator | PhyloSpec signature(s) &rarr; return type | Description |", "|---|---|---|"]
+    for name in phylo_math_only_names:
+        description = fmt_group_description(phylo_grouped[name])
+        phylo_math_only_rows.append(
             f"| {md_table_cell(strong(name))} | {fmt_overloads(phylo_grouped[name])} | {description} |"
         )
 
@@ -740,10 +865,12 @@ def build_generators_tables(
     checker.check(lphy_only_names, phylo_only_names)
 
     return (
-        both_distributions_md, both_functions_md, both_math_logic_md,
+        both_distributions_md, both_functions_md, math_logic_rows,
         "\n".join(lphy_only_rows), "\n".join(phylo_only_rows),
+        "\n".join(lphy_math_only_rows), "\n".join(phylo_math_only_rows),
         lphy_only_names, phylo_only_names,
         len(distribution_groups), len(function_groups), len(math_logic_groups),
+        len(lphy_math_only_names), len(phylo_math_only_names),
     )
 
 
@@ -764,6 +891,7 @@ def main():
     generator_notes = index_side_notes(curated.get("generatorNotes", []))
     operators = curated.get("operators", [])
     method_call_equivalent_entries = curated.get("methodCallEquivalents", [])
+    math_function_exceptions = curated.get("mathFunctionExceptions", {})
 
     phylo_types = phylospec.get("types", [])
     lphy_types = lphy.get("types", [])
@@ -782,11 +910,14 @@ def main():
     (types_both_md, types_lphy_md, types_phylo_md,
      types_lphy_only, types_phylo_only, types_both_count) = build_types_tables(
         lphy_types, phylo_types, curated_types, type_notes)
-    (gens_both_distributions_md, gens_both_functions_md, gens_both_math_logic_md, gens_lphy_md, gens_phylo_md,
-     gens_lphy_only, gens_phylo_only, gens_both_dist_count, gens_both_func_count, gens_both_math_logic_count
+    (gens_both_distributions_md, gens_both_functions_md, gens_math_logic_rows, gens_lphy_md, gens_phylo_md,
+     gens_lphy_math_only_md, gens_phylo_math_only_md,
+     gens_lphy_only, gens_phylo_only, gens_both_dist_count, gens_both_func_count, gens_both_math_logic_count,
+     gens_lphy_math_only_count, gens_phylo_math_only_count,
      ) = build_generators_tables(
         lphy_gens, phylo_gens, curated_generators, generator_notes,
         operator_lphy_names(operators), method_call_phylospec_names(method_call_equivalent_entries),
+        math_function_exceptions,
     )
     gens_both_count = gens_both_dist_count + gens_both_func_count + gens_both_math_logic_count
 
@@ -797,7 +928,20 @@ def main():
     validate_side_notes(type_notes, types_lphy_only, types_phylo_only, "types")
     validate_side_notes(generator_notes, gens_lphy_only, gens_phylo_only, "generators")
     validate_operators(operators, lphy_gen_names)
-    operators_md = render_operators_table(operators)
+    math_logic_md = render_math_logic_table(operators, gens_math_logic_rows)
+
+    # Summary row for the combined Math & Logic section: its four tables (the hand-written
+    # operators list; the math_logic_rows generator groups, already counted inside the Generators
+    # row above; and the LPhy-only/PhyloSpec-only named math functions, moved out of the
+    # Generators row's only counts the same way operator symbols already are) are folded into one
+    # In both / LPhy only / PhyloSpec only breakdown, matching how the section itself reads end
+    # to end.
+    op_lphy_total, op_phylo_total, op_both, op_lphy_only, op_phylo_only = operator_stats(operators)
+    math_logic_lphy_total = op_lphy_total + gens_both_math_logic_count + gens_lphy_math_only_count
+    math_logic_phylo_total = op_phylo_total + gens_both_math_logic_count + gens_phylo_math_only_count
+    math_logic_both = op_both + gens_both_math_logic_count
+    math_logic_lphy_only = op_lphy_only + gens_lphy_math_only_count
+    math_logic_phylo_only = op_phylo_only + gens_phylo_math_only_count
 
     lines = []
     lines.append("# LPhy vs PhyloSpec Model Coverage Gap")
@@ -822,7 +966,7 @@ def main():
         "arguments are shown plain (with `= default` when a default value is defined)."
     )
     lines.append("")
-    lines.append("## Summary")
+    lines.append("## 1. Summary")
     lines.append("")
     lines.append("| | LPhy | PhyloSpec | In both | LPhy only | PhyloSpec only |")
     lines.append("|---|---|---|---|---|---|")
@@ -831,24 +975,44 @@ def main():
         f"{types_both_count} | {len(types_lphy_only)} | {len(types_phylo_only)} |"
     )
     lines.append(
-        f"| **Generators** (distinct names; overloads collapsed) | {len(lphy_gen_names)} | "
+        f"| **Generators** (no overloads) | {len(lphy_gen_names)} | "
         f"{len(phylo_gen_names)} | {gens_both_count} | {len(gens_lphy_only)} | {len(gens_phylo_only)} |"
     )
     lines.append(
         f"| **Generators** (including overloads) | {len(lphy_gens)} | {len(phylo_gens)} | | | |"
     )
+    method_calls_matched = len(method_call_equivalents)
     lines.append(
-        f"| **Method calls** (distinct call shapes) | {len(method_calls)} | *(n/a)* | *(n/a)* | *(n/a)* | *(n/a)* |"
+        f"| **Method calls** | {len(method_calls)} | *(n/a)* | "
+        f"{method_calls_matched} | {len(method_calls) - method_calls_matched} | *(n/a)* |"
+    )
+    lines.append(
+        f"| **Math & Logic** | {math_logic_lphy_total} | {math_logic_phylo_total} | "
+        f"{math_logic_both} | {math_logic_lphy_only} | {math_logic_phylo_only} |"
     )
     lines.append("")
     lines.append(
-        "*(n/a): PhyloSpec has no dot-call method syntax at all, so LPhy's method calls -- unlike "
-        "its types and constructor-based generators -- have nothing on the PhyloSpec side to be "
-        "matched against or missing from; see the Method calls subsection under Generators below.*"
+        "*Matching happens by generator name, not per overload, so the \"including overloads\" "
+        "row's In both / LPhy only / PhyloSpec only columns are left blank.*"
+    )
+    lines.append("")
+    lines.append(
+        "*(n/a): PhyloSpec has no dot-call method syntax at all, so there's no PhyloSpec-side "
+        "count of method calls, and consequently no \"PhyloSpec only\" gap for them either -- "
+        "\"In both\" and \"LPhy only\" instead come from the hand-curated PhyloSpec-equivalent "
+        "column in the Method calls subsection under Generators below (see "
+        "`methodCallEquivalents` in `curated_equivalences.json`).*"
+    )
+    lines.append("")
+    lines.append(
+        "*Math & Logic folds together the four tables in its own section below: the hand-written "
+        "operators list; the named math-function matches, already counted inside the Generators "
+        "rows above; and the LPhy-only / PhyloSpec-only named math functions, already excluded "
+        "from the Generators rows' own only counts.*"
     )
     lines.append("")
 
-    lines.append("## Types")
+    lines.append("## 2. Types")
     lines.append("")
     lines.append(f"### In both ({types_both_count})")
     lines.append("")
@@ -863,7 +1027,7 @@ def main():
     lines.append(types_phylo_md)
     lines.append("")
 
-    lines.append("## Generators")
+    lines.append("## 3. Generators")
     lines.append("")
     lines.append(
         "*Note: some `Number` arguments in LPhy accept either a fixed literal or a "
@@ -906,7 +1070,27 @@ def main():
     lines.append("")
     lines.append(render_method_calls_table(method_calls, phylo_grouped, method_call_equivalents))
     lines.append("")
-    lines.append(f"#### Math & Logic ({gens_both_math_logic_count})")
+    lines.append(f"### LPhy only ({len(gens_lphy_only)})")
+    lines.append("")
+    lines.append(
+        "LPhy's 17 symbolic operators (`+ - * / % ** == != < <= > >= && || ! & |`) and "
+        f"{gens_lphy_math_only_count} named math functions with no PhyloSpec counterpart at all "
+        "are excluded from this table -- they're already covered, matched or not, by the tables "
+        "in the Math & Logic section below."
+    )
+    lines.append("")
+    lines.append(gens_lphy_md)
+    lines.append("")
+    lines.append(f"### PhyloSpec only ({len(gens_phylo_only)})")
+    lines.append("")
+    lines.append(
+        f"PhyloSpec math functions with no LPhy counterpart at all ({gens_phylo_math_only_count}) "
+        "are excluded from this table for the same reason -- see the Math & Logic section below."
+    )
+    lines.append("")
+    lines.append(gens_phylo_md)
+    lines.append("")
+    lines.append("## 4. Math & Logic")
     lines.append("")
     lines.append("LPhy and PhyloSpec handle operators (`+`, `<`, `&&`, ...) very differently:")
     lines.append("")
@@ -928,39 +1112,45 @@ def main():
         "Generators section of this report, no matter how the names line up."
     )
     lines.append("")
-    lines.append(
-        "The table below maps every operator PhyloSpec supports to its LPhy equivalent. The "
-        "last six rows are LPhy operators (`% ** & && | ||`) that PhyloSpec doesn't support at "
-        "all -- not just unmatched, but not valid syntax in a PhyloSpec model. Notably, that "
-        "means PhyloSpec currently has no way to combine two `Boolean` conditions into one (no "
-        "`&&` or `||`)."
-    )
-    lines.append("")
-    lines.append(operators_md)
+    lines.append("### Operators & math functions")
     lines.append("")
     lines.append(
-        f"Since operators are never generators in PhyloSpec, the {gens_both_math_logic_count} "
-        f"matched rows below aren't operators at all -- they're LPhy's *named* math functions "
-        f"(`exp`, `log`, `sqrt`, `sum`, `range`, `repeat`) that happen to also exist as callable "
-        f"generators in PhyloSpec."
+        "The table below combines two comparisons in one, distinguished by the Category column: "
+        "every operator PhyloSpec supports mapped to its LPhy equivalent, plus (tagged \"math "
+        "function\") LPhy's *named* math functions (`exp`, `log`, `sqrt`, `sum`, `range`, "
+        "`repeat`) that also exist as callable generators in PhyloSpec -- those are already "
+        f"counted among the {gens_both_count} \"In both\" generators above, not a separate set. "
+        "Six operator rows (`% ** & && | ||`) have no PhyloSpec cell at all -- not just "
+        "unmatched, but not valid syntax in a PhyloSpec model. Notably, that means PhyloSpec "
+        "currently has no way to combine two `Boolean` conditions into one (no `&&` or `||`)."
     )
     lines.append("")
-    lines.append(gens_both_math_logic_md)
+    lines.append(math_logic_md)
     lines.append("")
-    lines.append(f"### LPhy only ({len(gens_lphy_only)})")
-    lines.append("")
-    lines.append(
-        "LPhy's 17 symbolic operators (`+ - * / % ** == != < <= > >= && || ! & |`) are excluded "
-        "from this table -- they're already covered, matched or not, by the operator table in the "
-        "Math & Logic section above."
-    )
-    lines.append("")
-    lines.append(gens_lphy_md)
-    lines.append("")
-    lines.append(f"### PhyloSpec only ({len(gens_phylo_only)})")
-    lines.append("")
-    lines.append(gens_phylo_md)
-    lines.append("")
+    # Each subsection is dropped entirely when empty (rather than shown with "(0)" and no rows) --
+    # mathFunctionExceptions (see curated_equivalences.json) can empty either side out completely,
+    # e.g. removing PhyloSpec's sole entry (linspace) leaves nothing for that side to show at all.
+    if gens_lphy_math_only_count:
+        lines.append(f"### LPhy only ({gens_lphy_math_only_count})")
+        lines.append("")
+        lines.append(
+            "LPhy's own named math functions (`abs`, `sin`, `logit`, `probit`, `step`, ...) that "
+            "have no PhyloSpec counterpart at all -- split out of the generic Generators \"LPhy "
+            "only\" table above since they're all part of this same Math & Logic comparison."
+        )
+        lines.append("")
+        lines.append(gens_lphy_math_only_md)
+        lines.append("")
+    if gens_phylo_math_only_count:
+        lines.append(f"### PhyloSpec only ({gens_phylo_math_only_count})")
+        lines.append("")
+        lines.append(
+            "PhyloSpec's own named math functions that have no LPhy counterpart at all -- split "
+            "out of the generic Generators \"PhyloSpec only\" table above for the same reason."
+        )
+        lines.append("")
+        lines.append(gens_phylo_math_only_md)
+        lines.append("")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines), encoding="utf-8")

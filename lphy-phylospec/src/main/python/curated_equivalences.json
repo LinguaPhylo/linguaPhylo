@@ -289,6 +289,12 @@
     }
   ],
 
+  "_mathFunctionExceptions_comment": "PhyloSpec-only names that live in the phylospec.functions.math namespace alongside genuine math functions but aren't math functions themselves, with no other signal available (in this JSON, which is all we control on the PhyloSpec side) to tell them apart automatically. LPhy's own lphy.core.parser.function side needs no such list: its export already carries a real signal for this -- ComponentLibraryExporter.java's buildExpressionOperatorGenerators() stamps every genuine operator/math function with an `implementedVia` field that `map` (built via the ordinary generator path, not that method) never gets -- so is_lphy_math_function checks that instead of a curated name list. 'linspace' has no PhyloSpec-side equivalent of that field to check: it's a vector-generation function -- structurally identical to 'range'/'repeat', which stay classified as math because they're matched, not PhyloSpec-only -- so it can't be told apart by shape alone; this is purely an editorial call, kept here rather than in the LPhy exporter since it's about a PhyloSpec generator, not one this project's Java controls. Each name must currently be classified as a PhyloSpec-only math-namespace generator, or the script raises a stale-mapping error.",
+  "mathFunctionExceptions": {
+    "lphy": [],
+    "phylospec": ["linspace"]
+  },
+
   "_methodCallEquivalents_comment": "Hand-curated links from an LPhy method call (in lphy-method-calls.json) to the PhyloSpec generator(s) that cover the same idea, for the small number of cases where one genuinely does. PhyloSpec has no dot-call syntax, so every one of these is really '<lphyMethod> as a method' vs '<phylospec name> as a plain function taking the object as an argument', never a true syntax match -- that's why this is its own list rather than folded into the 'generators' equivalences above. 'lphyMethod' identifies the row in lphy-method-calls.json by name; add 'lphyReturnType' only if that name is ambiguous there (e.g. 'nodeCount' exists on both TimeTree and Taxa with different return types) -- compare_component_libraries.py raises a loud error if a name needs it and doesn't have it, or if either side's name no longer exists.",
   "methodCallEquivalents": [
     {
