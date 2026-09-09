@@ -51,6 +51,7 @@ DEFAULT_LPHY = Path(__file__).resolve().parents[1] / "resources" / "phylospec-lp
 DEFAULT_OUT = Path(__file__).resolve().parent / "model_coverage_gap.md"
 DEFAULT_CURATED = Path(__file__).resolve().parent / "curated_equivalences.json"
 DEFAULT_METHOD_CALLS = Path(__file__).resolve().parents[1] / "resources" / "lphy-method-calls.json"
+DEFAULT_INTRO = Path(__file__).resolve().parent / "model_coverage_gap_intro.md"
 
 
 def load(path: Path) -> dict:
@@ -880,6 +881,7 @@ def main():
     out_path = Path(sys.argv[3]) if len(sys.argv) > 3 else DEFAULT_OUT
     curated_path = Path(sys.argv[4]) if len(sys.argv) > 4 else DEFAULT_CURATED
     method_calls_path = Path(sys.argv[5]) if len(sys.argv) > 5 else DEFAULT_METHOD_CALLS
+    intro_path = Path(sys.argv[6]) if len(sys.argv) > 6 else DEFAULT_INTRO
 
     phylospec = load(phylospec_path)["componentLibrary"]
     lphy = load(lphy_path)["componentLibrary"]
@@ -949,21 +951,17 @@ def main():
     lines.append(f"- PhyloSpec core library version: `{phylospec.get('version')}`")
     lines.append(f"- LPhy exported library version: `{lphy.get('version')}`")
     lines.append("")
+    lines.append(intro_path.read_text(encoding="utf-8").rstrip("\n"))
+    lines.append("")
     lines.append(
-        "This report matches types/generators between LPhy and PhyloSpec first by "
-        "**exact name**, then by a small hand-curated equivalence list for concepts "
-        "that carry a different name on each side (see `curated_equivalences.json` "
-        "next to the script) -- string similarity alone can't be trusted for this "
-        "(it both misses real renames like `readFasta` / `fromFasta` and flags "
-        "coincidental non-matches like `sort` / `sqrt`), so this layer is maintained "
-        "by hand and reviewed for correctness, not generated. In a \"both\" row, the "
-        "LPhy and PhyloSpec cells are always shown side by side even when the name is "
-        "identical; a one-to-many equivalence (e.g. LPhy's single `SequenceType` "
-        "against PhyloSpec's `Character`/`Nucleotide`/`AminoAcid`) stacks every item "
-        "in that side's cell rather than merging table cells. Where a name has "
-        "multiple overloads (different argument lists), all overloads are listed in "
-        "the same cell, numbered. Required arguments are shown in **bold**; optional "
-        "arguments are shown plain (with `= default` when a default value is defined)."
+        "This report matches types/generators by **exact name** first, then by a "
+        "small hand-curated equivalence list (`curated_equivalences.json`) for "
+        "renamed concepts -- name similarity alone would miss real renames "
+        "(`readFasta`/`fromFasta`) and flag false positives (`sort`/`sqrt`). In a "
+        "\"both\" row, LPhy and PhyloSpec are shown side by side, with one-to-many "
+        "equivalences (e.g. `SequenceType` vs `Character`/`Nucleotide`/`AminoAcid`) "
+        "stacked in one cell and overloads numbered within a cell. Required "
+        "arguments are **bold**; optional ones are plain, with `= default` when set."
     )
     lines.append("")
     lines.append("## 1. Summary")
