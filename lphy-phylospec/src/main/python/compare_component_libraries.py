@@ -15,15 +15,23 @@ Matching happens in two layers:
      characters to score highly, but a human recognizes them instantly), so
      it can't be inferred reliably from the JSON alone.
 
-LPhy has a third generator kind alongside constructor-based generators and symbol-bound
-operators: a "method call", an instance method invoked via dot-call syntax on a value (e.g.
-`tree.rootAge()`), exposed wherever a public method carries `@MethodInfo`
-(`lphy.core.model.annotation.MethodInfo`; see `MethodCall` in `lphy-core` for the runtime
-dispatcher). PhyloSpec has no equivalent construct at all -- no dot-call syntax exists in its
-grammar -- so these are exported by `ComponentLibraryExporter`'s `buildMethodCalls()` into their
-own file (`lphy-method-calls.json`, a plain classpath scan, not part of the PhyloSpec-schema-shaped
-component library) and rendered here as a standalone "Method calls" table, not matched against
-anything on the PhyloSpec side.
+LPhy and PhyloSpec generators split into the same two fundamental kinds -- Distribution
+(stochastic, sampled with `~`) and Function (deterministic, no sampling) -- and that split is
+readable straight off `generatedType` on both sides: a distribution's is wrapped as
+`Distribution<T>`, a function's is the plain `T` (verified with zero exceptions across all 92
+entries in phylospec-core-component-library.json; see is_lphy_distribution /
+is_phylospec_distribution below). LPhy additionally exposes deterministic functions through one
+invocation mechanism PhyloSpec's grammar has no equivalent for at all: the "method call", an
+instance method invoked via dot-call syntax on a value (e.g. `tree.rootAge()`), exposed wherever a
+public method carries `@MethodInfo` (`lphy.core.model.annotation.MethodInfo`). This is not a third
+semantic kind alongside Distribution/Function -- `MethodCall` (`lphy-core`,
+`lphy.core.parser.function.MethodCall`) itself `extends DeterministicFunction`; it is LPhy's own
+special-case *DeterministicFunction* built dynamically over an arbitrary annotated method via
+reflection, rather than a dedicated, constructor-based generator class. Because PhyloSpec has no
+dot-call syntax at all, these are exported by `ComponentLibraryExporter`'s `buildMethodCalls()`
+into their own file (`lphy-method-calls.json`, a plain classpath scan, not part of the
+PhyloSpec-schema-shaped component library) and rendered here as a standalone "Method calls" table,
+not matched against anything on the PhyloSpec side.
 
 Inputs:
   - PhyloSpec core:  <phylospec repo>/core/java/src/main/resources/phylospec-core-component-library.json
@@ -651,12 +659,24 @@ def build_types_tables(lphy_types: list, phylospec_types: list, curated_types: l
 
 
 def is_lphy_distribution(entries: list) -> bool:
-    """LPhy is the identifier for the Distribution/DeterministicFunction split:
-    ComponentLibraryExporter wraps a GenerativeDistribution's generatedType as
-    `Distribution<T>` and leaves a DeterministicFunction's as plain `T` (see
-    buildGenerators's isDistribution flag) -- that wrapper is reliably present
-    regardless of what PhyloSpec calls the matched concept, so check it rather
-    than inventing a second classification off the PhyloSpec side."""
+    """True if these LPhy-side generator entries are a GenerativeDistribution rather than a
+    DeterministicFunction: ComponentLibraryExporter wraps a GenerativeDistribution's
+    generatedType as `Distribution<T>` and leaves a DeterministicFunction's as plain `T` (see
+    buildGenerators's isDistribution flag). Used to classify matched ("both") groups by the LPhy
+    side specifically, since it's checked here regardless of what PhyloSpec calls the matched
+    concept -- see is_phylospec_distribution for the equivalent check on PhyloSpec-only entries,
+    which have no LPhy side to classify by."""
+    return any(e.get("generatedType", "").startswith("Distribution<") for e in entries)
+
+
+def is_phylospec_distribution(entries: list) -> bool:
+    """PhyloSpec-side counterpart of is_lphy_distribution, used where there is no LPhy side to
+    classify by (PhyloSpec-only generators). PhyloSpec's own core-component-library.json uses the
+    identical `Distribution<T>` (vs plain `T`) generatedType convention as LPhy's exporter --
+    verified with zero exceptions across all 92 generators currently in
+    phylospec-core-component-library.json, where every `phylospec.distributions*`-namespaced entry
+    has a `Distribution<...>` generatedType and every other namespace doesn't -- so the same
+    one-line check applies to either side."""
     return any(e.get("generatedType", "").startswith("Distribution<") for e in entries)
 
 
@@ -711,6 +731,43 @@ def is_lphy_math_function(entries: list) -> bool:
     )
 
 
+def check_distribution_kind_agreement(groups: list, lphy_grouped: dict, phylo_grouped: dict):
+    """Fails loudly if a matched ("both") group mixes Distribution and Function generators --
+    either within one side (a one-to-many curated equivalence, e.g. `arange`/`rangeInt` <->
+    `range`, whose names disagree with each other about is_*_distribution) or between the two
+    sides (LPhy says Distribution, PhyloSpec says Function, or vice versa). Both would otherwise
+    surface silently as a wrong row in the wrong table (or a KeyError/confusing count) rather than
+    a clear error naming the offending group -- the same "check independently, don't just trust
+    the split" spirit as MatchConsistencyChecker. Currently passes clean for all 55 matched
+    generator groups (verified against the current phylospec-core-component-library.json /
+    phylospec-lphy-component-library.json pair)."""
+    for g in groups:
+        lphy_flags = {n: is_lphy_distribution(lphy_grouped[n]) for n in g["lphy"]}
+        phylo_flags = {n: is_phylospec_distribution(phylo_grouped[n]) for n in g["phylospec"]}
+        all_flags = set(lphy_flags.values()) | set(phylo_flags.values())
+        if len(all_flags) > 1:
+            raise ValueError(
+                f"Generators: matched group {g['lphy']} <-> {g['phylospec']} disagrees on "
+                f"Distribution vs Function -- LPhy: {lphy_flags}, PhyloSpec: {phylo_flags}"
+            )
+
+
+def render_gap_rows(names: list, grouped: dict, side_label: str, notes: dict = None) -> str:
+    """Renders one "only" (unmatched) generators table -- LPhy-only or PhyloSpec-only, and within
+    either, the Distributions/Functions/named-math-function subsets -- as a plain Markdown table.
+    `side_label` names the column ("LPhy" or "PhyloSpec"); `notes` (generator_notes["lphy"] or
+    ["phylospec"]) is omitted for the Math & Logic subsections, which carry no curated notes of
+    their own. Factored out of what were four near-identical inline blocks (LPhy-only,
+    LPhy-only-math, PhyloSpec-only, PhyloSpec-only-math) so the Distribution/Function split below
+    doesn't have to repeat the same shape a further four times."""
+    notes = notes or {}
+    rows = [f"| Generator | {side_label} signature(s) &rarr; return type | Description |", "|---|---|---|"]
+    for name in names:
+        description = append_note(fmt_group_description(grouped[name]), notes.get(name))
+        rows.append(f"| {md_table_cell(strong(name))} | {fmt_overloads(grouped[name])} | {description} |")
+    return "\n".join(rows)
+
+
 def build_generators_tables(
     lphy_gens: list, phylo_gens: list, curated_generators: list, generator_notes: dict,
     exclude_lphy_only: set = frozenset(), exclude_phylo_only: set = frozenset(),
@@ -726,31 +783,43 @@ def build_generators_tables(
     then the non-distribution remainder is further split into ordinary
     DeterministicFunction generators vs "Math & Logic" ones, classified by
     the PhyloSpec side (see is_phylospec_math_logic) since PhyloSpec is the
-    side with an explicit namespace for that grouping. LPhy-only and PhyloSpec-only each pass
-    through two rounds of filtering before what's left renders as the generic tables below:
-    exclude_phylo_only/exclude_lphy_only each first drop
-    any name already covered by its own dedicated table elsewhere (method_call_phylospec_names()
-    on the PhyloSpec side, since the Method calls table's PhyloSpec-equivalent column already
-    covers those; operator_lphy_names() on the LPhy side, since the Math & Logic section's table
-    already covers every symbolic operator) rather than also listing it here with nothing on the
-    other side to show. What's left on each side is then split again in two by namespace: LPhy
-    names in `lphy.core.parser.function` (see is_lphy_math_function) and PhyloSpec names in
-    `phylospec.functions.math` (see is_phylospec_math_logic, reused here for unmatched names too)
-    are named math functions with no counterpart on the other side at all, moved into their own
-    tables in the Math & Logic section rather than the generic LPhy-only/PhyloSpec-only generators
-    tables below -- except any name listed in math_function_exceptions (curated_equivalences.json's
-    mathFunctionExceptions: names that share the math namespace but aren't math functions, e.g.
-    LPhy's `map` or PhyloSpec's `linspace`), which stays in the generic table instead. Everything
-    else stays in the generic tables. A MatchConsistencyChecker verifies
+    side with an explicit namespace for that grouping.
+    check_distribution_kind_agreement cross-checks that split against is_phylospec_distribution
+    (PhyloSpec's own generatedType carries the identical Distribution<T>-vs-plain-T signal -- see
+    that function's docstring), so a curated equivalence that accidentally paired a distribution
+    with a same-named function fails loudly instead of landing in the wrong table.
+
+    LPhy-only and PhyloSpec-only each pass through two rounds of filtering before what's left
+    renders as the Distributions/Functions tables below: exclude_phylo_only/exclude_lphy_only each
+    first drop any name already covered by its own dedicated table elsewhere
+    (method_call_phylospec_names() on the PhyloSpec side, since the Method calls table's
+    PhyloSpec-equivalent column already covers those; operator_lphy_names() on the LPhy side,
+    since the Math & Logic section's table already covers every symbolic operator) rather than
+    also listing it here with nothing on the other side to show. What's left on each side is then
+    split again in two by namespace: LPhy names in `lphy.core.parser.function` (see
+    is_lphy_math_function) and PhyloSpec names in `phylospec.functions.math` (see
+    is_phylospec_math_logic, reused here for unmatched names too) are named math functions with no
+    counterpart on the other side at all, moved into their own tables in the Math & Logic section
+    rather than the Distributions/Functions LPhy-only/PhyloSpec-only tables below -- except any
+    name listed in math_function_exceptions (curated_equivalences.json's mathFunctionExceptions:
+    names that share the math namespace but aren't math functions, e.g. LPhy's `map` or
+    PhyloSpec's `linspace`), which stays in the generic split instead. Everything else left on
+    each side is then split one more time, by is_lphy_distribution / is_phylospec_distribution
+    respectively, into its own Distributions table and Functions table -- mirroring the "In both"
+    section's own Distributions/Deterministic-functions split, so a reader can tell at a glance
+    which unimplemented PhyloSpec-only names are priors (GenerativeDistribution work) versus plain
+    functions (BasicFunction work), and likewise which LPhy-only names PhyloSpec's spec doesn't
+    yet define as a distribution versus a function. A MatchConsistencyChecker verifies
     the matched/only exclusions actually took (see its own
     docstring for why that's worth checking independently rather than trusting the subtraction
-    below) -- the further LPhy-only/math-function split isn't matched/only overlap, so it isn't
-    part of that check."""
+    below) -- the further LPhy-only/math-function/distribution-vs-function splits aren't
+    matched/only overlap, so they aren't part of that check."""
     lphy_grouped = group_by_name(lphy_gens)
     phylo_grouped = group_by_name(phylo_gens)
     groups, lphy_only_names, phylo_only_names = build_match_groups(
         set(lphy_grouped), set(phylo_grouped), curated_generators, "generators"
     )
+    check_distribution_kind_agreement(groups, lphy_grouped, phylo_grouped)
     lphy_only_names = [n for n in lphy_only_names if n not in exclude_lphy_only]
     phylo_only_names = [n for n in phylo_only_names if n not in exclude_phylo_only]
     math_function_exceptions = math_function_exceptions or {}
@@ -780,6 +849,14 @@ def build_generators_tables(
             )
     phylo_math_only_names = [n for n in phylo_only_names if n in phylo_math_candidates and n not in phylo_math_exceptions]
     phylo_only_names = [n for n in phylo_only_names if n not in phylo_math_only_names]
+
+    # Final split of what's left on each "only" side: Distribution vs Function, mirroring the "In
+    # both" section's own distribution_groups/function_groups split just below. Math-only names
+    # are already carved out above, so nothing here is ever a math function.
+    lphy_only_distribution_names = [n for n in lphy_only_names if is_lphy_distribution(lphy_grouped[n])]
+    lphy_only_function_names = [n for n in lphy_only_names if n not in lphy_only_distribution_names]
+    phylo_only_distribution_names = [n for n in phylo_only_names if is_phylospec_distribution(phylo_grouped[n])]
+    phylo_only_function_names = [n for n in phylo_only_names if n not in phylo_only_distribution_names]
 
     has_notes = any(g["note"] for g in groups)
     headers = ["LPhy", "PhyloSpec", "Notes"] if has_notes else ["LPhy", "PhyloSpec"]
@@ -823,37 +900,26 @@ def build_generators_tables(
         for g in math_logic_groups
     ]
 
-    lphy_only_rows = ["| Generator | LPhy signature(s) &rarr; return type | Description |", "|---|---|---|"]
-    for name in lphy_only_names:
-        description = append_note(fmt_group_description(lphy_grouped[name]), generator_notes["lphy"].get(name))
-        lphy_only_rows.append(
-            f"| {md_table_cell(strong(name))} | {fmt_overloads(lphy_grouped[name])} | {description} |"
-        )
+    lphy_only_distributions_md = render_gap_rows(
+        lphy_only_distribution_names, lphy_grouped, "LPhy", generator_notes["lphy"]
+    )
+    lphy_only_functions_md = render_gap_rows(
+        lphy_only_function_names, lphy_grouped, "LPhy", generator_notes["lphy"]
+    )
+    # Same shape as the two tables above -- rendered as its own table, but placed in the Math &
+    # Logic section (see main()) rather than here, alongside that section's other tables. No
+    # generator_notes: named math functions carry no curated notes of their own.
+    lphy_math_only_md = render_gap_rows(lphy_math_only_names, lphy_grouped, "LPhy")
 
-    # Same shape as lphy_only_rows above -- rendered as its own table, but placed in the Math &
+    phylo_only_distributions_md = render_gap_rows(
+        phylo_only_distribution_names, phylo_grouped, "PhyloSpec", generator_notes["phylospec"]
+    )
+    phylo_only_functions_md = render_gap_rows(
+        phylo_only_function_names, phylo_grouped, "PhyloSpec", generator_notes["phylospec"]
+    )
+    # Same shape as the two tables above -- rendered as its own table, but placed in the Math &
     # Logic section (see main()) rather than here, alongside that section's other tables.
-    lphy_math_only_rows = ["| Generator | LPhy signature(s) &rarr; return type | Description |", "|---|---|---|"]
-    for name in lphy_math_only_names:
-        description = fmt_group_description(lphy_grouped[name])
-        lphy_math_only_rows.append(
-            f"| {md_table_cell(strong(name))} | {fmt_overloads(lphy_grouped[name])} | {description} |"
-        )
-
-    phylo_only_rows = ["| Generator | PhyloSpec signature(s) &rarr; return type | Description |", "|---|---|---|"]
-    for name in phylo_only_names:
-        description = append_note(fmt_group_description(phylo_grouped[name]), generator_notes["phylospec"].get(name))
-        phylo_only_rows.append(
-            f"| {md_table_cell(strong(name))} | {fmt_overloads(phylo_grouped[name])} | {description} |"
-        )
-
-    # Same shape as phylo_only_rows above -- rendered as its own table, but placed in the Math &
-    # Logic section (see main()) rather than here, alongside that section's other tables.
-    phylo_math_only_rows = ["| Generator | PhyloSpec signature(s) &rarr; return type | Description |", "|---|---|---|"]
-    for name in phylo_math_only_names:
-        description = fmt_group_description(phylo_grouped[name])
-        phylo_math_only_rows.append(
-            f"| {md_table_cell(strong(name))} | {fmt_overloads(phylo_grouped[name])} | {description} |"
-        )
+    phylo_math_only_md = render_gap_rows(phylo_math_only_names, phylo_grouped, "PhyloSpec")
 
     checker = MatchConsistencyChecker("Generators")
     for label, group_subset in (
@@ -867,10 +933,13 @@ def build_generators_tables(
 
     return (
         both_distributions_md, both_functions_md, math_logic_rows,
-        "\n".join(lphy_only_rows), "\n".join(phylo_only_rows),
-        "\n".join(lphy_math_only_rows), "\n".join(phylo_math_only_rows),
+        lphy_only_distributions_md, lphy_only_functions_md,
+        phylo_only_distributions_md, phylo_only_functions_md,
+        lphy_math_only_md, phylo_math_only_md,
         lphy_only_names, phylo_only_names,
         len(distribution_groups), len(function_groups), len(math_logic_groups),
+        len(lphy_only_distribution_names), len(lphy_only_function_names),
+        len(phylo_only_distribution_names), len(phylo_only_function_names),
         len(lphy_math_only_names), len(phylo_math_only_names),
     )
 
@@ -912,9 +981,13 @@ def main():
     (types_both_md, types_lphy_md, types_phylo_md,
      types_lphy_only, types_phylo_only, types_both_count) = build_types_tables(
         lphy_types, phylo_types, curated_types, type_notes)
-    (gens_both_distributions_md, gens_both_functions_md, gens_math_logic_rows, gens_lphy_md, gens_phylo_md,
+    (gens_both_distributions_md, gens_both_functions_md, gens_math_logic_rows,
+     gens_lphy_only_distributions_md, gens_lphy_only_functions_md,
+     gens_phylo_only_distributions_md, gens_phylo_only_functions_md,
      gens_lphy_math_only_md, gens_phylo_math_only_md,
      gens_lphy_only, gens_phylo_only, gens_both_dist_count, gens_both_func_count, gens_both_math_logic_count,
+     gens_lphy_only_dist_count, gens_lphy_only_func_count,
+     gens_phylo_only_dist_count, gens_phylo_only_func_count,
      gens_lphy_math_only_count, gens_phylo_math_only_count,
      ) = build_generators_tables(
         lphy_gens, phylo_gens, curated_generators, generator_notes,
@@ -922,6 +995,10 @@ def main():
         math_function_exceptions,
     )
     gens_both_count = gens_both_dist_count + gens_both_func_count + gens_both_math_logic_count
+    gens_dist_lphy_total = gens_both_dist_count + gens_lphy_only_dist_count
+    gens_dist_phylo_total = gens_both_dist_count + gens_phylo_only_dist_count
+    gens_func_lphy_total = gens_both_func_count + gens_lphy_only_func_count
+    gens_func_phylo_total = gens_both_func_count + gens_phylo_only_func_count
 
     MatchConsistencyChecker("Generators / Method calls").matched(
         "Method calls (PhyloSpec equivalent)", "phylospec", method_call_phylospec_names(method_call_equivalent_entries)
@@ -977,6 +1054,14 @@ def main():
         f"{len(phylo_gen_names)} | {gens_both_count} | {len(gens_lphy_only)} | {len(gens_phylo_only)} |"
     )
     lines.append(
+        f"| &nbsp;&nbsp;- Distributions | {gens_dist_lphy_total} | {gens_dist_phylo_total} | "
+        f"{gens_both_dist_count} | {gens_lphy_only_dist_count} | {gens_phylo_only_dist_count} |"
+    )
+    lines.append(
+        f"| &nbsp;&nbsp;- Deterministic functions | {gens_func_lphy_total} | {gens_func_phylo_total} | "
+        f"{gens_both_func_count} | {gens_lphy_only_func_count} | {gens_phylo_only_func_count} |"
+    )
+    lines.append(
         f"| **Generators** (including overloads) | {len(lphy_gens)} | {len(phylo_gens)} | | | |"
     )
     method_calls_matched = len(method_call_equivalents)
@@ -995,11 +1080,24 @@ def main():
     )
     lines.append("")
     lines.append(
+        "*Distributions vs Deterministic functions is read directly off `generatedType` on both "
+        "sides -- a distribution's is wrapped as `Distribution<T>`, a function's is the plain `T` "
+        "(zero exceptions across every generator in both libraries; see `is_lphy_distribution()` / "
+        "`is_phylospec_distribution()`). The two rows exclude Math & Logic generators (counted in "
+        "their own row below), so they sum to the Generators row above only once that row's own "
+        "count is reduced by the Math & Logic overlap.*"
+    )
+    lines.append("")
+    lines.append(
         "*(n/a): PhyloSpec has no dot-call method syntax at all, so there's no PhyloSpec-side "
         "count of method calls, and consequently no \"PhyloSpec only\" gap for them either -- "
         "\"In both\" and \"LPhy only\" instead come from the hand-curated PhyloSpec-equivalent "
         "column in the Method calls subsection under Generators below (see "
-        "`methodCallEquivalents` in `curated_equivalences.json`).*"
+        "`methodCallEquivalents` in `curated_equivalences.json`). A method call is not a third "
+        "kind alongside Distributions/Deterministic functions above -- it's LPhy's own special, "
+        "dynamically-dispatched `DeterministicFunction` (see Section 3's Method calls "
+        "subsection), so it is never counted in the Distributions/Deterministic functions rows "
+        "either.*"
     )
     lines.append("")
     lines.append(
@@ -1037,10 +1135,12 @@ def main():
     lines.append(f"### In both ({gens_both_count})")
     lines.append("")
     lines.append(
-        "Split by generator kind, as identified on the LPhy side (whether the "
-        "implementing class is a `GenerativeDistribution` or a `DeterministicFunction`"
-        " -- see `is_lphy_distribution()`), since that's an unambiguous, already-"
-        "exported signal regardless of what PhyloSpec calls the matched concept."
+        "Split by generator kind -- `GenerativeDistribution`/`Distribution<T>` (sampled with `~`) "
+        "vs `DeterministicFunction`/plain `T` (no sampling) -- as identified on the LPhy side (see "
+        "`is_lphy_distribution()`) and cross-checked against the identical `generatedType` signal "
+        "on the PhyloSpec side (see `is_phylospec_distribution()`); a group where the two sides "
+        "disagree fails the build loudly (see `check_distribution_kind_agreement()`) rather than "
+        "landing in the wrong table."
     )
     lines.append("")
     lines.append(f"#### Distributions ({gens_both_dist_count})")
@@ -1054,16 +1154,22 @@ def main():
     lines.append(f"#### Method calls ({len(method_calls)})")
     lines.append("")
     lines.append(
-        "LPhy's third generator kind is the **method call** -- an instance method invoked with dot "
-        "syntax on a value, like `tree.rootAge()` or `alignment.taxa()`, rather than as a "
-        "stand-alone function. PhyloSpec has no dot-call syntax at all, so these aren't matched the "
-        "way types and generators are above; instead, the \"PhyloSpec equivalent\" column below shows "
-        "one directly wherever a close match exists -- usually the same idea as a plain function that "
-        "takes the object as its first argument, e.g. `age(taxon)` instead of `taxon.age()`. A row "
-        "can list more than one implementing class when several classes provide the exact same call: "
-        "sometimes because one really overrides another's, sometimes just because two unrelated types "
-        "happen to offer the same-named, same-shaped method (e.g. both `TimeTree` and `Alignment` have "
-        "a `.taxa()`, with no shared ancestor behind it)."
+        "The **method call** -- an instance method invoked with dot syntax on a value, like "
+        "`tree.rootAge()` or `alignment.taxa()`, rather than as a stand-alone function -- is not a "
+        "third kind alongside Distributions/Deterministic functions above: `MethodCall` "
+        "(`lphy.core.parser.function.MethodCall`) itself `extends DeterministicFunction`. It's "
+        "LPhy's own special-case deterministic function, built dynamically over an arbitrary "
+        "`@MethodInfo`-annotated method via reflection rather than declared as its own "
+        "constructor-based generator class -- which is also exactly why it's listed here as its "
+        "own subsection rather than folded into Deterministic functions above. PhyloSpec has no "
+        "dot-call syntax at all, so these aren't matched the way types and generators are above; "
+        "instead, the \"PhyloSpec equivalent\" column below shows one directly wherever a close "
+        "match exists -- usually the same idea as a plain function that takes the object as its "
+        "first argument, e.g. `age(taxon)` instead of `taxon.age()`. A row can list more than one "
+        "implementing class when several classes provide the exact same call: sometimes because "
+        "one really overrides another's, sometimes just because two unrelated types happen to "
+        "offer the same-named, same-shaped method (e.g. both `TimeTree` and `Alignment` have a "
+        "`.taxa()`, with no shared ancestor behind it)."
     )
     lines.append("")
     lines.append(render_method_calls_table(method_calls, phylo_grouped, method_call_equivalents))
@@ -1073,20 +1179,39 @@ def main():
     lines.append(
         "LPhy's 17 symbolic operators (`+ - * / % ** == != < <= > >= && || ! & |`) and "
         f"{gens_lphy_math_only_count} named math functions with no PhyloSpec counterpart at all "
-        "are excluded from this table -- they're already covered, matched or not, by the tables "
-        "in the Math & Logic section below."
+        "are excluded from these tables -- they're already covered, matched or not, by the tables "
+        "in the Math & Logic section below. What's left is split into Distributions vs "
+        "Deterministic functions the same way the In both section above is, by "
+        "`is_lphy_distribution()`."
     )
     lines.append("")
-    lines.append(gens_lphy_md)
+    lines.append(f"#### Distributions ({gens_lphy_only_dist_count})")
+    lines.append("")
+    lines.append(gens_lphy_only_distributions_md)
+    lines.append("")
+    lines.append(f"#### Deterministic functions ({gens_lphy_only_func_count})")
+    lines.append("")
+    lines.append(gens_lphy_only_functions_md)
     lines.append("")
     lines.append(f"### PhyloSpec only ({len(gens_phylo_only)})")
     lines.append("")
     lines.append(
         f"PhyloSpec math functions with no LPhy counterpart at all ({gens_phylo_math_only_count}) "
-        "are excluded from this table for the same reason -- see the Math & Logic section below."
+        "are excluded from these tables for the same reason -- see the Math & Logic section below. "
+        "What's left is split into Distributions vs Deterministic functions the same way the In "
+        "both section above is, by `is_phylospec_distribution()` -- PhyloSpec's own `generatedType` "
+        "carries the identical `Distribution<T>`-vs-plain-`T` signal LPhy's export does (see that "
+        "function's docstring), so this needs no LPhy-side counterpart to classify against, unlike "
+        "the In both split above."
     )
     lines.append("")
-    lines.append(gens_phylo_md)
+    lines.append(f"#### Distributions ({gens_phylo_only_dist_count})")
+    lines.append("")
+    lines.append(gens_phylo_only_distributions_md)
+    lines.append("")
+    lines.append(f"#### Deterministic functions ({gens_phylo_only_func_count})")
+    lines.append("")
+    lines.append(gens_phylo_only_functions_md)
     lines.append("")
     lines.append("## 4. Math & Logic")
     lines.append("")

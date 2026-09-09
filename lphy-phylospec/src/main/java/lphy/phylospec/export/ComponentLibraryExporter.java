@@ -107,11 +107,16 @@ public class ComponentLibraryExporter {
         Map<String, Object> methodCallLibrary = new LinkedHashMap<>();
         methodCallLibrary.put("name", "LPhy method calls");
         methodCallLibrary.put("description",
-                "LPhy's third generator kind: instance methods invoked via dot-call syntax "
+                "LPhy's method call: an instance method invoked via dot-call syntax "
                         + "(e.g. tree.rootAge()), exposed to scripts wherever a public method carries "
-                        + "@MethodInfo (lphy.core.model.annotation.MethodInfo). PhyloSpec has no equivalent "
-                        + "construct (no dot-call syntax at all), so this is its own file rather than part "
-                        + "of the PhyloSpec-schema-shaped component library above.");
+                        + "@MethodInfo (lphy.core.model.annotation.MethodInfo). Not a third generator kind "
+                        + "alongside GenerativeDistribution/DeterministicFunction above - MethodCall "
+                        + "(lphy.core.parser.function.MethodCall) itself extends DeterministicFunction; it is "
+                        + "LPhy's own special-case deterministic function, built dynamically over an "
+                        + "arbitrary annotated method via reflection rather than declared as its own "
+                        + "constructor-based generator class. PhyloSpec has no equivalent construct (no "
+                        + "dot-call syntax at all), so this is its own file rather than part of the "
+                        + "PhyloSpec-schema-shaped component library above.");
         methodCallLibrary.put("methodCalls", methodCalls);
 
         File methodCallsFile = new File(parent != null ? parent : new File("."), METHOD_CALLS_OUTPUT_FILENAME);
@@ -445,19 +450,23 @@ public class ComponentLibraryExporter {
     }
 
     /**
-     * LPhy's third generator kind, alongside constructor-based generators ({@link #buildGenerators})
-     * and symbol-bound operators ({@link #buildExpressionOperatorGenerators}): an instance method
-     * invoked via dot-call syntax on a value, e.g. {@code tree.rootAge()}. {@link MethodCall} (in
-     * {@code lphy-core}) is the runtime dispatcher: given a receiver value and a method name, it
-     * resolves {@code c = value.value().getClass(); method = c.getMethod(methodName, paramTypes)} -
-     * ordinary Java method resolution against the value's actual <em>runtime</em> class - then
-     * requires the resolved {@link Method} to itself carry {@code @MethodInfo}, with no fallback to
+     * LPhy's third generator-<em>discovery</em> mechanism, alongside constructor-based generators
+     * ({@link #buildGenerators}) and symbol-bound operators ({@link #buildExpressionOperatorGenerators}):
+     * an instance method invoked via dot-call syntax on a value, e.g. {@code tree.rootAge()}. This is
+     * not a third semantic kind alongside {@code GenerativeDistribution}/{@code DeterministicFunction}
+     * (every method call, like every operator, is always deterministic - {@link MethodCall} itself
+     * {@code extends DeterministicFunction}); it is one more way LPhy exposes a deterministic function
+     * to scripts, alongside a dedicated constructor-based class and a symbol-bound operator method.
+     * {@link MethodCall} (in {@code lphy-core}) is the runtime dispatcher: given a receiver value and a
+     * method name, it resolves {@code c = value.value().getClass(); method = c.getMethod(methodName,
+     * paramTypes)} - ordinary Java method resolution against the value's actual <em>runtime</em> class -
+     * then requires the resolved {@link Method} to itself carry {@code @MethodInfo}, with no fallback to
      * an ancestor's annotation (see that class's own "TODO should we check super classes here?" -
      * there isn't one; ​an override that changes behavior without re-declaring {@code @MethodInfo}
      * is silently uncallable from an LPhy script, even though the same-named method still works
      * fine as ordinary Java on the un-overriding declaring class).
      * <p>
-     * Unlike the other two generator kinds, there is no existing registry of "every class that
+     * Unlike the other two discovery mechanisms, there is no existing registry of "every class that
      * might declare one of these" to iterate ({@link LPhyExtension} only tracks distribution/
      * function classes, not arbitrary value types like {@code TimeTree} or {@code Alignment}) - so
      * this scans the runtime classpath itself ({@link #findLphyClasses}) rather than relying on a

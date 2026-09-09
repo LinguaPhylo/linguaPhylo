@@ -32,19 +32,31 @@ or function call, and `~` for a stochastic, distribution-sampled assignment.
 
 **2. Component library**
 
-**Same:** both build their library out of **generators** -- named, typed producers of values, covering both
-distributions and functions.
+**Same:** both build their library out of **generators** -- named, typed producers of values -- split into the
+same two kinds: a **distribution** (stochastic, sampled with `~`) and a **function** (deterministic, no
+sampling) -- see [Section 3](#3-generators).
 
 **Different:**
 1. Building block paired with each generator -- LPhy pairs a `Generator` with a `Value`, a runtime wrapper class
    that carries the actual value together with its type. PhyloSpec pairs a `Generator` with a `Type`, a purely
    static declaration with no runtime wrapper at all -- see [Section 2](#2-types).
-2. Generator kinds -- LPhy's `Generator` covers three kinds: `GenerativeDistribution`, `DeterministicFunction`,
-   and `Method call` (dot-syntax invoked on an existing object). PhyloSpec's component library, the **Core
-   Component Library**, only has the first two as first-class objects, with no method-call syntax at all, so
-   LPhy's method calls are matched against hand-picked PhyloSpec-equivalent functions rather than compared
-   directly -- see [Section 3](#3-generators).
-3. Operators -- LPhy implements operators (`+`, `<`, `&&`, ...) as ordinary named `DeterministicFunction`s, so
+2. How distribution-vs-function is recorded -- LPhy's split is a Java generic type hierarchy:
+   `GenerativeDistribution<T>` (`sample()` returns `RandomVariable<T>`) vs `DeterministicFunction<T>`
+   (`apply()` returns `Value<T>`), where `T` is the produced value's own type (e.g. `Double`, `TimeTree`).
+   PhyloSpec's own signature says so directly instead, as a type string: a distribution's produced type is
+   written `Distribution<T>`, a function's is the plain `T` -- see [Section 3](#3-generators).
+3. How the produced type `T` itself is recorded -- LPhy's `T` is a bare Java class name, read by reflecting
+   on the generic parameter above (e.g. `Double`, `TimeTree`). PhyloSpec's `T` is a hand-written type
+   expression that can be considerably richer, including nested generics and dimension constraints (e.g.
+   `Yule` -> `Tree<;numTaxa=taxa.num>`). The two vocabularies for `T` are not directly comparable, so
+   [Section 3](#3-generators)'s comparison only checks for the `Distribution<...>` wrapper itself, never `T`
+   itself; matching `T` (e.g. LPhy's `Double` to PhyloSpec's `Real`/`PositiveReal`/...) is instead
+   [Section 2](#2-types)'s job.
+4. Method calls -- LPhy also calls some functions with dot syntax on a value (e.g. `tree.rootAge()`) instead of
+   as a stand-alone call. It's still an ordinary deterministic function underneath, just invoked differently.
+   PhyloSpec has no dot-call syntax at all, so these are matched by hand against the closest PhyloSpec function
+   instead of compared directly -- see [Section 3](#3-generators).
+5. Operators -- LPhy implements operators (`+`, `<`, `&&`, ...) as ordinary named `DeterministicFunction`s, so
    they're listed in its library like any other generator. PhyloSpec treats operators as language grammar,
    resolved by a separate type-checking pass, and never lists them as components at all -- see
    [Section 4](#4-math--logic).

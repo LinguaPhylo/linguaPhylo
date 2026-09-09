@@ -1,6 +1,6 @@
 {
   "name" : "LPhy method calls",
-  "description" : "LPhy's third generator kind: instance methods invoked via dot-call syntax (e.g. tree.rootAge()), exposed to scripts wherever a public method carries @MethodInfo (lphy.core.model.annotation.MethodInfo). PhyloSpec has no equivalent construct (no dot-call syntax at all), so this is its own file rather than part of the PhyloSpec-schema-shaped component library above.",
+  "description" : "LPhy's method call: an instance method invoked via dot-call syntax (e.g. tree.rootAge()), exposed to scripts wherever a public method carries @MethodInfo (lphy.core.model.annotation.MethodInfo). Not a third generator kind alongside GenerativeDistribution/DeterministicFunction above - MethodCall (lphy.core.parser.function.MethodCall) itself extends DeterministicFunction; it is LPhy's own special-case deterministic function, built dynamically over an arbitrary annotated method via reflection rather than declared as its own constructor-based generator class. PhyloSpec has no equivalent construct (no dot-call syntax at all), so this is its own file rather than part of the PhyloSpec-schema-shaped component library above.",
   "methodCalls" : [ {
     "name" : "ages",
     "returnType" : "Double[]",
