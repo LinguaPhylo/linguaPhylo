@@ -22,7 +22,7 @@ This document walks through that in three steps:
   separate AST-to-model translation pass exists.
 - **[§3 — The graph after parsing](#3-the-graph-after-parsing).** The
   resulting `GraphicalModel` is just two id→`Value` dictionaries
-  (`data`/`model` blocks). The DAG itself isn't stored as a list — it's
+  (`data`/`model` blocks). The PGM (probabilistic graphical model) itself isn't stored as a list — it's
   recovered on demand by following `getInputs()`/`getOutputs()` references
   outward from named "sink" values, as shown in a worked example.
 - **[§4 — Vectorization](#4-vectorization-iid-and-vectorizeddistribution).**
@@ -98,7 +98,7 @@ there are exactly two kinds of node:
   `GenerativeDistribution` (`~`). Not itself a `Value`, but still a node:
   `getInputs()` returns its parameter `Value`s.
 
-So the DAG alternates `Value ↔ Generator ↔ Value ↔ …`:
+So the PGM alternates `Value ↔ Generator ↔ Value ↔ …`:
 
 ```
         ┌───────────────┐        ┌───────────────┐
@@ -173,7 +173,7 @@ LPhy lets a single `~` relation produce an **array** of random values, e.g.
 ```
 n = 10;
 lambda ~ Exponential(mean=1.0, replicates=n);   // IID: n independent draws, same distribution
-x ~ Normal(mean=meanArray, sd=1.0);             // Vectorized: n draws, different mean each
+x ~ Normal(mean=lambda, sd=1.0);                // Vectorized: n draws, different mean each
 ```
 
 Both look, from the outside, like a normal `x ~ Dist(...)` line producing one
@@ -210,7 +210,7 @@ Only one of these three shapes is ever built for a given `~`/`=` line.
 `IID` and `VectorizedDistribution` both **implement `GenerativeDistribution`**
 (and `VectorizedFunction` extends `DeterministicFunction`). That's the key
 design point: to everything outside `core/vectorization`, they are
-indistinguishable from an ordinary generator — one `Generator` node in the DAG.
+indistinguishable from an ordinary generator — one `Generator` node in the PGM.
 
 Their `setParam` implementations deliberately do **not** call `setInput` on
 the hidden per-component generators:
@@ -227,14 +227,6 @@ This means the *n* internal component distributions/functions never appear as
 separate nodes, never show up in `getInputs()`/`getOutputs()`, and are
 invisible to `GraphicalModelUtils` traversal. The graph stays exactly as big as
 the script says — one node per `~`/`=` line, regardless of vector length.
-
-```
-                     ┌────────────────────────────┐
- meanArray[10] ─────▶│  VectorizedDistribution      │────▶ RandomVariable: x  (T[10])
- sd = 1.0     ─────▶ │  (10 hidden Normal instances,│
-                     │   invisible to the graph)    │
-                     └────────────────────────────┘
-```
 
 ### 4.4 The produced value carries its own hidden sub-structure
 
@@ -293,7 +285,7 @@ vectorization the same way it does for scalars — just applied component-wise.
 | Tree → objects | `parser/LPhyListenerImpl.java` |
 | Generator resolution (incl. IID/vector match order) | `parser/ParserUtils.java` |
 | `GraphicalModel` (data/model dictionaries, sinks) | `parser/graphicalmodel/GraphicalModel.java` |
-| DAG traversal from sinks | `parser/graphicalmodel/GraphicalModelUtils.java` |
+| PGM traversal from sinks | `parser/graphicalmodel/GraphicalModelUtils.java` |
 | `Value` / `RandomVariable` / `Generator` | `core/model/Value.java`, `RandomVariable.java`, `Generator.java` |
 | `IID` (explicit replicates) | `core/vectorization/IID.java` |
 | `VectorizedDistribution` / `VectorizedFunction` (implicit, array args) | `core/vectorization/VectorizedDistribution.java`, `VectorizedFunction.java` |
