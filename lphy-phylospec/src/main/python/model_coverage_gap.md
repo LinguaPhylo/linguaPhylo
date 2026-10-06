@@ -1,7 +1,7 @@
 # LPhy vs PhyloSpec Model Coverage Gap
 
-- PhyloSpec core library version: `1.4.0`
-- LPhy exported library version: `0.1.0`
+- PhyloSpec core component library version: `1.4.0`
+- LPhy component library version: `0.1.0` (exported from LPhy `1.8.1-SNAPSHOT`)
 
 LPhy is designed to enable the specification of phylogenetic models using a concise and readable syntax, with a
 reference implementation built on Java that supports data simulation and an extensibility mechanism for adding new

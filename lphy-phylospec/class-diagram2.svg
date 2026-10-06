@@ -56,9 +56,9 @@
     <!-- a3: structural tiles (Draw/Assignment/ObservedAs) extend AstNodeTile/TemplateTile -->
     <path d="M1055,460 L492,336" marker-end="url(#triHollow)"/>
 
-    <!-- a4: IIDTile/OperatorCallTile extends Tile/GeneratorTile (routed via left margin) -->
+    <!-- a4: IIDTile/OperatorTile/MathFunctionTile extend Tile/GeneratorTile (routed via left margin) -->
     <path d="M60,700 L20,700 L20,266 L60,266" marker-end="url(#triHollow)"/>
-    <!-- a5: ArgTransform/ArgPacking/MethodCallTile extends Tile/GeneratorTile (left margin, offset) -->
+    <!-- a5: MethodCallTile extends GeneratorTile (left margin, offset) -->
     <path d="M470,685 L13,685 L13,286 L60,286" marker-end="url(#triHollow)"/>
 
     <!-- a6: LPhyCoreTileLibrary implements TileLibrary/EvaluateTiles (right margin, dashed = realization) -->
@@ -171,14 +171,14 @@
     <rect x="60" y="460" width="350" height="140" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
   </g>
   <line x1="60" y1="500" x2="410" y2="500" stroke="#2F6F5E" stroke-width="1"/>
-  <text x="235" y="480" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;1 &#8212; one instance per LPhy generator name</text>
+  <text x="235" y="480" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;1 &#8212; one instance per PhyloSpec generator name</text>
   <text x="235" y="496" text-anchor="middle" font-size="13.5" font-weight="700" fill="#173229">ReflectiveDistributionTile / ReflectiveFunctionTile</text>
   <g font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#204636">
-    <text x="74" y="520">T = GenerativeDistribution&#60;?&#62;</text>
-    <text x="74" y="536">   or Value&#60;?&#62; (&#167;1)</text>
-    <text x="74" y="552"># getTileInputs() &#8212; dynamic, &#167;1.1</text>
-    <text x="74" y="568"># applyTile &#8594; ParserUtils.getMatching*</text>
-    <text x="74" y="584">(picks match, no vectorization logic here)</text>
+    <text x="74" y="520">T = GenerativeDistribution&#60;?&#62; or Value&#60;?&#62;</text>
+    <text x="74" y="536">name: @GeneratorInfo.name(), unless</text>
+    <text x="74" y="552">   phylospec() is set (aliases ignored)</text>
+    <text x="74" y="568"># getTileInputs() &#8212; dynamic, &#167;1.1</text>
+    <text x="74" y="584"># applyTile &#8594; rename &#8594; ParserUtils.getMatching*</text>
   </g>
 
   <!-- C2: ReflectiveTileInput -->
@@ -186,14 +186,14 @@
     <rect x="470" y="460" width="350" height="140" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
   </g>
   <line x1="470" y1="500" x2="820" y2="500" stroke="#2F6F5E" stroke-width="1"/>
-  <text x="645" y="480" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;1.1 &#8212; per declared LPhy parameter name</text>
+  <text x="645" y="480" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;1.1 &#8212; one per PhyloSpec argument name</text>
   <text x="645" y="496" text-anchor="middle" font-size="14" font-weight="700" fill="#173229">ReflectiveTileInput</text>
   <g font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#204636">
-    <text x="484" y="520">required = false, always (&#167;1.2)</text>
-    <text x="484" y="536">+ getTypeToken() &#8594; TypeToken.of(Value.class)</text>
-    <text x="484" y="552">   (raw, unparameterized &#8212; &#167;3)</text>
-    <text x="484" y="572">overrides the PUBLIC getTypeToken(),</text>
-    <text x="484" y="588">not the package-private field resolver</text>
+    <text x="484" y="520">name: @ParameterInfo.name(), unless</text>
+    <text x="484" y="536">   phylospec() is set for a differing name</text>
+    <text x="484" y="552">optional: union of all overloads (&#167;1.2)</text>
+    <text x="484" y="568">+ getTypeToken() &#8594; raw Value.class (&#167;3)</text>
+    <text x="484" y="584">   (overrides the public getTypeToken())</text>
   </g>
 
   <!-- C3: structural tiles -->
@@ -211,32 +211,32 @@
     <text x="894" y="578">$obs" &#8594; clamps into data + model dicts</text>
   </g>
 
-  <!-- D1: IIDTile / OperatorCallTile -->
+  <!-- D1: IIDTile / OperatorTile / MathFunctionTile -->
   <g filter="url(#cardShadow)">
     <rect x="60" y="630" width="350" height="140" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
   </g>
   <line x1="60" y1="670" x2="410" y2="670" stroke="#2F6F5E" stroke-width="1"/>
   <text x="235" y="650" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;4, &#167;5 &#8212; AST-shape + operator mismatches</text>
-  <text x="235" y="666" text-anchor="middle" font-size="14" font-weight="700" fill="#173229">IIDTile / OperatorCallTile</text>
+  <text x="235" y="666" text-anchor="middle" font-size="14" font-weight="700" fill="#173229">IIDTile / OperatorTile / MathFunctionTile</text>
   <g font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#204636">
     <text x="74" y="690">IID(base,n) &#8594; inner call's args +</text>
     <text x="74" y="706">   synthetic replicates=n (one tile, not N)</text>
-    <text x="74" y="722">OperatorCallTile &#8594; ExpressionNode1/2Args</text>
-    <text x="74" y="738">   via EXPRESSION_OPERATOR_SCRIPT_NAMES</text>
+    <text x="74" y="722">Operator (Binary/Unary), MathFunction (Call)</text>
+    <text x="74" y="738">   &#8594; ExpressionNode1/2Args</text>
   </g>
 
-  <!-- D2: ArgTransformTile / ArgPackingTile / MethodCallTile -->
+  <!-- D2: MethodCallTile + Decision 3 lphy-base changes -->
   <g filter="url(#cardShadow)">
     <rect x="470" y="630" width="350" height="140" rx="10" fill="#FBF1E1" stroke="#A6742E" stroke-width="1.6"/>
   </g>
   <line x1="470" y1="670" x2="820" y2="670" stroke="#A6742E" stroke-width="1"/>
-  <text x="645" y="650" text-anchor="middle" font-size="10.5" font-style="italic" fill="#8A6127">&#167;3.2&#8211;&#167;3.4 &#8212; the only hand-written bucket</text>
-  <text x="645" y="666" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4A3417">ArgTransformTile / ArgPackingTile / MethodCallTile</text>
+  <text x="645" y="650" text-anchor="middle" font-size="10.5" font-style="italic" fill="#8A6127">&#167;3.2&#8211;&#167;3.3 &#8212; Decision 3: fix in lphy-base, not tiles</text>
+  <text x="645" y="666" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4A3417">MethodCallTile + lphy-base changes</text>
   <g font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#5B4118">
-    <text x="484" y="690">Transform: rate &#8594; mean=1/rate (Exp, Gamma)</text>
-    <text x="484" y="706">Packing: N named scalars &#8594; 1 array (gtr)</text>
+    <text x="484" y="690">lphy-base: annotate differing names; add</text>
+    <text x="484" y="706">   PhyloSpec constructors (Exp(rate), gtr)</text>
     <text x="484" y="722">MethodCall: built from curated_equivalences</text>
-    <text x="484" y="738">   .json's methodCallEquivalents (numSites, ...)</text>
+    <text x="484" y="738">   .json's methodCallEquivalents (rootAge, ...)</text>
   </g>
 
   <!-- D3: LPhyCoreTileLibrary -->
@@ -247,10 +247,12 @@
   <text x="1055" y="650" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;7 &#8212; SPI provider, assembled in order</text>
   <text x="1055" y="666" text-anchor="middle" font-size="14" font-weight="700" fill="#173229">LPhyCoreTileLibrary</text>
   <g font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#204636">
-    <text x="894" y="690">+ getTiles() List</text>
-    <text x="894" y="706">structural &#8594; IID/Operator &#8594; MethodCall</text>
-    <text x="894" y="722">&#8594; ArgTransform/Packing &#8594; reflective sweep</text>
-    <text x="894" y="738">&#8594; name-collision safety net</text>
+    <text x="894" y="688">+ getTiles(): structural &#8594; IID/Operator &#8594;</text>
+    <text x="894" y="703">   reflective sweep &#8594; MethodCall &#8594; collisions</text>
+    <text x="894" y="719">names via the helper shared with</text>
+    <text x="894" y="733">   ComponentLibraryExporter (&#167;1.1)</text>
+    <text x="894" y="749">fails loudly: one PhyloSpec name per LPhy</text>
+    <text x="894" y="763">   name; parameter map is a function</text>
   </g>
 
   <!-- E1: PhyloSpecLPhyDictionary -->
@@ -275,7 +277,7 @@
   <text x="905" y="833" text-anchor="middle" font-size="14.5" font-weight="700" fill="#173229">PhyloSpecToLPhyRunner</text>
   <g font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#204636">
     <text x="704" y="856">lex/parse &#8594; resolvers &#8594; EvaluateTiles &#8594; dictionary</text>
-    <text x="704" y="872">setSampleValuesUsingParser(false) first (&#167;6 gotcha)</text>
+    <text x="704" y="872">setSampleValuesUsingParser(false), restored after (&#167;6)</text>
     <text x="704" y="888">+ runPhyloSpec(source, seed, loggers)</text>
   </g>
 
@@ -308,7 +310,7 @@
     <text x="484" y="1070">+ getMatchingGenerativeDistributions(name, args)</text>
     <text x="484" y="1086">+ getMatchingFunctions(name, args)</text>
     <text x="484" y="1102">&#8594; direct match, then IID.match, then</text>
-    <text x="484" y="1118">   VectorMatchUtils.vectorMatch (&#167;0, &#167;3)</text>
+    <text x="484" y="1118">   VectorMatchUtils.vectorMatch (Decision 1)</text>
     <text x="484" y="1140">every PhyloSpec-vocabulary-free decision</text>
     <text x="484" y="1156">lives here, not in any tile above</text>
   </g>
@@ -348,5 +350,5 @@
   </g>
 
   <text x="40" y="1310" font-size="11.5" fill="#56655D">Full box-by-box description: CLASS_DESIGN2.md. Gray boxes are unchanged upstream code (phylospec-core, lphy-core); teal boxes are new;</text>
-  <text x="40" y="1328" font-size="11.5" fill="#56655D">the amber box is the one bucket of genuinely hand-written, per-generator tiles &#8212; everything else is generated or reused as-is.</text>
+  <text x="40" y="1328" font-size="11.5" fill="#56655D">the amber box is MethodCallTile plus the lphy-base changes of Decision 3 &#8212; no tile is specific to one generator.</text>
 </svg>

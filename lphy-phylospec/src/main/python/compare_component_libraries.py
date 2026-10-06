@@ -60,11 +60,22 @@ DEFAULT_OUT = Path(__file__).resolve().parent / "model_coverage_gap.md"
 DEFAULT_CURATED = Path(__file__).resolve().parent / "curated_equivalences.json"
 DEFAULT_METHOD_CALLS = Path(__file__).resolve().parents[1] / "resources" / "lphy-method-calls.json"
 DEFAULT_INTRO = Path(__file__).resolve().parent / "model_coverage_gap_intro.md"
+LPHY_POM = Path(__file__).resolve().parents[4] / "pom.xml"
 
 
 def load(path: Path) -> dict:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def lphy_version(pom: Path = LPHY_POM) -> str:
+    """The LPhy software version, i.e. the root pom.xml's <revision>, kept distinct from the
+    LPhy component library's own version (`version` in phylospec-lphy-component-library.json)."""
+    try:
+        m = re.search(r"<revision>\s*([^<\s]+)\s*</revision>", pom.read_text(encoding="utf-8"))
+    except OSError:
+        return "unknown"
+    return m.group(1) if m else "unknown"
 
 
 def esc(s) -> str:
@@ -1025,8 +1036,9 @@ def main():
     lines = []
     lines.append("# LPhy vs PhyloSpec Model Coverage Gap")
     lines.append("")
-    lines.append(f"- PhyloSpec core library version: `{phylospec.get('version')}`")
-    lines.append(f"- LPhy exported library version: `{lphy.get('version')}`")
+    lines.append(f"- PhyloSpec core component library version: `{phylospec.get('version')}`")
+    lines.append(f"- LPhy component library version: `{lphy.get('version')}` "
+                 f"(exported from LPhy `{lphy_version()}`)")
     lines.append("")
     lines.append(intro_path.read_text(encoding="utf-8").rstrip("\n"))
     lines.append("")
