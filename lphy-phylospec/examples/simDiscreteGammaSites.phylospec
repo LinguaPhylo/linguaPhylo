@@ -1,0 +1,5 @@
+// Data-free model: taxa listed as taxon(...) calls, alignment length set by DiscreteGammaInv(numSites=200).
+Tree tree ~ Yule(birthRate=1.0, taxa=[taxon(name="a"), taxon(name="b"), taxon(name="c"), taxon(name="d")])
+QMatrix q = jc69()
+Vector<Rate> rates ~ DiscreteGammaInv(shape=0.5, numCategories=4, numSites=200)
+Alignment sim ~ PhyloCTMC(tree=tree, qMatrix=q, siteRates=rates)

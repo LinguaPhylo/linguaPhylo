@@ -1,0 +1,5 @@
+// Data-free model: taxa listed as taxon(...) calls, alignment length (5) set by a literal siteRates vector.
+Tree tree ~ Yule(birthRate=1.0, taxa=[taxon(name="a"), taxon(name="b"), taxon(name="c"), taxon(name="d")])
+QMatrix q = jc69()
+Vector<Real> rates = [1.0, 1.0, 1.0, 1.0, 1.0]
+Alignment sim ~ PhyloCTMC(tree=tree, qMatrix=q, siteRates=rates)

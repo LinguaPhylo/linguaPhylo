@@ -995,8 +995,10 @@
         "name" : "ncat",
         "type" : "Integer",
         "required" : true,
-        "description" : "the number of bins in the discretization."
-      } ]
+        "description" : "the number of bins in the discretization.",
+        "phylospec" : "numCategories"
+      } ],
+      "phylospec" : "DiscreteGamma"
     }, {
       "name" : "ErrorModel",
       "description" : "The error model distribution on an alignment.",
@@ -1629,12 +1631,14 @@
         "name" : "meanlog",
         "type" : "Number",
         "required" : true,
-        "description" : "the mean of the distribution on the log scale."
+        "description" : "the mean of the distribution on the log scale.",
+        "phylospec" : "logMean"
       }, {
         "name" : "sdlog",
         "type" : "Number",
         "required" : true,
-        "description" : "the standard deviation of the distribution on the log scale."
+        "description" : "the standard deviation of the distribution on the log scale.",
+        "phylospec" : "logSd"
       }, {
         "name" : "offset",
         "type" : "Number",
@@ -1865,7 +1869,8 @@
         "name" : "Q",
         "type" : "Double[][]",
         "required" : true,
-        "description" : "the instantaneous rate matrix."
+        "description" : "the instantaneous rate matrix.",
+        "phylospec" : "qMatrix"
       }, {
         "name" : "siteRates",
         "type" : "Double[]",
@@ -2392,7 +2397,8 @@
         "name" : "lambda",
         "type" : "Number",
         "required" : true,
-        "description" : "per-lineage birth rate, possibly scaled to mutations or calendar units."
+        "description" : "per-lineage birth rate, possibly scaled to mutations or calendar units.",
+        "phylospec" : "birthRate"
       }, {
         "name" : "n",
         "type" : "Integer",
@@ -3292,21 +3298,18 @@
         "name" : "kappa",
         "type" : "Number",
         "required" : true,
-        "description" : "the kappa of the HKY process.",
-        "phylospec" : "kappa"
+        "description" : "the kappa of the HKY process."
       }, {
-        "name" : "baseFrequencies",
+        "name" : "freq",
         "type" : "Double[]",
         "required" : true,
-        "description" : "the base frequencies.",
-        "phylospec" : "baseFrequencies"
+        "description" : "the base frequencies."
       }, {
         "name" : "meanRate",
         "type" : "Number",
         "required" : false,
         "description" : "the total rate of substitution per unit time. Default 1.0."
-      } ],
-      "phylospec" : "hky"
+      } ]
     }, {
       "name" : "ifelse",
       "description" : "Return the 1st value if the condition is true, else return the 2nd value.",
@@ -3402,7 +3405,8 @@
         "type" : "Number",
         "required" : false,
         "description" : "the rate of the Jukes-Cantor process. Default value is 1.0."
-      } ]
+      } ],
+      "phylospec" : "jc69"
     }, {
       "name" : "k80",
       "description" : "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.",

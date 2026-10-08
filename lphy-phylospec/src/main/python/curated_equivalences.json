@@ -136,6 +136,36 @@
       "lphy": ["gtr", "generalTimeReversible"],
       "phylospec": ["gtr"],
       "note": "LPhy splits GTR into a nucleotide-only gtr (fixed 4 states, 6 named rates) and a general n-state generalTimeReversible (rates dimensioned by numStates); PhyloSpec's second gtr overload (relativeRates: Simplex + baseFrequencies) is the same n-state generalization."
+    },
+    {
+      "lphy": ["PhyloCTMC"],
+      "phylospec": ["PhyloCTMC"],
+      "note": "Simulation gap (see the top difference): LPhy's optional L sets the alignment length, so PhyloCTMC can simulate an alignment from scratch. PhyloSpec has no length argument; numSites comes from siteRates (e.g. DiscreteGammaInv(numSites=...)) or from the observed alignment."
+    },
+    {
+      "lphy": ["taxa"],
+      "phylospec": ["taxa"],
+      "note": "Simulation gap (see the top difference): LPhy's taxa(names=..., species, ages) builds taxa from scratch, and its taxa(taxa) extracts them from an alignment or tree. PhyloSpec's taxa only extracts, from an alignment or tree; without data, Taxa (an alias of Vector<Taxon>) must be written as a vector of taxon(name=...) calls."
+    },
+    {
+      "lphy": ["Yule"],
+      "phylospec": ["Yule"],
+      "note": "Simulation gap (see the top difference): LPhy takes an optional n or taxa, so it can simulate a tree of n taxa. PhyloSpec requires taxa: from an alignment or tree, or without data as a vector of taxon(name=...) calls -- there is no count like n."
+    },
+    {
+      "lphy": ["BirthDeath"],
+      "phylospec": ["BirthDeath"],
+      "note": "Simulation gap (see the top difference): LPhy can condition on rootAge alone or take an optional n or taxa. PhyloSpec requires taxa: from an alignment or tree, or without data as a vector of taxon(name=...) calls -- there is no count like n."
+    },
+    {
+      "lphy": ["Coalescent"],
+      "phylospec": ["Coalescent"],
+      "note": "Simulation gap (see the top difference): LPhy takes an optional n or taxa, so it can simulate a tree of n taxa. PhyloSpec requires taxa: from an alignment or tree, or without data as a vector of taxon(name=...) calls -- there is no count like n."
+    },
+    {
+      "lphy": ["SkylineCoalescent"],
+      "phylospec": ["SkylineCoalescent"],
+      "note": "Simulation gap (see the top difference): LPhy takes an optional n or taxa, so it can simulate a tree of n taxa. PhyloSpec requires taxa: from an alignment or tree, or without data as a vector of taxon(name=...) calls -- there is no count like n."
     }
   ],
 
@@ -144,6 +174,11 @@
       "side": "phylospec",
       "name": "taxon",
       "note": "LPhy has no equivalent single-Taxon constructor -- it always builds the whole Taxa collection at once via taxa(names=..., ...), never taxon-by-taxon."
+    },
+    {
+      "side": "lphy",
+      "name": "simulate",
+      "note": "Simulation gap (see the top difference): PhyloSpec has no counterpart: its scripts can describe a data-free model, but no PhyloSpec tool or engine simulates one."
     }
   ],
 

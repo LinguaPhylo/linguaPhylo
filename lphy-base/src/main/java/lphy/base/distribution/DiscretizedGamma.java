@@ -27,7 +27,7 @@ public class DiscretizedGamma extends ParametricDistribution<Double> {
     double[] rates;
 
     public DiscretizedGamma(@ParameterInfo(name = shapeParamName, description = "the shape of the discretized gamma distribution.") Value<Number> shape,
-                            @ParameterInfo(name = ncatParamName, description = "the number of bins in the discretization.") Value<Integer> ncat) {
+                            @ParameterInfo(name = ncatParamName, phylospec = "numCategories", description = "the number of bins in the discretization.") Value<Integer> ncat) {
         super();
         this.shape = shape;
         this.ncat = ncat;
@@ -46,7 +46,7 @@ public class DiscretizedGamma extends ParametricDistribution<Double> {
     }
 
 
-    @GeneratorInfo(name = "DiscretizeGamma",
+    @GeneratorInfo(name = "DiscretizeGamma", phylospec = "DiscreteGamma",
             category = GeneratorCategory.PRIOR, examples = {"gtrGammaCoalescent.lphy","simpleBModelTest.lphy"},
             description = "The discretized gamma probability distribution with mean = 1.")
     public RandomVariable<Double> sample() {

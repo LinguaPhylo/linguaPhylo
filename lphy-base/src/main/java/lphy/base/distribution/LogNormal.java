@@ -31,8 +31,8 @@ public class LogNormal extends ParametricDistribution<Double> implements Generat
 
     LogNormalDistribution logNormalDistribution;
 
-    public LogNormal(@ParameterInfo(name = meanLogParamName, narrativeName = "mean in log space", description = "the mean of the distribution on the log scale.") Value<Number> M,
-                     @ParameterInfo(name = sdLogParamName, narrativeName = "standard deviation in log space", description = "the standard deviation of the distribution on the log scale.") Value<Number> S,
+    public LogNormal(@ParameterInfo(name = meanLogParamName, phylospec = "logMean", narrativeName = "mean in log space", description = "the mean of the distribution on the log scale.") Value<Number> M,
+                     @ParameterInfo(name = sdLogParamName, phylospec = "logSd", narrativeName = "standard deviation in log space", description = "the standard deviation of the distribution on the log scale.") Value<Number> S,
                      @ParameterInfo(name = offsetParamName, optional = true, narrativeName = "offset", description = "optional parameter to shift entire distribution by an offset. default is 0.") Value<Number> offset) {
         super();
         this.M = M;

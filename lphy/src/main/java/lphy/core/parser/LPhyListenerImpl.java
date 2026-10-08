@@ -16,7 +16,6 @@ import lphy.core.parser.graphicalmodel.ArrayCreator;
 import lphy.core.spi.LoaderManager;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
-import lphy.core.vectorization.array.*;
 import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.RangeList;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -626,95 +625,12 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 if (s.equals("[")) {
                     // get unnamed expression list
                     Value[] var = (Value[]) visit(ctx.getChild(1));
-
-                    Class<?> type = ArrayCreator.getType(var);
-
-                    Value res;
-                    // if all values null assume double array
-                    if (type == Double.class) {
-                        // The commented code below is the incorrect way to handle var[i] == null.
-                        // it is against the principle to create new Value, which could lose
-                        // their generator. Handle it in DoubleArray apply()
-
-//                        if (allConstants(var)) {
-//                            Double[] value = new Double[var.length];
-//                            for (int i = 0; i < value.length; i++) {
-//                                if (var[i] != null) value[i] = (Double) var[i].value();
-//                            }
-//                            return new DoubleArrayValue(null, value);
-//                        } else {
-                        DoubleArray doubleArray = new DoubleArray(var);
-                        res = doubleArray.apply();
-//                        }
-                    } else if (type == Double[].class) {
-                        //TODO not sure how to do properly for 2d ?
-                        DoubleArray2D doubleArray2D = new DoubleArray2D(var);
-                        return doubleArray2D.apply();
-
-                    } else if (type == Integer[].class) {
-                        IntegerArray2D integerArray2D = new IntegerArray2D(var);
-                        return integerArray2D.apply();
-
-                    } else if (type == Integer.class) {
-                        IntegerArray intArray = new IntegerArray(var);
-                        res = intArray.apply();
-
-                    } else if (type == Boolean[].class) {
-                        BooleanArray2D booleanArray2D = new BooleanArray2D(var);
-                        return booleanArray2D.apply();
-
-                    } else if (type == Boolean.class) {
-                        BooleanArray booleanArray = new BooleanArray(var);
-                        res = booleanArray.apply();
-
-                    } else if (type == String[].class) {
-                        StringArray2D stringArray2D = new StringArray2D(var);
-                        return stringArray2D.apply();
-
-                    } else if (type == String.class) {
-                        StringArray stringArray = new StringArray(var);
-                        res = stringArray.apply();
-
-                    } else if (type == Number[].class) {
-                        NumberArray2D numberArray2D = new NumberArray2D(var);
-                        return numberArray2D.apply();
-
-                    } else if (type == Number.class) {
-                        NumberArray numberArray = new NumberArray(var);
-                        res = numberArray.apply();
-
-                    } else if (type == Object[].class) {
-                        ObjectArray2D objectArray2D = new ObjectArray2D(var);
-                        return objectArray2D.apply();
-
-                    } else {
-                        // handle generic value array construction
-                        ObjectArray objectArray = new ObjectArray(var);
-                        res = objectArray.apply();
-                    }
-
-                    // It is necessary here to set generator to null, in order to avoid break constant array into pieces,
-                    // because doubleArray function will display in the graphical model.
-                    if (allConstants(var))
-                        res.setFunction(null);
-                    return res;
+                    return ArrayCreator.createArrayValue(var);
                 }
                 throw new IllegalArgumentException("[ ] are required ! " + ctx.getText());
             }
             return super.visitArray_construction(ctx);
         }
-
-        /**
-         * @param var
-         * @return true if all values are null or constant.
-         */
-        private boolean allConstants(Value[] var) {
-            for (Value v : var) {
-                if (v != null && !v.isConstant()) return false;
-            }
-            return true;
-        }
-
 
         /**
          * @param ctx

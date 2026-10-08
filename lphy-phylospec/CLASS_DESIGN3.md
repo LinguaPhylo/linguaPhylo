@@ -16,7 +16,7 @@ references to v2 only say where an idea came from.
 
 - **`PhyloSpecNames`** (§2) — the name index. Maps PhyloSpec generator and argument names to LPhy
   ones, read from the `phylospec` annotations, and fails loudly on a conflict.
-  `ComponentLibraryExporter` uses the same index, so the exported component library and the
+  `ComponentLibraryExporter` reads the same annotations, so the exported component library and the
   converter always agree on names.
 - **`PhyloSpecToLPhy`** (§3) — the converter. A visitor over the type-checked AST: each statement
   (`~`, `=`, `observed as`) becomes a named LPhy value in a `REPL`, and each expression (literal,
@@ -133,15 +133,21 @@ public final class PhyloSpecNames {
     public record MethodCallEntry(String lphyMethod, String receiverArgument,
                                   List<String> otherArguments) {}
 
+    /** A PhyloSpec generator that is shorthand for IID(base(...), n), e.g.
+     *  DiscreteGammaInv(shape, numCategories, numSites) -> IID(DiscreteGamma(shape, numCategories), numSites). */
+    public record IIDShorthand(String baseName, String replicatesArgument,
+                               Map<String, Object> defaultOnlyArguments) {}   // argument -> the only value allowed
+
     public static PhyloSpecNames load();                    // builds and checks; throws on conflict
 
-    // the naming rule, shared with ComponentLibraryExporter
+    // the naming rule: the PhyloSpec name of an LPhy generator or parameter
     public static String phylospecName(Class<?> generatorClass);
     public static String phylospecName(ParameterInfo parameter);
 
     public List<LPhyGenerator> generators(String phylospecName);         // empty if none
     public Function<?, ?> mathFunction(String phylospecName);             // null if none
     public MethodCallEntry methodCall(String phylospecName);              // null if none
+    public IIDShorthand iidShorthand(String phylospecName);               // null if none
     public BiFunction<?, ?, ?> binaryOperator(TokenType operator);        // null if none
     public Function<?, ?> unaryOperator(TokenType operator);              // null if none
 }
@@ -170,11 +176,13 @@ parameters in different LPhy generators: `populationSize` is `theta` on `Coalesc
 
 ### 2.2 Building the method-call, math-function and operator tables
 
-- **Method calls.** Read from `src/main/resources/lphy-method-calls.json`, generated from
-  `curated_equivalences.json`'s `methodCallEquivalents`. An entry qualifies only when the PhyloSpec
-  arguments are exactly the receiver plus the method's own arguments, in order; each entry needs a
-  `receiver` field naming that argument (§8). Current entries: `rootAge(tree)` → `tree.rootAge()` and
-  `numBranches(tree)` → `tree.branchCount()`. Anything that needs argument adaptation, chaining or a
+- **Method calls.** A hand-maintained table in `PhyloSpecNames`, like the operator table. An entry
+  qualifies only when the PhyloSpec arguments are exactly the receiver plus the method's own
+  arguments, in order, and names that receiver argument. Current entries: `rootAge(tree)` →
+  `tree.rootAge()` and `numBranches(tree)` → `tree.branchCount()`, taken from
+  `curated_equivalences.json`'s `methodCallEquivalents` (the other two entries there need argument
+  adaptation). `lphy-method-calls.json` is the exporter's list of every LPhy method call, not this
+  table. Anything that needs argument adaptation, chaining or a
   different return type is a new LPhy generator instead (Decision 3).
 - **Math functions.** The `public static Function` factory methods on `ExpressionNode1Arg` (`sqrt()`,
   `exp()`, `log()`, …), found by reflection, keyed by method name.
@@ -182,6 +190,14 @@ parameters in different LPhy generators: `populationSize` is `theta` on `Coalesc
   `<=`, `==`, …) onto `ExpressionNode2Args`'s `public static BiFunction` methods (`plus()`, `minus()`,
   …), and onto `ExpressionNode1Arg` for unary operators. Move `EXPRESSION_OPERATOR_SCRIPT_NAMES`
   (currently private in `ComponentLibraryExporter`) into `PhyloSpecNames` so both use one table.
+- **IID shorthands.** A hand-maintained table of PhyloSpec generators that are an `IID` of another
+  PhyloSpec generator, converted through the `IID` path (§3.6). The one entry so far:
+  `DiscreteGammaInv` → base `DiscreteGamma`, replicates argument `numSites`, default-only argument
+  `invariantProportion = 0`. `DiscreteGamma` is already LPhy's `DiscretizeGamma` (curated in
+  `curated_equivalences.json`), so `DiscreteGammaInv(shape=γ, numCategories=4, numSites=200)` becomes
+  `DiscretizeGamma(shape=γ, ncat=4, replicates=200)`, exactly as `examples/coalescent/gtrGammaCoalescent.lphy`
+  writes it. A default-only argument may be omitted or given its default as a literal; any other value is
+  `unsupported`, because LPhy has no proportion of invariant sites here.
 
 ### 2.3 Checks that fail loudly
 
@@ -194,15 +210,20 @@ parameters in different LPhy generators: `populationSize` is `theta` on `Coalesc
 2. **Each rename map is a function.** Within one LPhy name, a PhyloSpec argument maps to the same
    LPhy argument in every constructor and class, because `ParserUtils` resolves all of them from one
    argument map.
-3. **No PhyloSpec name in two tables.** A name is a generator, a math function or a method call, never
-   two of them.
+3. **No PhyloSpec name in two tables.** A name is a generator, a math function, a method call or an
+   IID shorthand, never two of them. `taxon` (§3.9) is reserved too: it must not resolve to a generator.
 
 ### 2.4 Shared with `ComponentLibraryExporter`
 
-`ComponentLibraryExporter` calls `phylospecName(Class)` and `phylospecName(ParameterInfo)` instead of
-its own naming code (generators at `ComponentLibraryExporter.java:347`, parameters at `:404`). The
-coverage report, the exported component library and the converter therefore cannot disagree on a
-name.
+LPhy names and PhyloSpec names are never mixed. In the exported component library, a generator's or
+argument's `name` is always its LPhy name, as written in an LPhy script (`jukesCantor`, `meanlog`); its
+PhyloSpec name, when an annotation sets one, goes only into the separate `phylospec` property
+(`jc69`, `logMean`). `curated_equivalences.json` and `compare_component_libraries.py` rely on this:
+their `lphy` side is the LPhy name.
+
+The exporter writes `phylospec` from the same `@GeneratorInfo.phylospec()` /
+`@ParameterInfo.phylospec()` annotations that `PhyloSpecNames` reads, so the exported library and the
+converter cannot disagree on a name.
 
 ## 3. `PhyloSpecToLPhy`: converting the AST in one visitor
 
@@ -222,15 +243,15 @@ public class PhyloSpecToLPhy implements AstVisitor<Void, Object, Void> {
 
     // statements (§3.2):   visitDraw, visitAssignment, visitObservedAsStmt
     // expressions:         visitVariable (§3.3), visitLiteral (§3.4), visitCall (§3.5–§3.8),
-    //                      visitBinary, visitUnary (§3.7)
-    // all other visit methods: throw unsupported(node) (§3.9)
+    //                      visitBinary, visitUnary (§3.7), visitArray (§3.9)
+    // all other visit methods: throw unsupported(node) (§3.10)
 
     private Object eval(AstNode node);                              // §3.1
     private Value<?> evalValue(Expr expr);                          // §3.1
     private GenerativeDistribution<?> evalDistribution(Expr expr);  // §3.1
     private Map<String, Expr> bindArguments(Expr.Call call);        // §3.5
     private Object construct(String phylospecName, Map<String, Value> arguments);  // §3.6
-    private TileApplicationError unsupported(AstNode node);         // §3.9
+    private TileApplicationError unsupported(AstNode node);         // §3.10
 }
 ```
 
@@ -268,7 +289,7 @@ it if so.
 | `Stmt.Draw` (`~`) | `dist = evalDistribution(stmt.expression)`; `rv = dist.sample(stmt.name)`; `dict.put(stmt.name, rv, Context.model)`. `sample(id)` is what LPhy's own parser calls; it names the variable, including the components of a vectorized one |
 | `Stmt.Assignment` (`=`) | `v = evalValue(stmt.expression)`. If `v` already has an id (`y = x`), fail with "aliasing a variable is not supported"; renaming `v` would silently rename `x`. Otherwise `v.setId(stmt.name)`; `dict.put(stmt.name, v, Context.model)` |
 | `Stmt.ObservedAs` | see below |
-| anything else | `unsupported(stmt)` (§3.9) |
+| anything else | `unsupported(stmt)` (§3.10) |
 
 **`observed as` uses LPhy's data clamping.** In LPhy, an observed variable is a value in the `data`
 dictionary and a random variable in the `model` dictionary, both under the same id. The converter
@@ -343,7 +364,7 @@ private Map<String, Expr> bindArguments(Expr.Call call) {
 ```
 
 `unwrap` returns `arg.expression` for an `Expr.AssignedArgument` and throws `unsupported` for an
-`Expr.DrawnArgument` (§3.9). `TypeResolver` has already checked that some overload matches, so the
+`Expr.DrawnArgument` (§3.10). `TypeResolver` has already checked that some overload matches, so the
 error above signals a bug, not a user mistake. Pass the same `ComponentResolver` instance that
 `TypeResolver` used, so that the script's `import` statements are already applied.
 
@@ -352,7 +373,9 @@ does not matter:
 
 | `call.functionName` | Conversion |
 |---|---|
-| `IID` | §3.6, last paragraph |
+| `IID` | §3.6, `IID` paragraph |
+| `names.iidShorthand(name) != null` | §3.6, IID shorthand paragraph |
+| `taxon` | `unsupported(call)` unless it is an element of an array (§3.9): LPhy has no single-taxon generator |
 | `names.mathFunction(name) != null` | §3.7 |
 | `names.methodCall(name) != null` | §3.8 |
 | `!names.generators(name).isEmpty()` | evaluate each bound argument with `evalValue`, then `construct(name, values)` (§3.6) |
@@ -399,6 +422,13 @@ arguments with `bindArguments`, evaluates them, adds `IID.REPLICATES_PARAM_NAME`
 the vectorized distribution. Because the inner arguments are renamed exactly as for a plain call,
 `IID(Yule(birthRate=b, …), n)` becomes `Yule(lambda=b, …, replicates=n)`.
 
+**IID shorthands** (§2.2) take the same path. For `sh = names.iidShorthand(name)`: bind the call's own
+arguments with `bindArguments`; check each of `sh.defaultOnlyArguments()` is absent or a literal equal to
+its default (otherwise `unsupported`) and drop it; take `sh.replicatesArgument()` out as `num`; then
+continue as `IID(sh.baseName()(remaining arguments), num)`. So
+`DiscreteGammaInv(shape=γ, numCategories=4, numSites=200)` becomes
+`DiscretizeGamma(shape=γ, ncat=4, replicates=200)`, a `Double[]` of 200 site rates.
+
 ### 3.7 Operators and math functions become LPhy expression nodes
 
 LPhy's operators and math functions are not generator classes. They are `public static` factory
@@ -415,12 +445,15 @@ new ExpressionNode1Arg(text, unaryFactory, arg)             // ExpressionNode1Ar
 - A math-function call (`sqrt(x)`): factory `names.mathFunction(name)`, operand the single bound
   argument.
 
-A `null` factory means LPhy has no such operator: `unsupported(expr)`. Each node's `apply()` returns
-its `Value`. `text` is the expression's source text: LPhy's parser passes `ctx.getText()`, and
-`CanonicalCodeBuilder` prints it when exporting. The converter passes `new AstPrinter()`'s rendering
-of the node; PhyloSpec and LPhy write these operators and functions the same way, which is to be
-confirmed (§8). `Expr.Grouping` never reaches the visitor: the front end's `RemoveGroupings` transform
-removes parentheses.
+A `null` factory means LPhy has no such operator: `unsupported(expr)`. LPhy has no unary minus,
+so `-x` is one. Each node's `apply()` returns its `Value`. `text` is the expression's source text:
+LPhy's parser passes `ctx.getText()`, and `CanonicalCodeBuilder` prints it when exporting, so it must
+be LPhy syntax. `AstPrinter` cannot be used: it renders S-expressions such as `(> s 1.0)`. The
+converter builds `text` from the evaluated operands instead: a named operand prints its id, any other
+its `codeString()` (in brackets if it is itself a binary operation), joined by the operator's lexeme
+(`TokenType.getLexeme`), which LPhy writes the same way; a math function prints `name(operand)`.
+`Expr.Grouping` never reaches the visitor: the front end's `RemoveGroupings` transform removes
+parentheses.
 
 ### 3.8 Method calls become LPhy `MethodCall`s
 
@@ -430,7 +463,40 @@ receiver, and `entry.otherArguments()`, in order, as the method's arguments. The
 `@MethodInfo` lookup as `receiver.method(args)` in a `.lphy` script; turn its checked
 `NoSuchMethodException` into a `TileApplicationError` at the call node.
 
-### 3.9 Unsupported forms fail clearly
+### 3.9 Arrays become LPhy array functions; an array of `taxon` calls becomes `taxa(...)`
+
+`visitArray(expr)` has two cases.
+
+**An array of `taxon(...)` calls is a `Taxa`.** PhyloSpec's `Taxa` is an alias of `Vector<Taxon>`, so a
+script without data writes its taxa as `[taxon(name="a"), taxon(name="b", age=2.0), …]`. LPhy has no
+single-taxon generator; it builds the whole set at once with `taxa(names, species, ages)`
+(`CreateTaxa`), whose three arguments are parallel arrays. So if every element is an `Expr.Call` to
+`taxon`, the converter transposes the calls into columns:
+
+1. Bind each element's arguments with `bindArguments` (`taxon(name, species, age)`).
+2. `names` = the array (below) of every element's `name`.
+3. `species` = the array of every element's `species`, if every element sets it; omitted if none does;
+   `unsupported` if only some do, because `CreateTaxa` needs one species per taxon.
+4. `ages` = the array of every element's `age`, using a literal `0.0` (PhyloSpec's default) for an
+   element without one; omitted if no element sets an age.
+5. Return `construct("taxa", {names, species?, ages?})` (§3.6). `taxa` also names `TaxaFunction`
+   (`taxa(alignment)`), but only `CreateTaxa` has a `names` parameter, so `ParserUtils` picks it.
+
+Tree generators take the result as their `taxa`. Properties of the resulting `Taxa` are read with
+`Taxa`'s own `@MethodInfo` methods (`taxaNames()`, `species()`, `ages()`, `length()`) through the
+method-call table (§3.8). An array that mixes `taxon` calls with anything else, or of `Taxon` values that
+are not `taxon` calls, is `unsupported`.
+
+**Any other array** becomes an LPhy array value built the way LPhy's parser builds `[a, b, …]`
+(`LPhyListenerImpl.visitArray_construction`, `LPhyListenerImpl.java:623–704`): evaluate each element
+with `evalValue`, pick the array function from `ArrayCreator.getType(values)` (`DoubleArray`,
+`IntegerArray`, `BooleanArray`, `StringArray`, `NumberArray`, their 2D forms, or `ObjectArray`), call its
+`apply()`, and, if every element is a constant, `setFunction(null)` so the array exports as one literal.
+That logic is private to `LPhyListenerImpl`; move it into a public
+`ArrayCreator.createArrayValue(Value[])` in `lphy-core` and call it from both, rather than copying it.
+`Vector<Real> rates = [1.0, 1.0, 1.0]` becomes a `DoubleArray`, which `PhyloCTMC` takes as `siteRates`.
+
+### 3.10 Unsupported forms fail clearly
 
 `unsupported(node)` returns `new TileApplicationError(node, "Not supported by LPhy yet", hint)`. The
 visitor must override every `AstVisitor` method it does not implement and throw it: `AstVisitor`'s
@@ -439,7 +505,7 @@ later step fails on a `null`. The forms are:
 
 - statements: `Stmt.Indexed`, `Stmt.ObservedBetween`, `Stmt.Decorated`, `Stmt.Import` (an import
   has already been applied by the front end, so `convert` can skip it instead);
-- expressions: `Expr.Array`, `Expr.Index`, `Expr.Range`, `Expr.DrawnArgument`, `Expr.StringTemplate`,
+- expressions: `Expr.Index`, `Expr.Range`, `Expr.DrawnArgument`, `Expr.StringTemplate`,
   `Expr.TemplateVariable`, `Expr.OptionalTemplateVariable`.
 
 Each is a candidate for a later visitor method (§6.2).
@@ -452,8 +518,8 @@ Each is a candidate for a later visitor method (§6.2).
    `componentResolver = new ComponentResolver(ComponentResolver.loadCoreComponentLibraries())`. Do not
    run `AttachComponentNamespaces` (§3.5). Report a `TypeError` at
    `parser.getRangeForAstNode(error.getAstNode())`.
-2. **Seed**: `RandomUtils.setSeed(seed)`, so the initial values drawn during conversion (§3.2) can be
-   reproduced.
+2. **Seed**: `RandomUtils.setSeed(seed)` once, if `-seed` is given, so the values drawn during
+   conversion (§3.2) can be reproduced.
 3. **Convert**: `REPL dict = new REPL(); dict.setName(name);`
    `new PhyloSpecToLPhy(dict, variableResolver, componentResolver, PhyloSpecNames.load()).convert(statements);`
    Report a `TileApplicationError` the same way as a `TypeError`.
@@ -462,10 +528,35 @@ Each is a candidate for a later visitor method (§6.2).
    field initializer (`Sampler.java:31`). With `true`, it would print the model with
    `CanonicalCodeBuilder` and re-parse it as `.lphy` on every sample. That works, but is wasted work.
    The flag is JVM-global, hence the restore.
-5. **Use the model**: `new Sampler(dict).sample(seed)` or `sampleAll(n, loggers, seed)` with LPhy's
-   loggers (`FileLoggerListener`, `ValueFileLoggerListener`, …), and/or
-   `new CanonicalCodeBuilder().getCode(dict)` to export `.lphy`. All of these read only `dict`'s two
-   dictionaries and each value's generator, so a converted model behaves exactly like a parsed one.
+5. **Simulate and log, the way `slphy` does** (`NamedRandomValueSimulator.simulateAndLog` and
+   `simulate`). Do not use `Sampler.sampleAll` with `FileLoggerListener`: `sampleAll` calls
+   `logger.start(numReplicates)` with one argument, and `FileLoggerListener.start` accepts only
+   `(FileConfig)`, `(Integer, String)` or `(Integer, File, Long)`, so it throws.
+   1. `FileLoggerListener logger = new FileLoggerListener(); logger.setOutputDir(outDir);`
+      `logger.start(numReplicates, filePrefix)`, where `filePrefix` is the script's file name without
+      `.phylospec`.
+   2. Replicate 0 is the model as converted:
+      `values = GraphicalModelUtils.getAllValuesFromSinks(dict)`.
+   3. Replicates 1 to n-1: `values = sampler.sample(null)`, with `sampler = new Sampler(dict)`. Pass
+      `null`, not the seed: `sample(seed)` re-seeds on every call, which would make every replicate
+      identical to replicate 1.
+   4. For each replicate, `logger.replicate(i, NamedRandomValueSimulator.getNamedRandomValues(values,
+      varNotLog))`; then `logger.complete()`. `FileLoggerListener` writes the same files as `slphy`:
+      numeric values to `<prefix>.log` (only if there are any), trees to `<prefix>_<tree id>.trees`,
+      and each alignment to its own Nexus file, `<prefix>_r<i>_<id>.nexus` when n > 1.
+6. **Export** the converted model with `new CanonicalCodeBuilder().getCode(dict)` to
+   `<outDir>/<prefix>.lphy`, so the simulation can be rerun or checked with `slphy` itself.
+
+The command line mirrors `slphy` (`SLPhy.java`), using picocli, which `lphy-core` already exports:
+
+```
+PhyloSpecToLPhyRunner <file.phylospec> [-r|--replicates n] [-seed|--seed s]
+                      [-No|--notlog id;id…] [-o|--outdir dir]
+```
+
+`-r` defaults to 1; without `-seed` the seed is random; `-No` lists random variables not to log, as in
+`slphy`; `-o` defaults to the script's own directory, which is where `slphy` writes. `slphy`'s `-D`
+(replace a constant) has no PhyloSpec equivalent and is left out.
 
 `StochasticityResolver` is not needed: tiling used it to reject tiles that cannot take a stochastic
 input, and every LPhy generator can.
@@ -507,7 +598,7 @@ none. LPhy publishes what it supports through `ComponentLibraryExporter`'s
 | `lphy-base` changes (v2 §3.2, §7.1) | unchanged (Decision 3) |
 | Errors attributed to AST nodes (v2 §3) | §3.1, at the innermost node |
 | SPI registration (v2 §9) | §5, optional |
-| Not yet covered (v2 §10) | unchanged; §3.9 lists the forms |
+| Not yet covered (v2 §10) | unchanged; §3.10 lists the forms |
 | TODO (v2 §11) | §8; seeding is closed (§4 step 2) |
 
 ### 6.2 What v3 does better
@@ -521,8 +612,8 @@ none. LPhy publishes what it supports through `ComponentLibraryExporter`'s
 - **Two silent renames become errors.** `y = x` and `observed as someVariable` used to rename an
   existing value; v3 rejects both (§3.2).
 - **Errors point at the innermost failing node** (§3.1), not at a tile's root.
-- **Uncovered forms are cheap to add.** Each item in v2 §10 is a visitor method, not a tile class:
-  `Expr.Array` → `DoubleArray`/`IntegerArray`, `Expr.Index` → `ElementsAt`/`Slice`, `Expr.Range` →
+- **Uncovered forms are cheap to add.** Each item in v2 §10 is a visitor method, not a tile class.
+  `Expr.Array` is already one (§3.9); still to come: `Expr.Index` → `ElementsAt`/`Slice`, `Expr.Range` →
   `rangeInt`, `Expr.DrawnArgument` → sample, register and return the variable. Indexed statements can
   be vectorized by rewriting `x[i] ~ D(a[i]) for i in 1:n` to `x ~ D(a)`.
 
@@ -550,14 +641,24 @@ Each step ends with tests that must pass before the next starts.
    ```
    Expect `dict` to hold random variables `mu`, `sigma`, `x`; `x`'s generator is a `Normal` whose
    `mean` parameter is the same object as `mu`; `mu.getOutputs()` contains that `Normal`.
-3. **`PhyloSpecToLPhyRunner`** (§4). Test: the script above samples with a fixed seed twice to the
-   same values; `CanonicalCodeBuilder` output parses as `.lphy` and yields the same three variables.
-4. **Remaining converter features**: `observed as` (scalar and `IID` array), `IID`, operators and math
+3. **`PhyloSpecToLPhyRunner`** (§4). Tests: the script above, run twice with the same `-seed`, logs
+   the same values; with `-r 3` the three replicates differ; `CanonicalCodeBuilder` output parses as
+   `.lphy` and yields the same three variables.
+4. **Arrays, taxa and IID shorthands** (§3.6, §3.9), driven by the two data-free examples, each run
+   end to end through the runner and round-tripped through `.lphy` export:
+   - `examples/simLiteralSiteRates.phylospec`: `taxa` becomes `taxa(names=["a","b","c","d"])`; `rates`
+     is a constant `DoubleArray`; the logged alignment has 4 taxa and 5 sites.
+   - `examples/simDiscreteGammaSites.phylospec`: `rates ~ DiscreteGammaInv(…, numSites=200)` becomes
+     `DiscretizeGamma(shape=0.5, ncat=4, replicates=200)`; the logged alignment has 4 taxa and 200 sites.
+   - Failure cases: `invariantProportion=0.1` and a `taxon(...)` outside an array are each rejected at
+     the right node with "Not supported by LPhy yet"; an array where only some taxa set `species` is
+     rejected.
+5. **Remaining converter features**: `observed as` (scalar and `IID` array), `IID`, operators and math
    functions, method calls (§3.2, §3.6–§3.8). One test script per feature, each also round-tripped
    through `.lphy` export.
-5. **`lphy-base` changes** (Decision 3), one generator at a time, driven by v2 §7.1, each with the
+6. **`lphy-base` changes** (Decision 3), one generator at a time, driven by v2 §7.1, each with the
    unit tests listed in §8.
-6. **`LPhyTileLibrary`** (§5), only if an SPI consumer exists.
+7. **`LPhyTileLibrary`** (§5), only if an SPI consumer exists.
 
 ## 8. TODO
 
@@ -566,13 +667,6 @@ Each step ends with tests that must pass before the next starts.
   through `TileLibrary.loadAll`. Find out whether such a consumer exists or is planned. Even then,
   `EngineSpecGenerator` cannot list LPhy's generators from it; `phylospec-lphy-component-library.json`
   stays the published list.
-- **Confirm that `AstPrinter` text is valid LPhy for operators and math functions** (§3.7). The
-  `ExpressionNode1Arg` / `ExpressionNode2Args` constructors are checked:
-  `(String expression, Function | BiFunction func, GraphicalModelNode... values)`. Still to check: that
-  `new AstPrinter()` renders `a + b`, `sqrt(x)` and nested expressions in syntax LPhy parses, so the
-  exported `.lphy` re-parses. If not, build `text` from the operands' `codeString()` instead.
-- **`methodCallEquivalents` needs a `receiver` field** (§2.2), and the entries that do not qualify
-  must be removed from the generated `lphy-method-calls.json`.
 - **Rename data: the `@GeneratorInfo.phylospec()`/`@ParameterInfo.phylospec()` annotations are not
   populated yet.** Matching names need no annotation, since `name()` is used directly. Every name that
   differs depends on these annotations (§2.1). There are currently no `phylospec =` attributes anywhere
@@ -582,6 +676,17 @@ Each step ends with tests that must pass before the next starts.
   that LPhy claims to support resolves, by name or annotation, to exactly one LPhy constructor. The
   same check can run in `compare_component_libraries.py`, so the coverage report and the converter
   cannot drift apart.
+- **Annotations and one `lphy-core` change needed by the two data-free examples** (§7 step 4). They
+  come before the general rename work above, and are the minimum for both examples to run:
+  - `JukesCantor`: `@GeneratorInfo(phylospec = "jc69")`;
+  - `Yule`: `lambda` gets `@ParameterInfo(phylospec = "birthRate")`;
+  - `PhyloCTMC`: `Q` gets `@ParameterInfo(phylospec = "qMatrix")`;
+  - `DiscretizedGamma`: `@GeneratorInfo(phylospec = "DiscreteGamma")`, and `ncat` gets
+    `@ParameterInfo(phylospec = "numCategories")`, so that the `DiscreteGammaInv` shorthand (§2.2) finds it;
+  - `lphy-core`: move `LPhyListenerImpl`'s array construction into a public
+    `ArrayCreator.createArrayValue(Value[])` (§3.9), and call it from `LPhyListenerImpl`.
+
+  `CreateTaxa` needs nothing: the converter calls it with its own LPhy argument names (§3.9).
 - **`lphy-base` changes from Decision 3, step 2** (v2 §3.2, §7.1): `Exp(rate)`, `Gamma(rate)`, the
   `gtr` six-rate constructor, and optionally `LogNormal(mean, sdlog)`. Each needs unit tests for the
   four consistency rules in v2 §3.2: `getParams` returns only the parameters given, `setParam` accepts

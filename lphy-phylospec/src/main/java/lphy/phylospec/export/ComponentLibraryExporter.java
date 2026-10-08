@@ -15,6 +15,7 @@ import lphy.core.parser.function.ExpressionNode2Args;
 import lphy.core.spi.Extension;
 import lphy.core.spi.LPhyExtension;
 import lphy.core.spi.LoaderManager;
+import lphy.phylospec.convert.PhyloSpecNames;
 import org.phylospec.components.*;
 
 import java.io.File;
@@ -222,28 +223,9 @@ public class ComponentLibraryExporter {
             List.of(ExpressionNode1Arg.class, ExpressionNode2Args.class);
 
     /**
-     * Java method name -> LPhy script-callable name, for operators bound to a symbol rather than a
-     * function-call name matching the method (e.g. {@code a + b}, not {@code a.plus(b)}). LPhy's
-     * ~30 unary math functions (abs, sqrt, log, ...) need no entry here - their script name already
-     * matches the Java method name exactly (verified against every case in
-     * {@code LPhyListenerImpl}). Mined from that same switch statement; small and effectively
-     * frozen (unchanged for years), so hand-maintained here rather than parsed out of the
-     * listener's Java source at build time.
-     */
-    private static final Map<String, String> EXPRESSION_OPERATOR_SCRIPT_NAMES = Map.ofEntries(
-            Map.entry("not", "!"),
-            Map.entry("plus", "+"), Map.entry("minus", "-"), Map.entry("times", "*"), Map.entry("divide", "/"),
-            Map.entry("pow", "**"), Map.entry("mod", "%"),
-            Map.entry("and", "&&"), Map.entry("or", "||"),
-            Map.entry("le", "<="), Map.entry("less", "<"), Map.entry("ge", ">="), Map.entry("greater", ">"),
-            Map.entry("ne", "!="), Map.entry("equals", "=="),
-            Map.entry("bitwiseand", "&"), Map.entry("bitwiseor", "|")
-    );
-
-    /**
      * Every public static {@code Function}/{@code BiFunction} factory method across both wrapper
      * classes - the reflectable source of truth for "what operators exist and what are their
-     * arg/return types", even though *names* need {@link #EXPRESSION_OPERATOR_SCRIPT_NAMES} for
+     * arg/return types", even though *names* need {@link PhyloSpecNames#EXPRESSION_OPERATOR_SCRIPT_NAMES} for
      * the symbol-bound half of them.
      */
     private static List<Method> expressionOperatorMethods() {
@@ -287,7 +269,7 @@ public class ComponentLibraryExporter {
             Class<?> returnClass = functionalTypeArgClass(typeArgs[typeArgs.length - 1]);
 
             Generator generator = new Generator();
-            generator.setName(EXPRESSION_OPERATOR_SCRIPT_NAMES.getOrDefault(method.getName(), method.getName()));
+            generator.setName(PhyloSpecNames.EXPRESSION_OPERATOR_SCRIPT_NAMES.getOrDefault(method.getName(), method.getName()));
             generator.setDescription("");
             generator.setNamespace(method.getDeclaringClass().getPackageName());
             generator.setGeneratedType(returnClass.getSimpleName());
@@ -344,8 +326,9 @@ public class ComponentLibraryExporter {
      */
     private static List<Generator> buildGenerators(Class<?> c, boolean isDistribution) {
         GeneratorInfo info = GeneratorUtils.getGeneratorInfo(c);
-        String name = (info == null || info.phylospec().isEmpty())
-                ? GeneratorUtils.getGeneratorName(c) : info.phylospec();
+        // `name` is always the LPhy generator name, as written in an LPhy script; the PhyloSpec
+        // name, if different, goes only into the separate `phylospec` property below
+        String name = GeneratorUtils.getGeneratorName(c);
         // The implementing class's own Java package (e.g. lphy.base.distribution for Normal,
         // lphy.core.parser.function for MapFunction) rather than a synthetic category-derived
         // string (the old "lphy.distributions.prior" scheme) - real, verifiable provenance instead
@@ -369,9 +352,9 @@ public class ComponentLibraryExporter {
             // Omit (Generator is NON_NULL) rather than emit an empty list.
             generator.setConstraints(null);
             // explicit @GeneratorInfo.phylospec() annotation value, if the class declared one
-            // (e.g. HKY's apply() sets phylospec = "hky") - kept alongside `name` rather than
-            // folded into it, so it's visible whether a name came from an explicit annotation
-            // or is just the LPhy name used as-is.
+            // (e.g. JukesCantor's apply() sets phylospec = "jc69") - kept alongside `name`
+            // ("jukesCantor"), never folded into it: `name` is the LPhy name, `phylospec` the
+            // PhyloSpec name.
             if (info != null && !info.phylospec().isEmpty()) {
                 generator.setAdditionalProperty("phylospec", info.phylospec());
             }
@@ -401,7 +384,8 @@ public class ComponentLibraryExporter {
         for (int i = 0; i < paramInfos.size(); i++) {
             ParameterInfo pInfo = paramInfos.get(i);
             Argument argument = new Argument();
-            argument.setName(pInfo.phylospec().isEmpty() ? pInfo.name() : pInfo.phylospec());
+            // the LPhy parameter name; the PhyloSpec name goes only into `phylospec` below
+            argument.setName(pInfo.name());
             argument.setDescription(pInfo.description());
             argument.setRequired(!pInfo.optional());
             Class<?> paramType = i < genericParamTypes.length
