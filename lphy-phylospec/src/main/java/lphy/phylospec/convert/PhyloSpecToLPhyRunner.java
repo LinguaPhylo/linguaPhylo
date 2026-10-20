@@ -4,7 +4,6 @@ import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.io.FileConfig;
 import lphy.core.logger.FileLoggerListener;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.REPL;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.core.simulator.NamedRandomValueSimulator;
@@ -176,32 +175,27 @@ public class PhyloSpecToLPhyRunner implements Callable<Integer> {
         if (numReplicates < 1)
             throw new IllegalArgumentException("The replicate must be at least 1 time ! But numReplicates = " + numReplicates);
 
-        // Sampler reads this JVM-global flag when constructed: resample the converted model in place,
-        // rather than printing it as .lphy and parsing it again for every sample
-        boolean sampleUsingParser = LPhyParserDictionary.Utils.isSampleValuesUsingParser();
-        LPhyParserDictionary.Utils.setSampleValuesUsingParser(false);
-        try {
-            Sampler sampler = new Sampler(dict);
+        // Sampler resamples by printing the model as .lphy and parsing it again, its default. Its
+        // in-place mode (LPhyParserDictionary.Utils.setSampleValuesUsingParser(false)) is not used:
+        // it neither recomputes expressions such as `y = sqrt(s)` nor keeps observed values clamped.
+        Sampler sampler = new Sampler(dict);
 
-            // Sampler.sampleAll starts a logger with numReplicates only, which FileLoggerListener rejects
-            FileLoggerListener logger = new FileLoggerListener();
-            if (outDir != null) logger.setOutputDir(outDir.getAbsolutePath());
-            logger.start(numReplicates, filePrefix);
+        // Sampler.sampleAll starts a logger with numReplicates only, which FileLoggerListener rejects
+        FileLoggerListener logger = new FileLoggerListener();
+        if (outDir != null) logger.setOutputDir(outDir.getAbsolutePath());
+        logger.start(numReplicates, filePrefix);
 
-            Map<Integer, List<Value>> allReplicates = new TreeMap<>();
-            for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
-                // sample(seed) would re-seed every replicate, making them identical: pass null
-                List<Value> values = i == SimulatorListener.REPLICATES_START_INDEX
-                        ? GraphicalModelUtils.getAllValuesFromSinks(dict) : sampler.sample(null);
-                List<Value> namedRandomValues = NamedRandomValueSimulator.getNamedRandomValues(values, varNotLog);
-                allReplicates.put(i, namedRandomValues);
-                logger.replicate(i, namedRandomValues);
-            }
-            logger.complete();
-            return allReplicates;
-        } finally {
-            LPhyParserDictionary.Utils.setSampleValuesUsingParser(sampleUsingParser);
+        Map<Integer, List<Value>> allReplicates = new TreeMap<>();
+        for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
+            // sample(seed) would re-seed every replicate, making them identical: pass null
+            List<Value> values = i == SimulatorListener.REPLICATES_START_INDEX
+                    ? GraphicalModelUtils.getAllValuesFromSinks(dict) : sampler.sample(null);
+            List<Value> namedRandomValues = NamedRandomValueSimulator.getNamedRandomValues(values, varNotLog);
+            allReplicates.put(i, namedRandomValues);
+            logger.replicate(i, namedRandomValues);
         }
+        logger.complete();
+        return allReplicates;
     }
 
     /** Syntax, type or conversion errors, each with its source range when known. */

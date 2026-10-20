@@ -947,7 +947,8 @@
         "name" : "conc",
         "type" : "Number[]",
         "required" : true,
-        "description" : "the concentration parameters of a Dirichlet distribution."
+        "description" : "the concentration parameters of a Dirichlet distribution.",
+        "phylospec" : "concentration"
       }, {
         "name" : "sum",
         "type" : "Number",
@@ -3303,7 +3304,8 @@
         "name" : "freq",
         "type" : "Double[]",
         "required" : true,
-        "description" : "the base frequencies."
+        "description" : "the base frequencies.",
+        "phylospec" : "baseFrequencies"
       }, {
         "name" : "meanRate",
         "type" : "Number",

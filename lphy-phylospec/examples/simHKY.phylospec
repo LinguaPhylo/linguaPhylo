@@ -1,0 +1,7 @@
+// Data-free HKY model: taxa listed as taxon(...) calls, alignment length (5) set by a literal siteRates vector.
+Tree tree ~ Yule(birthRate=1.0, taxa=[taxon(name="a"), taxon(name="b"), taxon(name="c"), taxon(name="d")])
+PositiveReal kappa ~ LogNormal(logMean=1.0, logSd=0.5)
+Simplex pi ~ Dirichlet(concentration=[2.0, 2.0, 2.0, 2.0])
+QMatrix q = hky(kappa=kappa, baseFrequencies=pi)
+Vector<Real> rates = [1.0, 1.0, 1.0, 1.0, 1.0]
+Alignment sim ~ PhyloCTMC(tree=tree, qMatrix=q, siteRates=rates)

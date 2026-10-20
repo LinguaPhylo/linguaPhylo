@@ -25,7 +25,7 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
     private static final String sumName = "sum";
 
 
-    public Dirichlet(@ParameterInfo(name=concParamName, narrativeName = "concentration",
+    public Dirichlet(@ParameterInfo(name=concParamName, phylospec = "concentration", narrativeName = "concentration",
             description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration,
                      @ParameterInfo(name = sumName,
                              description = "The expected sum of values. By default, the sum is 1.",

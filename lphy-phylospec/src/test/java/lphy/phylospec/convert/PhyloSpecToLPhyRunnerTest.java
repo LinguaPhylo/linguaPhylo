@@ -79,6 +79,21 @@ class PhyloSpecToLPhyRunnerTest {
     }
 
     @Test
+    void replicatesRecomputeExpressionsAndKeepObservations() {
+        Map<Integer, List<Value>> replicates = simulate("""
+                PositiveReal s ~ LogNormal(logMean=0.0, logSd=0.5)
+                Real y = sqrt(s) + 1.0
+                Real x ~ Normal(mean=s, sd=1.0) observed as 1.5
+                """, 13, 3, "resample");
+        for (List<Value> values : replicates.values()) {
+            Map<String, Object> byId = valuesById(values);
+            double s = (Double) byId.get("s");
+            assertEquals(Math.sqrt(s) + 1.0, ((Number) byId.get("y")).doubleValue(), 1e-12, "y follows s: " + byId);
+            assertEquals(1.5, byId.get("x"), "an observed value is never resampled: " + byId);
+        }
+    }
+
+    @Test
     void exportedLPhyParsesToTheSameVariables() {
         RandomUtils.setSeed(3);
         REPL dict = PhyloSpecToLPhyRunner.convert(NORMAL_MODEL, "export");

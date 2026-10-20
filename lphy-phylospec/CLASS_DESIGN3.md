@@ -323,8 +323,9 @@ statement first and then returns the value:
    variable is never first created unobserved.
 3. `eval(def)`, then return the stored value.
 
-Statements are visited in source order, so step 3 runs only for a forward reference, and for the
-`LPhyTileLibrary` adapter (§5), which converts one statement at a time.
+Statements are visited in source order, and the front end's `VariableResolver` already rejects a
+forward or self reference ("Variable `mu` does not exist"). So through the runner, step 3 never runs;
+it is there for the `LPhyTileLibrary` adapter (§5), which converts one statement at a time.
 
 ### 3.4 Literals become anonymous constants
 
@@ -523,11 +524,13 @@ Each is a candidate for a later visitor method (§6.2).
 3. **Convert**: `REPL dict = new REPL(); dict.setName(name);`
    `new PhyloSpecToLPhy(dict, variableResolver, componentResolver, PhyloSpecNames.load()).convert(statements);`
    Report a `TileApplicationError` the same way as a `TypeError`.
-4. **Resample in place**: save `LPhyParserDictionary.Utils.isSampleValuesUsingParser()`, set it to
-   `false` **before** constructing `Sampler`, and restore it when done. `Sampler` reads the flag in a
-   field initializer (`Sampler.java:31`). With `true`, it would print the model with
-   `CanonicalCodeBuilder` and re-parse it as `.lphy` on every sample. That works, but is wasted work.
-   The flag is JVM-global, hence the restore.
+4. **Resample through the parser**: leave `LPhyParserDictionary.Utils.isSampleValuesUsingParser()` at
+   its default, `true`, so `Sampler` prints the model with `CanonicalCodeBuilder` and re-parses it as
+   `.lphy` on every sample. Do not switch to in-place resampling (`false`). In `lphy-core` that mode
+   neither recomputes deterministic values (`y = sqrt(s) + 1.0` keeps its first value, in a
+   hand-written `.lphy` script too) nor keeps an observed value clamped. It is also unreachable
+   today, because `setSampleValuesUsingParser` assigns its parameter to itself. Fix both in
+   `lphy-core` before relying on it.
 5. **Simulate and log, the way `slphy` does** (`NamedRandomValueSimulator.simulateAndLog` and
    `simulate`). Do not use `Sampler.sampleAll` with `FileLoggerListener`: `sampleAll` calls
    `logger.start(numReplicates)` with one argument, and `FileLoggerListener.start` accepts only
@@ -592,7 +595,7 @@ none. LPhy publishes what it supports through `ComponentLibraryExporter`'s
 | Method calls (v2 §3.3) | §2.2, §3.8 |
 | `IID` → `replicates` (v2 §4) | §3.6 |
 | Operators and math functions (v2 §5) | §2.2, §3.7 |
-| `REPL`-based model, `Sampler`, loggers, in-place resampling (v2 §6) | §1, §4 |
+| `REPL`-based model, `Sampler`, loggers, resampling (v2 §6) | §1, §4 (through the parser, not in place) |
 | `.lphy` export (v2 §6.1) | §4 step 5 |
 | Name consistency and collision checks (v2 §7) | §2.3 |
 | `lphy-base` changes (v2 §3.2, §7.1) | unchanged (Decision 3) |
@@ -646,9 +649,11 @@ Each step ends with tests that must pass before the next starts.
    `.lphy` and yields the same three variables.
 4. **Arrays, taxa and IID shorthands** (§3.6, §3.9), driven by the two data-free examples, each run
    end to end through the runner and round-tripped through `.lphy` export:
-   - `examples/simLiteralSiteRates.phylospec`: `taxa` becomes `taxa(names=["a","b","c","d"])`; `rates`
-     is a constant `DoubleArray`; the logged alignment has 4 taxa and 5 sites.
-   - `examples/simDiscreteGammaSites.phylospec`: `rates ~ DiscreteGammaInv(…, numSites=200)` becomes
+   - `examples/simHKY.phylospec`: `taxa` becomes `taxa(names=["a","b","c","d"])`; `rates`
+     is a constant `DoubleArray`; `hky(kappa=kappa, baseFrequencies=pi)` becomes `hky(kappa=kappa, freq=pi)`,
+     with `kappa ~ LogNormal(meanlog=1.0, sdlog=0.5)` and `pi ~ Dirichlet(conc=[2.0, 2.0, 2.0, 2.0])`;
+     the logged alignment has 4 taxa and 5 sites.
+   - `examples/simJCDiscreteGamma.phylospec`: `rates ~ DiscreteGammaInv(…, numSites=200)` becomes
      `DiscretizeGamma(shape=0.5, ncat=4, replicates=200)`; the logged alignment has 4 taxa and 200 sites.
    - Failure cases: `invariantProportion=0.1` and a `taxon(...)` outside an array are each rejected at
      the right node with "Not supported by LPhy yet"; an array where only some taxa set `species` is
@@ -667,17 +672,19 @@ Each step ends with tests that must pass before the next starts.
   through `TileLibrary.loadAll`. Find out whether such a consumer exists or is planned. Even then,
   `EngineSpecGenerator` cannot list LPhy's generators from it; `phylospec-lphy-component-library.json`
   stays the published list.
-- **Rename data: the `@GeneratorInfo.phylospec()`/`@ParameterInfo.phylospec()` annotations are not
-  populated yet.** Matching names need no annotation, since `name()` is used directly. Every name that
-  differs depends on these annotations (§2.1). There are currently no `phylospec =` attributes anywhere
-  in `lphy-base` (they were removed from `HKY.java`). v2 §7.1's first row lists the known renames;
+- **Rename data: most `@GeneratorInfo.phylospec()`/`@ParameterInfo.phylospec()` annotations are
+  missing.** Matching names need no annotation, since `name()` is used directly. Every name that
+  differs depends on these annotations (§2.1). Only the ones the two data-free examples and the
+  `LogNormal` test need exist so far (see the next item). Without the rest, a call such as
+  `Coalescent(populationSize=…)` fails with "No LPhy generator matches", because `populationSize`
+  has no LPhy counterpart. v2 §7.1's first row lists the known renames;
   complete it parameter by parameter against the coverage report's In-both tables. Add a unit test on
   `PhyloSpecNames` asserting that every PhyloSpec overload in `phylospec-core-component-library.json`
   that LPhy claims to support resolves, by name or annotation, to exactly one LPhy constructor. The
   same check can run in `compare_component_libraries.py`, so the coverage report and the converter
   cannot drift apart.
-- **Annotations and one `lphy-core` change needed by the two data-free examples** (§7 step 4). They
-  come before the general rename work above, and are the minimum for both examples to run:
+- **Done: annotations and one `lphy-core` change needed by the two data-free examples** (§7 step 4).
+  Both examples now run end to end:
   - `JukesCantor`: `@GeneratorInfo(phylospec = "jc69")`;
   - `Yule`: `lambda` gets `@ParameterInfo(phylospec = "birthRate")`;
   - `PhyloCTMC`: `Q` gets `@ParameterInfo(phylospec = "qMatrix")`;
@@ -692,12 +699,15 @@ Each step ends with tests that must pass before the next starts.
   four consistency rules in v2 §3.2: `getParams` returns only the parameters given, `setParam` accepts
   every parameter name, conversions are computed lazily from the stored `Value`s, and mutually
   exclusive parameters are validated in the constructor.
-- **Literal numeric types.** `visitLiteral` (§3.4) turns `kappa=2` into an `IntegerValue`, and vector
-  literals raise the same question (`Integer[]` vs. `Double[]`). LPhy generators handle this by calling
-  `.doubleValue()` on `Number`-typed parameters. Verify that this covers every slot declared as
-  `Value<Double>` rather than `Value<Number>` (e.g. `k80.kappa`, `ExpMarkovChain.initialMean`,
-  `PhyloBrownian.diffRate`, `PhyloOU`'s parameters). If not, `visitLiteral` can produce a `DoubleValue`
-  for `Real`-typed literals, using `TypeResolver`'s type for the literal node.
+- **Literal numeric types (confirmed bug).** `visitLiteral` (§3.4) turns `kappa=2` into an
+  `IntegerValue`, and `QMatrix q = k80(kappa=2)` fails with "No match in 'k80' constructor
+  arguments", because `k80.kappa` is `Value<Double>`. `Number`-typed slots (`Uniform(lower=0,
+  upper=1)`) work, because those generators call `.doubleValue()`. Other `Value<Double>` slots are
+  affected the same way (e.g. `ExpMarkovChain.initialMean`, `PhyloBrownian.diffRate`, `PhyloOU`'s
+  parameters), and vector literals raise the same question (`Integer[]` vs. `Double[]`). Fix:
+  `visitLiteral` produces a `DoubleValue` for a `Real`-typed literal, using `TypeResolver`'s type for
+  the literal node, or `bindArguments` promotes an integer literal whose PhyloSpec parameter type is
+  a `Real` subtype.
 - **Observing a named variable** (§3.2, step 2). `observed as alignment`, where `alignment` is defined
   by its own statement, is rejected for now. Supporting it needs a rule for which id the data value
   carries, since LPhy requires the data value and the random variable to share one.

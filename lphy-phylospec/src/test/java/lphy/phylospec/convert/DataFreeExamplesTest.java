@@ -1,8 +1,11 @@
 package lphy.phylospec.convert;
 
+import lphy.base.distribution.Dirichlet;
 import lphy.base.distribution.DiscretizedGamma;
+import lphy.base.distribution.LogNormal;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.alignment.Alignment;
+import lphy.base.evolution.substitutionmodel.HKY;
 import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.io.OutputSystem;
 import lphy.core.model.Value;
@@ -84,8 +87,8 @@ class DataFreeExamplesTest {
     }
 
     @Test
-    void literalSiteRates() throws IOException {
-        REPL dict = runExample("simLiteralSiteRates.phylospec");
+    void hky() throws IOException {
+        REPL dict = runExample("simHKY.phylospec");
 
         Alignment sim = alignment(dict);
         assertEquals(4, sim.ntaxa());
@@ -96,11 +99,18 @@ class DataFreeExamplesTest {
         Value<?> rates = model(dict, "rates");
         assertArrayEquals(new Double[]{1.0, 1.0, 1.0, 1.0, 1.0}, (Double[]) rates.value());
         assertTrue(rates.isConstant(), "an array of literals is one constant");
+
+        // baseFrequencies -> freq and concentration -> conc, by the phylospec annotations
+        HKY hky = assertInstanceOf(HKY.class, model(dict, "q").getGenerator());
+        assertSame(model(dict, "kappa"), hky.getParams().get("kappa"));
+        assertSame(model(dict, "pi"), hky.getParams().get("freq"));
+        assertInstanceOf(LogNormal.class, model(dict, "kappa").getGenerator());
+        assertInstanceOf(Dirichlet.class, model(dict, "pi").getGenerator());
     }
 
     @Test
-    void discreteGammaSites() throws IOException {
-        REPL dict = runExample("simDiscreteGammaSites.phylospec");
+    void jcDiscreteGamma() throws IOException {
+        REPL dict = runExample("simJCDiscreteGamma.phylospec");
 
         Alignment sim = alignment(dict);
         assertEquals(4, sim.ntaxa());

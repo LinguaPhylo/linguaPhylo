@@ -49,6 +49,15 @@
                         <argument>${exporter.args}</argument>
                     </arguments>
                 </configuration>
+                <executions>
+                    <!-- mvn exec:java@phylospec2lphy -Dexec.args="examples/simHKY.phylospec -seed 777" -->
+                    <execution>
+                        <id>phylospec2lphy</id>
+                        <configuration>
+                            <mainClass>lphy.phylospec.convert.PhyloSpecToLPhyRunner</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

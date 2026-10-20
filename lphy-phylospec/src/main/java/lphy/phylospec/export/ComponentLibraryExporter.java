@@ -33,7 +33,7 @@ import java.util.function.Function;
  * and data type declared by LPhy core and the standard library, and writes them out as a
  * component library JSON file in the same format as phylospec-core-component-library.json.
  * <p>
- * Usage: {@code mvn -pl lphy-phylospec -am exec:exec -Dexporter.args=path/to/output.json}
+ * Usage, from this module's folder: {@code mvn exec:java -Dexporter.args=path/to/output.json}
  */
 public class ComponentLibraryExporter {
 
