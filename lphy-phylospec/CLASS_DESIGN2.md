@@ -17,11 +17,14 @@ The class diagram (`class-diagram2.svg`, reproduced at the end of this document)
 into these regions:
 
 - **`phylospec-core`** — the tiling framework: `Tile`, `GeneratorTile`, `AstNodeTile`,
-  `TemplateTile`, `TileInput`, `TileLibrary`, `EvaluateTiles`. Reused without modification.
+  `TemplateTile`, `TileInput`, `CandidateTile`, `TileLibrary`, `EvaluateTiles`. Reused without
+  modification.
 - **`lphy-phylospec`** — the module this document specifies: the tile classes that map PhyloSpec
-  AST shapes onto LPhy objects (§1–§5), the `PhyloSpecLPhyDictionary` accumulator (§6), the
-  `LPhyCoreTileLibrary` that registers every tile (§7), and the `PhyloSpecToLPhyRunner`
-  orchestrator (§8).
+  AST shapes onto LPhy objects (§1–§5), with their helpers `ReflectiveTileInput` (§1.1) and
+  `LPhyCall`/`LPhyCallBuilder` (§1.6); the `PhyloSpecNames` naming helper shared with
+  `ComponentLibraryExporter` (§1.1); the `PhyloSpecLPhyDictionary` accumulator (§6); the
+  `LPhyCoreTileLibrary` that registers every tile (§7); and the `PhyloSpecToLPhyRunner`
+  orchestrator (§8). [`DESIGN_V2_VS_V3.md`](DESIGN_V2_VS_V3.md) counts these classes.
 - **`lphy-core`** — LPhy's existing runtime: `GraphicalModel`, `Value`, `RandomVariable`,
   `Generator`, `ParserUtils`, `Sampler`. Reused without modification, apart from the operator
   factory methods that Decision 3 extends (§5).
@@ -223,7 +226,7 @@ Three details of how the names are read:
 - **One naming rule, shared with the exporter.** `ComponentLibraryExporter` already applies the
   same rule when it writes `phylospec-lphy-component-library.json` (generators at
   `ComponentLibraryExporter.java:347`, parameters at `:404`). Both should call one shared helper,
-  e.g. `PhyloSpecNames.of(Class)` and `PhyloSpecNames.of(ParameterInfo)`, so the coverage report and
+  `PhyloSpecNames.of(Class)` and `PhyloSpecNames.of(ParameterInfo)`, so the coverage report and
   the tiles cannot disagree on a name.
 
 `ReflectiveTileInput` always expects `Value`, because every parameter of an LPhy generator

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 1190" font-family="'Helvetica Neue',Arial,sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 1250" font-family="'Helvetica Neue',Arial,sans-serif">
   <defs>
     <pattern id="gridPattern" width="24" height="24" patternUnits="userSpaceOnUse">
       <path d="M24 0H0V24" fill="none" stroke="#E9EEEA" stroke-width="1"/>
@@ -19,8 +19,8 @@
   </defs>
 
   <!-- background -->
-  <rect x="0" y="0" width="1360" height="1190" fill="#FCFDFB"/>
-  <rect x="0" y="0" width="1360" height="1190" fill="url(#gridPattern)"/>
+  <rect x="0" y="0" width="1360" height="1250" fill="#FCFDFB"/>
+  <rect x="0" y="0" width="1360" height="1250" fill="url(#gridPattern)"/>
 
   <!-- title -->
   <text x="40" y="42" font-size="25" font-weight="700" fill="#1B2420">PhyloSpec &#8594; LPhy &#8212; Class Diagram (v3, direct conversion)</text>
@@ -28,8 +28,8 @@
 
   <!-- package regions -->
   <rect x="40" y="170" width="1220" height="190" rx="18" fill="#EEF1EF" opacity="0.55" stroke="#B9C3BC" stroke-width="1.5" stroke-dasharray="7,5"/>
-  <rect x="40" y="410" width="1220" height="360" rx="18" fill="#E4F2ED" opacity="0.55" stroke="#8FC3AE" stroke-width="1.5" stroke-dasharray="7,5"/>
-  <rect x="40" y="830" width="1220" height="210" rx="18" fill="#EEF1EF" opacity="0.55" stroke="#B9C3BC" stroke-width="1.5" stroke-dasharray="7,5"/>
+  <rect x="40" y="410" width="1220" height="420" rx="18" fill="#E4F2ED" opacity="0.55" stroke="#8FC3AE" stroke-width="1.5" stroke-dasharray="7,5"/>
+  <rect x="40" y="890" width="1220" height="220" rx="18" fill="#EEF1EF" opacity="0.55" stroke="#B9C3BC" stroke-width="1.5" stroke-dasharray="7,5"/>
 
   <!-- ============================== connectors ============================== -->
   <g fill="none" stroke="#4B5850" stroke-width="1.6">
@@ -52,11 +52,11 @@
     <path d="M860,660 L908,660" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
 
     <!-- into lphy-core / lphy-base -->
-    <path d="M200,740 L176,858" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
-    <path d="M450,740 L414,858" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
-    <path d="M650,740 L650,858" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
-    <path d="M820,740 L860,858" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
-    <path d="M1075,740 L1126,858" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
+    <path d="M200,800 L176,918" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
+    <path d="M450,800 L414,918" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
+    <path d="M650,800 L650,918" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
+    <path d="M820,800 L860,918" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
+    <path d="M1075,800 L1126,918" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
   </g>
 
   <!-- edge labels -->
@@ -85,20 +85,20 @@
     <rect x="864" y="640" width="40" height="15" fill="#FCFDFB" opacity="0.85"/>
     <text x="872" y="651">uses</text>
 
-    <rect x="140" y="790" width="90" height="15" fill="#FCFDFB" opacity="0.85"/>
-    <text x="144" y="801">sample / export</text>
+    <rect x="140" y="850" width="90" height="15" fill="#FCFDFB" opacity="0.85"/>
+    <text x="144" y="861">sample / export</text>
 
-    <rect x="414" y="790" width="34" height="15" fill="#FCFDFB" opacity="0.85"/>
-    <text x="420" y="801">fills</text>
+    <rect x="414" y="850" width="34" height="15" fill="#FCFDFB" opacity="0.85"/>
+    <text x="420" y="861">fills</text>
 
-    <rect x="618" y="790" width="64" height="15" fill="#FCFDFB" opacity="0.85"/>
-    <text x="622" y="801">constructs</text>
+    <rect x="618" y="850" width="64" height="15" fill="#FCFDFB" opacity="0.85"/>
+    <text x="622" y="861">constructs</text>
 
-    <rect x="818" y="790" width="42" height="15" fill="#FCFDFB" opacity="0.85"/>
-    <text x="822" y="801">builds</text>
+    <rect x="818" y="850" width="42" height="15" fill="#FCFDFB" opacity="0.85"/>
+    <text x="822" y="861">builds</text>
 
-    <rect x="1050" y="790" width="102" height="15" fill="#FCFDFB" opacity="0.85"/>
-    <text x="1054" y="801">reads annotations</text>
+    <rect x="1050" y="850" width="102" height="15" fill="#FCFDFB" opacity="0.85"/>
+    <text x="1054" y="861">reads annotations</text>
   </g>
 
   <!-- package labels (drawn over connectors) -->
@@ -108,8 +108,8 @@
   <rect x="56" y="396" width="300" height="26" rx="6" fill="#2F6F5E"/>
   <text x="206" y="413.5" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="0.04em" fill="#FFFFFF">LPHY-PHYLOSPEC &#8212; NEW</text>
 
-  <rect x="56" y="816" width="520" height="26" rx="6" fill="#7C8A83"/>
-  <text x="316" y="833.5" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="0.04em" fill="#FFFFFF">LPHY-CORE &#8212; REUSED AS-IS &#183; LPHY-BASE &#8212; DECISION 3 CHANGES</text>
+  <rect x="56" y="876" width="700" height="26" rx="6" fill="#7C8A83"/>
+  <text x="406" y="893.5" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="0.04em" fill="#FFFFFF">LPHY-CORE &#8212; REUSED, ONE HELPER MADE PUBLIC &#183; LPHY-BASE &#8212; DECISION 3 CHANGES</text>
 
   <!-- ============================== band 1: phylospec-core ============================== -->
 
@@ -138,9 +138,9 @@
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#33403A">
     <text x="371" y="258">+ visitDraw / visitAssignment</text>
     <text x="371" y="274">+ visitObservedAsStmt</text>
-    <text x="371" y="290">+ visitCall / visitLiteral</text>
-    <text x="371" y="306">+ visitVariable / visitBinary</text>
-    <text x="371" y="322">(defaults recurse &#8212; override, &#167;3.9)</text>
+    <text x="371" y="290">+ visitCall / visitLiteral / visitArray</text>
+    <text x="371" y="306">+ visitVariable / visitBinary / &#8230;</text>
+    <text x="371" y="322">(defaults recurse &#8212; override, &#167;3.10)</text>
   </g>
 
   <!-- B3: VariableResolver -->
@@ -176,46 +176,54 @@
 
   <!-- C0: PhyloSpecToLPhyRunner -->
   <g filter="url(#cardShadow)">
-    <rect x="60" y="460" width="280" height="280" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
+    <rect x="60" y="460" width="280" height="340" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
   </g>
   <line x1="60" y1="504" x2="340" y2="504" stroke="#2F6F5E" stroke-width="1"/>
   <text x="200" y="480" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;4 &#8212; end to end</text>
   <text x="200" y="497" text-anchor="middle" font-size="14" font-weight="700" fill="#173229">PhyloSpecToLPhyRunner</text>
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#204636">
-    <text x="74" y="524">1 front end &#8594; List&lt;Stmt&gt;</text>
-    <text x="74" y="540">2 RandomUtils.setSeed(seed)</text>
-    <text x="74" y="556">3 dict = new REPL()</text>
-    <text x="74" y="572">  dict.setName(name)</text>
-    <text x="74" y="588">  new PhyloSpecToLPhy(dict,</text>
-    <text x="74" y="604">    variableResolver,</text>
-    <text x="74" y="620">    componentResolver, names)</text>
-    <text x="74" y="636">    .convert(stmts)</text>
-    <text x="74" y="652">4 isSampleValuesUsingParser</text>
-    <text x="74" y="668">  = false before new Sampler</text>
-    <text x="74" y="684">5 sample / sampleAll / getCode</text>
-    <text x="74" y="708">errors &#8594; getRangeForAstNode</text>
+    <text x="74" y="524">+ convert(source, name) REPL</text>
+    <text x="74" y="540">1 front end &#8594; List&lt;Stmt&gt;</text>
+    <text x="74" y="556">2 RandomUtils.setSeed(seed), if set</text>
+    <text x="74" y="572">3 dict = new REPL()</text>
+    <text x="74" y="588">  dict.setName(name)</text>
+    <text x="74" y="604">  new PhyloSpecToLPhy(dict,</text>
+    <text x="74" y="620">    variableResolver, componentResolver,</text>
+    <text x="74" y="636">    PhyloSpecNames.load()).convert(stmts)</text>
+    <text x="74" y="652">4 Sampler keeps its default:</text>
+    <text x="74" y="668">  resample through the parser</text>
+    <text x="74" y="684">+ simulateAndLog(dict, n, &#8230;)</text>
+    <text x="74" y="700">5 FileLoggerListener: replicate 0</text>
+    <text x="74" y="716">  as converted, then sample(null)</text>
+    <text x="74" y="732">6 getCode(dict) &#8594; &lt;prefix&gt;.lphy</text>
+    <text x="74" y="756">ConversionException (nested):</text>
+    <text x="74" y="772">  errors &#8594; getRangeForAstNode</text>
   </g>
 
   <!-- C1: PhyloSpecToLPhy -->
   <g filter="url(#cardShadow)">
-    <rect x="390" y="460" width="470" height="280" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
+    <rect x="390" y="460" width="470" height="340" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
   </g>
   <line x1="390" y1="504" x2="860" y2="504" stroke="#2F6F5E" stroke-width="1"/>
   <text x="625" y="480" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;3 &#8212; AstVisitor&lt;Void, Object, Void&gt;; expressions yield Value or GenerativeDistribution</text>
   <text x="625" y="497" text-anchor="middle" font-size="14" font-weight="700" fill="#173229">PhyloSpecToLPhy</text>
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#204636">
     <text x="404" y="524">+ convert(List&lt;Stmt&gt;)        source order, once per name</text>
-    <text x="404" y="542">&#167;3.2 visitDraw / visitAssignment / visitObservedAsStmt</text>
-    <text x="404" y="558">     &#8594; dict.put(id, value, Context.model | data)</text>
-    <text x="404" y="576">&#167;3.3 visitVariable &#8594; dict, else convert defining Stmt</text>
-    <text x="404" y="592">     (a Draw inside ObservedAs &#8594; the ObservedAs)</text>
-    <text x="404" y="610">&#167;3.4 visitLiteral &#8594; ValueCreator.createValue</text>
-    <text x="404" y="628">&#167;3.5 visitCall: bind args (PhyloSpec overloads), dispatch</text>
-    <text x="404" y="644">&#167;3.6 construct(): rename &#8594; ParserUtils &#8594; type filter</text>
-    <text x="404" y="660">     &#8594; first match &#8594; setInput wiring; IID &#8594; replicates</text>
-    <text x="404" y="678">&#167;3.7 visitBinary / visitUnary &#8594; ExpressionNode*</text>
-    <text x="404" y="696">&#167;3.1 eval(node) &#8594; TileApplicationError, innermost node</text>
-    <text x="404" y="712">&#167;3.9 unsupported(node) for every other AST form</text>
+    <text x="404" y="542">&#167;3.1 eval(node) &#8594; TileApplicationError, innermost node</text>
+    <text x="404" y="560">&#167;3.2 visitDraw / visitAssignment / visitObservedAsStmt</text>
+    <text x="404" y="576">     &#8594; dict.put(id, value, Context.model | data)</text>
+    <text x="404" y="594">&#167;3.3 visitVariable &#8594; dict, else convert defining Stmt</text>
+    <text x="404" y="610">     (a Draw inside ObservedAs &#8594; the ObservedAs)</text>
+    <text x="404" y="628">&#167;3.4 visitLiteral &#8594; ValueCreator.createValue</text>
+    <text x="404" y="646">&#167;3.5 visitCall: dispatch by name; bindArguments</text>
+    <text x="404" y="662">     against PhyloSpec's own overloads</text>
+    <text x="404" y="680">&#167;3.6 construct(node, name, args): rename &#8594; ParserUtils</text>
+    <text x="404" y="696">     &#8594; type filter &#8594; first match &#8594; setInput wiring</text>
+    <text x="404" y="712">     IID and IID shorthands &#8594; replicates</text>
+    <text x="404" y="730">&#167;3.7 visitBinary / visitUnary / math fn &#8594; ExpressionNode*</text>
+    <text x="404" y="746">&#167;3.8 method-call table &#8594; MethodCall</text>
+    <text x="404" y="762">&#167;3.9 visitArray &#8594; ArrayCreator; [taxon(&#8230;)] &#8594; taxa(&#8230;)</text>
+    <text x="404" y="780">&#167;3.10 unsupported(node) for every other AST form</text>
   </g>
 
   <!-- C2: LPhyTileLibrary (optional) -->
@@ -232,7 +240,7 @@
 
   <!-- C3: PhyloSpecNames -->
   <g filter="url(#cardShadow)">
-    <rect x="910" y="580" width="330" height="160" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
+    <rect x="910" y="580" width="330" height="220" rx="10" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.6"/>
   </g>
   <line x1="910" y1="624" x2="1240" y2="624" stroke="#2F6F5E" stroke-width="1"/>
   <text x="1075" y="600" text-anchor="middle" font-size="10.5" font-style="italic" fill="#3D6B5C">&#167;2 &#8212; built once by load(), from LoaderManager</text>
@@ -240,104 +248,109 @@
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#204636">
     <text x="924" y="644">phylospecName &#8594; LPhy names + kind</text>
     <text x="924" y="660">per LPhy name: argument rename map</text>
-    <text x="924" y="676">math-fn / operator / method tables</text>
-    <text x="924" y="692">fails on mixed names, non-function</text>
-    <text x="924" y="708">  map, or a name in two tables</text>
-    <text x="924" y="726">shared with ComponentLibraryExporter</text>
+    <text x="924" y="676">tables: math functions, operators,</text>
+    <text x="924" y="692">  method calls, IID shorthands</text>
+    <text x="924" y="708">reserved names: IID, taxon</text>
+    <text x="924" y="726">fails on mixed names, non-function</text>
+    <text x="924" y="742">  map, or a name in two tables</text>
+    <text x="924" y="762">ComponentLibraryExporter reads its</text>
+    <text x="924" y="778">  operator names + same annotations</text>
   </g>
 
   <!-- ============================== band 3: lphy-core / lphy-base ============================== -->
 
   <!-- F1: Sampler / CanonicalCodeBuilder -->
   <g filter="url(#cardShadow)">
-    <rect x="60" y="860" width="228" height="150" rx="10" fill="#EEF1EF" stroke="#7C8A83" stroke-width="1.6"/>
+    <rect x="60" y="920" width="228" height="160" rx="10" fill="#EEF1EF" stroke="#7C8A83" stroke-width="1.6"/>
   </g>
-  <line x1="60" y1="904" x2="288" y2="904" stroke="#7C8A83" stroke-width="1"/>
-  <text x="174" y="880" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5C6A63">simulate &#183; log &#183; export</text>
-  <text x="174" y="897" text-anchor="middle" font-size="12.5" font-weight="700" fill="#243029">Sampler / CanonicalCodeBuilder</text>
+  <line x1="60" y1="964" x2="288" y2="964" stroke="#7C8A83" stroke-width="1"/>
+  <text x="174" y="940" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5C6A63">simulate &#183; log &#183; export</text>
+  <text x="174" y="957" text-anchor="middle" font-size="12.5" font-weight="700" fill="#243029">Sampler / CanonicalCodeBuilder</text>
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#33403A">
-    <text x="74" y="924">+ sample(seed)</text>
-    <text x="74" y="940">+ sampleAll(n, loggers, seed)</text>
-    <text x="74" y="956">+ getCode(dict) String</text>
-    <text x="74" y="972">RandomUtils.setSeed(seed)</text>
-    <text x="74" y="992">(unchanged)</text>
+    <text x="74" y="984">+ sample(null) per replicate</text>
+    <text x="74" y="1000">FileLoggerListener</text>
+    <text x="74" y="1016">  start / replicate / complete</text>
+    <text x="74" y="1032">+ getCode(dict) String</text>
+    <text x="74" y="1048">RandomUtils.setSeed(seed)</text>
   </g>
 
   <!-- F2: REPL -->
   <g filter="url(#cardShadow)">
-    <rect x="298" y="860" width="228" height="150" rx="10" fill="#EEF1EF" stroke="#7C8A83" stroke-width="1.6"/>
+    <rect x="298" y="920" width="228" height="160" rx="10" fill="#EEF1EF" stroke="#7C8A83" stroke-width="1.6"/>
   </g>
-  <line x1="298" y1="904" x2="526" y2="904" stroke="#7C8A83" stroke-width="1"/>
-  <text x="412" y="880" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5C6A63">LPhyParserDictionary</text>
-  <text x="412" y="897" text-anchor="middle" font-size="14" font-weight="700" fill="#243029">REPL</text>
+  <line x1="298" y1="964" x2="526" y2="964" stroke="#7C8A83" stroke-width="1"/>
+  <text x="412" y="940" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5C6A63">LPhyParserDictionary</text>
+  <text x="412" y="957" text-anchor="middle" font-size="14" font-weight="700" fill="#243029">REPL</text>
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#33403A">
-    <text x="312" y="924">data / model dictionaries</text>
-    <text x="312" y="940">+ put(id, value, Context)</text>
-    <text x="312" y="956">+ setName(name)</text>
-    <text x="312" y="976">used directly, no subclass</text>
+    <text x="312" y="984">data / model dictionaries</text>
+    <text x="312" y="1000">+ put(id, value, Context)</text>
+    <text x="312" y="1016">+ setName(name)</text>
+    <text x="312" y="1036">used directly, no subclass</text>
   </g>
 
   <!-- F3: ParserUtils / Generator -->
   <g filter="url(#cardShadow)">
-    <rect x="536" y="860" width="228" height="150" rx="10" fill="#EEF1EF" stroke="#7C8A83" stroke-width="1.6"/>
+    <rect x="536" y="920" width="228" height="160" rx="10" fill="#EEF1EF" stroke="#7C8A83" stroke-width="1.6"/>
   </g>
-  <line x1="536" y1="904" x2="764" y2="904" stroke="#7C8A83" stroke-width="1"/>
-  <text x="650" y="880" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5C6A63">generator resolution</text>
-  <text x="650" y="897" text-anchor="middle" font-size="14" font-weight="700" fill="#243029">ParserUtils / Generator</text>
+  <line x1="536" y1="964" x2="764" y2="964" stroke="#7C8A83" stroke-width="1"/>
+  <text x="650" y="940" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5C6A63">generator resolution</text>
+  <text x="650" y="957" text-anchor="middle" font-size="14" font-weight="700" fill="#243029">ParserUtils / Generator</text>
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#33403A">
-    <text x="550" y="924">+ getMatching*(name, args)</text>
-    <text x="550" y="940">+ setInput(name, value)</text>
-    <text x="550" y="956">+ generate() Value</text>
-    <text x="550" y="972">+ sample() RandomVariable</text>
+    <text x="550" y="984">+ getMatching*(name, args)</text>
+    <text x="550" y="1000">+ setInput(name, value)</text>
+    <text x="550" y="1016">+ generate() Value</text>
+    <text x="550" y="1032">+ sample(id) RandomVariable</text>
   </g>
 
   <!-- F4: ExpressionNode* / MethodCall -->
   <g filter="url(#cardShadow)">
-    <rect x="774" y="860" width="228" height="150" rx="10" fill="#EEF1EF" stroke="#7C8A83" stroke-width="1.6"/>
+    <rect x="774" y="920" width="228" height="160" rx="10" fill="#EEF1EF" stroke="#7C8A83" stroke-width="1.6"/>
   </g>
-  <line x1="774" y1="904" x2="1002" y2="904" stroke="#7C8A83" stroke-width="1"/>
-  <text x="888" y="880" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5C6A63">operators &#183; methods &#183; literals</text>
-  <text x="888" y="897" text-anchor="middle" font-size="14" font-weight="700" fill="#243029">ExpressionNode* / MethodCall</text>
+  <line x1="774" y1="964" x2="1002" y2="964" stroke="#7C8A83" stroke-width="1"/>
+  <text x="888" y="940" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5C6A63">operators &#183; methods &#183; literals &#183; arrays</text>
+  <text x="888" y="957" text-anchor="middle" font-size="14" font-weight="700" fill="#243029">ExpressionNode* / MethodCall</text>
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#33403A">
-    <text x="788" y="924">ExpressionNode1Arg / 2Args</text>
-    <text x="788" y="940">MethodCall(name, recv, args)</text>
-    <text x="788" y="956">ValueCreator.createValue</text>
-    <text x="788" y="976">text via AstPrinter: TODO, &#167;8</text>
+    <text x="788" y="984">ExpressionNode1Arg / 2Args</text>
+    <text x="788" y="1000">MethodCall(name, recv, args)</text>
+    <text x="788" y="1016">ValueCreator.createValue</text>
+    <text x="788" y="1032">ArrayCreator.createArrayValue</text>
+    <text x="788" y="1048">  (made public for v3, &#167;3.9)</text>
   </g>
 
   <!-- F5: lphy-base changes (amber) -->
   <g filter="url(#cardShadow)">
-    <rect x="1012" y="860" width="228" height="150" rx="10" fill="#FBF1E1" stroke="#A6742E" stroke-width="1.6"/>
+    <rect x="1012" y="920" width="228" height="160" rx="10" fill="#FBF1E1" stroke="#A6742E" stroke-width="1.6"/>
   </g>
-  <line x1="1012" y1="904" x2="1240" y2="904" stroke="#A6742E" stroke-width="1"/>
-  <text x="1126" y="880" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7A5420">lphy-base &#8212; Decision 3</text>
-  <text x="1126" y="897" text-anchor="middle" font-size="14" font-weight="700" fill="#4A3312">Generator changes</text>
+  <line x1="1012" y1="964" x2="1240" y2="964" stroke="#A6742E" stroke-width="1"/>
+  <text x="1126" y="940" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7A5420">lphy-base &#8212; Decision 3</text>
+  <text x="1126" y="957" text-anchor="middle" font-size="14" font-weight="700" fill="#4A3312">Generator changes</text>
   <g xml:space="preserve" font-family="'SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#5A3E16">
-    <text x="1026" y="924">@GeneratorInfo(phylospec=&#8230;)</text>
-    <text x="1026" y="940">@ParameterInfo(phylospec=&#8230;)</text>
-    <text x="1026" y="956">Exp(rate), Gamma(rate), gtr</text>
-    <text x="1026" y="972">new: mrca, age, &#8230;</text>
-    <text x="1026" y="992">(v2 &#167;3.2, &#167;7.1)</text>
+    <text x="1026" y="984">@GeneratorInfo(phylospec=&#8230;)</text>
+    <text x="1026" y="1000">@ParameterInfo(phylospec=&#8230;)</text>
+    <text x="1026" y="1016">done: jc69, Yule, PhyloCTMC,</text>
+    <text x="1026" y="1032">  DiscretizedGamma (&#167;8)</text>
+    <text x="1026" y="1048">todo: Exp(rate), Gamma(rate),</text>
+    <text x="1026" y="1064">  gtr, mrca, age (v2 &#167;7.1)</text>
   </g>
 
   <!-- ============================== legend ============================== -->
-  <line x1="40" y1="1062" x2="1320" y2="1062" stroke="#D6DDD7" stroke-width="1"/>
-  <text x="40" y="1084" font-size="11" font-weight="700" letter-spacing="0.05em" fill="#56655D">HOW TO READ THE ARROWS</text>
+  <line x1="40" y1="1122" x2="1320" y2="1122" stroke="#D6DDD7" stroke-width="1"/>
+  <text x="40" y="1144" font-size="11" font-weight="700" letter-spacing="0.05em" fill="#56655D">HOW TO READ THE ARROWS</text>
 
   <g font-size="12" fill="#33403A">
-    <path d="M40,1112 L92,1112" stroke="#4B5850" stroke-width="1.6" fill="none" marker-end="url(#triHollow)"/>
-    <text x="102" y="1116">inheritance (extends)</text>
+    <path d="M40,1172 L92,1172" stroke="#4B5850" stroke-width="1.6" fill="none" marker-end="url(#triHollow)"/>
+    <text x="102" y="1176">inheritance (extends)</text>
 
-    <path d="M300,1112 L352,1112" stroke="#4B5850" stroke-width="1.6" fill="none" stroke-dasharray="6,5" marker-end="url(#triHollow)"/>
-    <text x="362" y="1116">realization (implements)</text>
+    <path d="M300,1172 L352,1172" stroke="#4B5850" stroke-width="1.6" fill="none" stroke-dasharray="6,5" marker-end="url(#triHollow)"/>
+    <text x="362" y="1176">realization (implements)</text>
 
-    <path d="M570,1112 L622,1112" stroke="#4B5850" stroke-width="1.6" fill="none" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
-    <text x="632" y="1116">dependency / uses / delegates to</text>
+    <path d="M570,1172 L622,1172" stroke="#4B5850" stroke-width="1.6" fill="none" stroke-dasharray="5,4" marker-end="url(#arrowOpen)"/>
+    <text x="632" y="1176">dependency / uses / delegates to</text>
 
-    <rect x="880" y="1102" width="52" height="20" rx="5" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.4" stroke-dasharray="6,4"/>
-    <text x="942" y="1116">optional class</text>
+    <rect x="880" y="1162" width="52" height="20" rx="5" fill="#E4F2ED" stroke="#2F6F5E" stroke-width="1.4" stroke-dasharray="6,4"/>
+    <text x="942" y="1176">optional class</text>
   </g>
 
-  <text x="40" y="1150" font-size="11.5" fill="#56655D">Full description: CLASS_DESIGN3.md. Gray boxes are unchanged upstream code (phylospec-core, lphy-core); teal boxes are new; the amber box is the</text>
-  <text x="40" y="1168" font-size="11.5" fill="#56655D">lphy-base changes of Decision 3. There are no tile classes: every v2 tile is a visitor method of PhyloSpecToLPhy.</text>
+  <text x="40" y="1210" font-size="11.5" fill="#56655D">Full description: CLASS_DESIGN3.md. Gray boxes are unchanged upstream code (phylospec-core, lphy-core); teal boxes are new; the amber box is the</text>
+  <text x="40" y="1228" font-size="11.5" fill="#56655D">lphy-base changes of Decision 3. There are no tile classes: every v2 tile is a visitor method of PhyloSpecToLPhy.</text>
 </svg>

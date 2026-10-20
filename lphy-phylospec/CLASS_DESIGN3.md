@@ -12,6 +12,9 @@ code. Every `lphy-base` change v2 lists (v2 §3.2, §7.1) and every construct v2
 (v2 §10) carries over. Everything needed to *implement* the three classes is in this document;
 references to v2 only say where an idea came from.
 
+v3 is implemented in `lphy.phylospec.convert`, and this document describes that code. If the two
+ever disagree, the code is the reference and this document should be corrected.
+
 ## Overview: three classes convert a script into an LPhy model
 
 - **`PhyloSpecNames`** (§2) — the name index. Maps PhyloSpec generator and argument names to LPhy
@@ -21,7 +24,7 @@ references to v2 only say where an idea came from.
 - **`PhyloSpecToLPhy`** (§3) — the converter. A visitor over the type-checked AST: each statement
   (`~`, `=`, `observed as`) becomes a named LPhy value in a `REPL`, and each expression (literal,
   variable, call, operator) becomes an LPhy `Value` or an unsampled `GenerativeDistribution`. It
-  does everything v2 needed a dozen tile classes for.
+  does everything v2 needed ten tile classes and three helper classes for.
 - **`PhyloSpecToLPhyRunner`** (§4) — the entry point. Parses and type-checks the script with
   `phylospec-core`, converts it, then samples, logs or exports it with LPhy's existing `Sampler`,
   loggers and `CanonicalCodeBuilder`.
@@ -83,19 +86,23 @@ visitor method can do.
 
 ## Classes and what each replaces from v2
 
-| Class | Role | Replaces from v2 | Size (estimate) |
+| Class | Role | Replaces from v2 | Lines |
 |---|---|---|---|
-| `PhyloSpecNames` | Name index: PhyloSpec generator/argument names → LPhy names, the method-call, math-function and operator tables, and the consistency checks | v2's `PhyloSpecNames` helper and `LPhyCoreTileLibrary`'s reflective sweep (v2 §7) | ~150 lines |
-| `PhyloSpecToLPhy` | `AstVisitor` that turns each statement and expression into LPhy objects and fills a `REPL` | `LiteralTile`, `DrawTile`, `AssignmentTile`, `ObservedAsTile`, `ReflectiveDistributionTile`, `ReflectiveFunctionTile`, `ReflectiveTileInput`, `LPhyCall`/`LPhyCallBuilder`, `IIDTile`, `OperatorTile`, `MathFunctionTile`, `MethodCallTile`, and the missing `AssignedArgumentTile` | ~300 lines |
-| `PhyloSpecToLPhyRunner` | Front end → convert → sample, log, export | same as v2 §8 | ~100 lines |
-| `LPhyTileLibrary` (optional) | SPI adapter, only if a generic PhyloSpec front end must discover LPhy through `TileLibrary.loadAll` | `LPhyCoreTileLibrary`, SPI registration (v2 §9) | ~40 lines |
+| `PhyloSpecNames` | Name index: PhyloSpec generator/argument names → LPhy names; the method-call, math-function, operator and IID-shorthand tables; the reserved names; and the consistency checks | v2's `PhyloSpecNames` helper and `LPhyCoreTileLibrary`'s reflective sweep (v2 §7) | 284 |
+| `PhyloSpecToLPhy` | `AstVisitor` that turns each statement and expression into LPhy objects and fills a `REPL` | `LiteralTile`, `DrawTile`, `AssignmentTile`, `ObservedAsTile`, `ReflectiveDistributionTile`, `ReflectiveFunctionTile`, `ReflectiveTileInput`, `LPhyCall`/`LPhyCallBuilder`, `IIDTile`, `OperatorTile`, `MathFunctionTile`, `MethodCallTile`, and the missing `AssignedArgumentTile` | 535 |
+| `PhyloSpecToLPhyRunner` | Front end → convert → simulate and log → export `.lphy`; its nested `ConversionException` carries every syntax, type and conversion error | same as v2 §8 | 224 |
+| `LPhyTileLibrary` (optional, not built) | SPI adapter, only if a generic PhyloSpec front end must discover LPhy through `TileLibrary.loadAll` | `LPhyCoreTileLibrary`, SPI registration (v2 §9) | — |
 | — | — | `PhyloSpecLPhyDictionary`: it only added a constructor to `REPL`, so v3 uses `new REPL()` with `setName(name)` | 0 |
+
+Line counts are of the source files, including Javadoc.
 
 ## 1. Conventions shared by all classes
 
 - **Package and module.** All classes live in `lphy.phylospec.convert` (the existing exporter stays
-  in `lphy.phylospec.export`). `module-info.java` already `requires org.phylospec.core` and
-  `requires transitive lphy.base`; add `exports lphy.phylospec.convert`.
+  in `lphy.phylospec.export`). `module-info.java` `requires org.phylospec.core` and
+  `requires transitive lphy.base`, `exports lphy.phylospec.convert`, and `opens` it to
+  `info.picocli`, which sets the runner's option fields by reflection. It registers no service:
+  there is no tile library to provide.
 - **Two expression shapes.** Every expression converts to exactly one of:
   - an LPhy `Value<?>`: a literal, a variable, a function call, an operator, or a sampled random
     variable;
@@ -119,7 +126,8 @@ visitor method can do.
 ## 2. `PhyloSpecNames`: one name index for converting and exporting
 
 `PhyloSpecNames` is immutable and built once by `load()`. It reads every LPhy generator class and
-the two hand-maintained tables, builds the lookups below, and checks them for conflicts.
+the hand-maintained tables (method calls, IID shorthands, operator script names, reserved names),
+builds the lookups below, and checks them for conflicts.
 
 ```java
 public final class PhyloSpecNames {
@@ -138,7 +146,14 @@ public final class PhyloSpecNames {
     public record IIDShorthand(String baseName, String replicatesArgument,
                                Map<String, Object> defaultOnlyArguments) {}   // argument -> the only value allowed
 
+    /** Java method name -> LPhy script name for symbol-bound operators, e.g. plus -> "+" (§2.2). */
+    public static final Map<String, String> EXPRESSION_OPERATOR_SCRIPT_NAMES;
+    /** Names the converter handles itself, never resolved to a generator: IID, taxon (§2.3). */
+    static final Set<String> RESERVED_NAMES;
+
     public static PhyloSpecNames load();                    // builds and checks; throws on conflict
+    static PhyloSpecNames load(Collection<? extends Class<?>> distributionClasses,
+                               Collection<? extends Class<?>> functionClasses);   // given classes only, for tests
 
     // the naming rule: the PhyloSpec name of an LPhy generator or parameter
     public static String phylospecName(Class<?> generatorClass);
@@ -185,11 +200,14 @@ parameters in different LPhy generators: `populationSize` is `theta` on `Coalesc
   table. Anything that needs argument adaptation, chaining or a
   different return type is a new LPhy generator instead (Decision 3).
 - **Math functions.** The `public static Function` factory methods on `ExpressionNode1Arg` (`sqrt()`,
-  `exp()`, `log()`, …), found by reflection, keyed by method name.
-- **Operators.** A `TokenType → factory` map for the PhyloSpec operators (`+`, `-`, `*`, `/`, `<`,
-  `<=`, `==`, …) onto `ExpressionNode2Args`'s `public static BiFunction` methods (`plus()`, `minus()`,
-  …), and onto `ExpressionNode1Arg` for unary operators. Move `EXPRESSION_OPERATOR_SCRIPT_NAMES`
-  (currently private in `ComponentLibraryExporter`) into `PhyloSpecNames` so both use one table.
+  `exp()`, `log()`, …), found by reflection, keyed by method name. Methods named in
+  `EXPRESSION_OPERATOR_SCRIPT_NAMES` (such as `not`) are operators, not math functions, and are left out.
+- **Operators.** A `TokenType → factory` map for the PhyloSpec binary operators `+`, `-`, `*`, `/`,
+  `<`, `<=`, `>`, `>=`, `==`, `!=` onto `ExpressionNode2Args`'s `public static BiFunction` methods
+  (`plus()`, `minus()`, …), and for the unary operators onto `ExpressionNode1Arg`. A token maps to the
+  factory whose script name in `EXPRESSION_OPERATOR_SCRIPT_NAMES` equals the token's lexeme. LPhy has
+  no unary-minus factory, so only `!` maps. `EXPRESSION_OPERATOR_SCRIPT_NAMES` is public in
+  `PhyloSpecNames`, and `ComponentLibraryExporter` reads it from there, so both use one table.
 - **IID shorthands.** A hand-maintained table of PhyloSpec generators that are an `IID` of another
   PhyloSpec generator, converted through the `IID` path (§3.6). The one entry so far:
   `DiscreteGammaInv` → base `DiscreteGamma`, replicates argument `numSites`, default-only argument
@@ -210,8 +228,9 @@ parameters in different LPhy generators: `populationSize` is `theta` on `Coalesc
 2. **Each rename map is a function.** Within one LPhy name, a PhyloSpec argument maps to the same
    LPhy argument in every constructor and class, because `ParserUtils` resolves all of them from one
    argument map.
-3. **No PhyloSpec name in two tables.** A name is a generator, a math function, a method call or an
-   IID shorthand, never two of them. `taxon` (§3.9) is reserved too: it must not resolve to a generator.
+3. **No PhyloSpec name in two tables.** A name is a generator, a math function, a method call, an
+   IID shorthand or a reserved name, never two of them. The reserved names are `IID` (§3.6) and
+   `taxon` (§3.9): the converter handles both itself, so neither may resolve to a generator.
 
 ### 2.4 Shared with `ComponentLibraryExporter`
 
@@ -223,7 +242,8 @@ their `lphy` side is the LPhy name.
 
 The exporter writes `phylospec` from the same `@GeneratorInfo.phylospec()` /
 `@ParameterInfo.phylospec()` annotations that `PhyloSpecNames` reads, so the exported library and the
-converter cannot disagree on a name.
+converter cannot disagree on a name. It also names expression operators through
+`PhyloSpecNames.EXPRESSION_OPERATOR_SCRIPT_NAMES` (§2.2).
 
 ## 3. `PhyloSpecToLPhy`: converting the AST in one visitor
 
@@ -234,6 +254,9 @@ public class PhyloSpecToLPhy implements AstVisitor<Void, Object, Void> {
     private final ComponentResolver componentResolver;   // the instance TypeResolver used (§3.5)
     private final PhyloSpecNames names;
     private final Map<Stmt.Draw, Stmt.ObservedAs> observedDraws = new IdentityHashMap<>();
+    // statements being converted, to report a cyclic definition instead of overflowing the stack
+    private final Set<Stmt> inProgress = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final AstPrinter printer = new AstPrinter();   // source text for error hints only (§3.10)
 
     public PhyloSpecToLPhy(REPL dict, VariableResolver variableResolver,
                            ComponentResolver componentResolver, PhyloSpecNames names);
@@ -243,20 +266,27 @@ public class PhyloSpecToLPhy implements AstVisitor<Void, Object, Void> {
 
     // statements (§3.2):   visitDraw, visitAssignment, visitObservedAsStmt
     // expressions:         visitVariable (§3.3), visitLiteral (§3.4), visitCall (§3.5–§3.8),
-    //                      visitBinary, visitUnary (§3.7), visitArray (§3.9)
+    //                      visitBinary, visitUnary (§3.7), visitArray (§3.9), visitGrouping (§3.7)
     // all other visit methods: throw unsupported(node) (§3.10)
 
     private Object eval(AstNode node);                              // §3.1
     private Value<?> evalValue(Expr expr);                          // §3.1
     private GenerativeDistribution<?> evalDistribution(Expr expr);  // §3.1
     private Map<String, Expr> bindArguments(Expr.Call call);        // §3.5
-    private Object construct(String phylospecName, Map<String, Value> arguments);  // §3.6
+    private Object construct(AstNode node, String phylospecName,
+                             Map<String, Value> arguments);         // §3.6, errors attach to node
+    private Object iid(Expr.Call call, Expr base, Expr num);        // §3.6
+    private Object iidShorthand(Expr.Call call, IIDShorthand sh);   // §3.6
+    private Object mathFunction(Expr.Call call, Function<?, ?> f);  // §3.7
+    private Object methodCall(Expr.Call call, MethodCallEntry e);   // §3.8
+    private Object taxa(Expr.Array expr);                           // §3.9
     private TileApplicationError unsupported(AstNode node);         // §3.10
 }
 ```
 
 `convert` first fills `observedDraws` (the `Stmt.Draw` inside each top-level `Stmt.ObservedAs`), then
-calls `stmt.accept(this)` on each top-level statement.
+evaluates each top-level statement with `eval` (§3.1). It skips `Stmt.Import`, which the front end
+has already applied.
 
 ### 3.1 Every node is evaluated through one error-attributing helper
 
@@ -321,7 +351,10 @@ statement first and then returns the value:
    (`for i in ...`): `unsupported(expr)`.
 2. If `def` is a key of `observedDraws`, convert that `Stmt.ObservedAs` instead, so an observed
    variable is never first created unobserved.
-3. `eval(def)`, then return the stored value.
+3. `eval(def)`, then return the stored value. `def` is added to `inProgress` while it converts: if
+   it is reached again before it finishes, the visitor fails with "`x` is defined in terms of
+   itself" instead of overflowing the stack. If no value is stored after `eval(def)`, it fails with
+   "`x` was not created".
 
 Statements are visited in source order, and the front end's `VariableResolver` already rejects a
 forward or self reference ("Variable `mu` does not exist"). So through the runner, step 3 never runs;
@@ -337,7 +370,8 @@ runtime type and returns an anonymous (`id == null`) `IntegerValue`, `DoubleValu
 
 ### 3.5 Calls are dispatched by name, after binding arguments the PhyloSpec way
 
-`visitCall(call)` first binds the arguments, then dispatches on `call.functionName`. The front end
+`visitCall(call)` dispatches on `call.functionName`, and each branch binds the arguments it needs
+with `bindArguments`. The front end
 used here leaves `functionName` as the bare name (`Normal`): only the `AttachComponentNamespaces`
 transform adds a namespace prefix (`core.Normal`), and only `JSONConverter` runs it. The runner must
 not run it.
@@ -350,7 +384,8 @@ comes from PhyloSpec's own component library, not from LPhy:
 
 ```java
 private Map<String, Expr> bindArguments(Expr.Call call) {
-    for (Generator overload : componentResolver.resolveGenerator(call.functionName)) {
+    List<Generator> overloads = componentResolver.resolveGenerator(call.functionName);   // null if unknown
+    for (Generator overload : overloads == null ? List.<Generator>of() : overloads) {
         List<Expr.Call.Parameter> params = overload.getArguments().stream()
                 .map(a -> new Expr.Call.Parameter(a.getName(), Boolean.TRUE.equals(a.getRequired())))
                 .toList();
@@ -370,30 +405,32 @@ error above signals a bug, not a user mistake. Pass the same `ComponentResolver`
 `TypeResolver` used, so that the script's `import` statements are already applied.
 
 **Dispatch.** `PhyloSpecNames` guarantees each name is in at most one table (§2.3), so the order below
-does not matter:
+does not change the result. It is the order of the checks in `visitCall`:
 
 | `call.functionName` | Conversion |
 |---|---|
 | `IID` | §3.6, `IID` paragraph |
+| `taxon` | `unsupported(call)`: a `taxon` call is only valid as an element of an array, which `visitArray` converts without visiting the call (§3.9). LPhy has no single-taxon generator |
 | `names.iidShorthand(name) != null` | §3.6, IID shorthand paragraph |
-| `taxon` | `unsupported(call)` unless it is an element of an array (§3.9): LPhy has no single-taxon generator |
 | `names.mathFunction(name) != null` | §3.7 |
 | `names.methodCall(name) != null` | §3.8 |
-| `!names.generators(name).isEmpty()` | evaluate each bound argument with `evalValue`, then `construct(name, values)` (§3.6) |
+| `!names.generators(name).isEmpty()` | evaluate each bound argument with `evalValue`, then `construct(call, name, values)` (§3.6) |
 | otherwise | `unsupported(call)` — a PhyloSpec generator with no LPhy counterpart yet |
 
 ### 3.6 Generator calls are built by LPhy's own resolver
 
-`construct(phylospecName, arguments)` builds a generator the same way LPhy's parser does for a
-hand-written `.lphy` call, by delegating to `ParserUtils`. `ParserUtils` already resolves overloads,
+`construct(node, phylospecName, arguments)` builds a generator the same way LPhy's parser does for a
+hand-written `.lphy` call, by delegating to `ParserUtils`. `node` is the AST node its errors attach
+to: the call, or the array for `taxa(...)` (§3.9). `ParserUtils` already resolves overloads,
 explicit `replicates` (`IID.match`) and implicit vectorization (`VectorMatchUtils`):
 
 1. **Rename.** For each `LPhyGenerator g` in `names.generators(phylospecName)`, rename the argument
-   keys with `g.argumentRename()`. If any key has no entry, skip `g`: it has no constructor taking
-   that argument.
+   keys with `g.argumentRename()`. `replicates` (§3.6, `IID`) is kept as it is. If any other key
+   has no entry, skip `g`: it has no constructor taking that argument.
 2. **Match.** Call `ParserUtils.getMatchingGenerativeDistributions(g.lphyName(), renamed)` if
    `g.kind()` is `DISTRIBUTION`, otherwise `ParserUtils.getMatchingFunctions(g.lphyName(), renamed)`.
-   Concatenate the matches of every `g`, remembering each match's renamed argument map.
+   Pass each call its own copy of `renamed`: `ParserUtils` rewrites deprecated argument names in the
+   map it is given. Concatenate the matches of every `g`, remembering each match's renamed argument map.
 3. **Filter by type.** `ParserUtils` matches argument *names* only, so drop direct matches whose
    parameter types do not accept the supplied values. A match is kept if it is an `IID`,
    `VectorizedDistribution` or `VectorizedFunction` (those wrappers exist because an array was passed
@@ -419,7 +456,7 @@ explicit `replicates` (`IID.match`) and implicit vectorization (`VectorMatchUtil
 base distribution's own call. So `visitCall` does not evaluate `base`. It requires `base` to be an
 `Expr.Call` (otherwise it fails with "IID base has no LPhy equivalent"), binds the inner call's
 arguments with `bindArguments`, evaluates them, adds `IID.REPLICATES_PARAM_NAME` (`"replicates"`) →
-`evalValue(num)`, and calls `construct(innerName, arguments)`. `IID.match` in `ParserUtils` then builds
+`evalValue(num)`, and calls `construct(call, innerName, arguments)`. `IID.match` in `ParserUtils` then builds
 the vectorized distribution. Because the inner arguments are renamed exactly as for a plain call,
 `IID(Yule(birthRate=b, …), n)` becomes `Yule(lambda=b, …, replicates=n)`.
 
@@ -453,8 +490,11 @@ be LPhy syntax. `AstPrinter` cannot be used: it renders S-expressions such as `(
 converter builds `text` from the evaluated operands instead: a named operand prints its id, any other
 its `codeString()` (in brackets if it is itself a binary operation), joined by the operator's lexeme
 (`TokenType.getLexeme`), which LPhy writes the same way; a math function prints `name(operand)`.
-`Expr.Grouping` never reaches the visitor: the front end's `RemoveGroupings` transform removes
-parentheses.
+A math-function call with more than one bound argument, such as `log(x, base)`, is `unsupported`:
+LPhy's math functions take one operand.
+
+The front end's `RemoveGroupings` transform removes parentheses, so `Expr.Grouping` normally never
+reaches the visitor. If one does, `visitGrouping` evaluates the expression inside it.
 
 ### 3.8 Method calls become LPhy `MethodCall`s
 
@@ -479,8 +519,9 @@ single-taxon generator; it builds the whole set at once with `taxa(names, specie
 3. `species` = the array of every element's `species`, if every element sets it; omitted if none does;
    `unsupported` if only some do, because `CreateTaxa` needs one species per taxon.
 4. `ages` = the array of every element's `age`, using a literal `0.0` (PhyloSpec's default) for an
-   element without one; omitted if no element sets an age.
-5. Return `construct("taxa", {names, species?, ages?})` (§3.6). `taxa` also names `TaxaFunction`
+   element without one; omitted if no element sets an age. A numeric literal age such as `2` becomes a
+   `DoubleValue`, because `CreateTaxa` takes ages as `Double[]`.
+5. Return `construct(expr, "taxa", {names, species?, ages?})` (§3.6). `taxa` also names `TaxaFunction`
    (`taxa(alignment)`), but only `CreateTaxa` has a `names` parameter, so `ParserUtils` picks it.
 
 Tree generators take the result as their `taxa`. Properties of the resulting `Taxa` are read with
@@ -490,11 +531,12 @@ are not `taxon` calls, is `unsupported`.
 
 **Any other array** becomes an LPhy array value built the way LPhy's parser builds `[a, b, …]`
 (`LPhyListenerImpl.visitArray_construction`, `LPhyListenerImpl.java:623–704`): evaluate each element
-with `evalValue`, pick the array function from `ArrayCreator.getType(values)` (`DoubleArray`,
-`IntegerArray`, `BooleanArray`, `StringArray`, `NumberArray`, their 2D forms, or `ObjectArray`), call its
-`apply()`, and, if every element is a constant, `setFunction(null)` so the array exports as one literal.
-That logic is private to `LPhyListenerImpl`; move it into a public
-`ArrayCreator.createArrayValue(Value[])` in `lphy-core` and call it from both, rather than copying it.
+with `evalValue`, then call `ArrayCreator.createArrayValue(values)`. It picks the array function from
+`ArrayCreator.getType(values)` (`DoubleArray`, `IntegerArray`, `BooleanArray`, `StringArray`,
+`NumberArray`, their 2D forms, or `ObjectArray`), calls its `apply()`, and, if every element is a
+constant, `setFunction(null)` so the array exports as one literal. That logic used to be private to
+`LPhyListenerImpl`. It was moved into the public `ArrayCreator.createArrayValue(Value[])` in
+`lphy-core`, which both now call, rather than copied (§8, "Done").
 `Vector<Real> rates = [1.0, 1.0, 1.0]` becomes a `DoubleArray`, which `PhyloCTMC` takes as `siteRates`.
 
 ### 3.10 Unsupported forms fail clearly
@@ -504,23 +546,41 @@ visitor must override every `AstVisitor` method it does not implement and throw 
 default methods recurse and return `null`, so a missing override would hide the problem until some
 later step fails on a `null`. The forms are:
 
-- statements: `Stmt.Indexed`, `Stmt.ObservedBetween`, `Stmt.Decorated`, `Stmt.Import` (an import
-  has already been applied by the front end, so `convert` can skip it instead);
+- statements: `Stmt.Indexed`, `Stmt.ObservedBetween`, `Stmt.Decorated`, `Stmt.Import` (`convert`
+  skips imports, which the front end has already applied, so this is reached only if an import is
+  visited some other way);
 - expressions: `Expr.Index`, `Expr.Range`, `Expr.DrawnArgument`, `Expr.StringTemplate`,
-  `Expr.TemplateVariable`, `Expr.OptionalTemplateVariable`.
+  `Expr.TemplateVariable`, `Expr.OptionalTemplateVariable`, and `Expr.AssignedArgument`, which
+  `bindArguments` unwraps before it could be visited.
 
-Each is a candidate for a later visitor method (§6.2).
+Each is a candidate for a later visitor method (§6.2). The hint quotes the node's source text, printed
+by `AstPrinter`. Type nodes (`visitAtomicType`, `visitGenericType`) throw
+`UnsupportedOperationException`: the converter never visits types.
 
 ## 4. `PhyloSpecToLPhyRunner`: running a script end to end
 
+The runner is a picocli command (`phylospec2lphy`) whose `call()` runs the steps below. Steps 1 and 3
+are also available as `public static REPL convert(String source, String name)`, and step 5 as
+`public static Map<Integer, List<Value>> simulateAndLog(REPL dict, int numReplicates, String[] varNotLog,
+File outDir, String filePrefix)`, which returns the logged values of each replicate. The tests call
+these two directly.
+
+Errors are collected as `org.phylospec.errors.Error`s, each with its source range when known, into
+one `PhyloSpecToLPhyRunner.ConversionException`, a nested `RuntimeException`. `call()` prints its
+`toStdOutString(source)`, which highlights the failing code, and exits with code 65.
+
+0. **Check the input**: the script must end in `.phylospec`; its name without the extension is
+   `filePrefix`. As `slphy` does, `FileConfig.Utils.validate(scriptFile, outDir)` makes the script's
+   folder the working directory, so relative paths in the script resolve there.
 1. **Front end** (`phylospec-core`): `Lexer.scanTokens()` → `Parser.parse()` → `RemoveGroupings`,
    `EvaluateLiterals`, `EvaluateScalarFunctions` → `new VariableResolver(statements)` →
    `TypeResolver(componentResolver).visitStatements(statements)`, where
    `componentResolver = new ComponentResolver(ComponentResolver.loadCoreComponentLibraries())`. Do not
-   run `AttachComponentNamespaces` (§3.5). Report a `TypeError` at
-   `parser.getRangeForAstNode(error.getAstNode())`.
-2. **Seed**: `RandomUtils.setSeed(seed)` once, if `-seed` is given, so the values drawn during
-   conversion (§3.2) can be reproduced.
+   run `AttachComponentNamespaces` (§3.5). The lexer, parser and type resolver report errors to an
+   event listener. Syntax errors stop the run before type checking. A thrown `TypeError` is reported
+   at `parser.getRangeForAstNode(error.getAstNode())`.
+2. **Seed**: `RandomUtils.setSeed(seed)` once, if `-seed` is given, before converting, so the values
+   drawn during conversion (§3.2) can be reproduced.
 3. **Convert**: `REPL dict = new REPL(); dict.setName(name);`
    `new PhyloSpecToLPhy(dict, variableResolver, componentResolver, PhyloSpecNames.load()).convert(statements);`
    Report a `TileApplicationError` the same way as a `TypeError`.
@@ -631,7 +691,18 @@ none. LPhy publishes what it supports through `ComponentLibraryExporter`'s
 
 ## 7. Implementation order and acceptance tests
 
-Each step ends with tests that must pass before the next starts.
+Each step ends with tests that must pass before the next starts. Steps 1–5 are done. Their tests are
+in `src/test/java/lphy/phylospec/convert/`:
+
+| Step | Test class |
+|---|---|
+| 1 | `PhyloSpecNamesTest` |
+| 2 | `PhyloSpecToLPhyTest` |
+| 3 | `PhyloSpecToLPhyRunnerTest` |
+| 4 | `DataFreeExamplesTest` |
+| 5 | `ConverterFeaturesTest` |
+
+Steps 6 and 7 are open (§8).
 
 1. **`PhyloSpecNames`** (§2). Tests: `generators("Normal")` returns `Normal` with an identity rename map;
    after annotating `LogNormal`, `generators("LogNormal")` maps `logMean → meanlog`, `logSd → sdlog`;
@@ -716,8 +787,9 @@ Each step ends with tests that must pass before the next starts.
 
 See [`class-diagram3.svg`](class-diagram3.svg); open it in a browser for a zoomable view. It is
 hand-written SVG, edited as text with no build step, in the same style as v2's diagram. Gray boxes are
-unchanged upstream code (`phylospec-core`, `lphy-core`); teal boxes are the new classes; the dashed
-teal box is the optional `LPhyTileLibrary` (§5); the amber box holds the `lphy-base` changes of
-Decision 3.
+upstream code (`phylospec-core`, `lphy-core`), unchanged except for `lphy-core`'s
+`ArrayCreator.createArrayValue`, which was made public (§3.9); teal boxes are the new classes; the
+dashed teal box is the optional `LPhyTileLibrary` (§5), which is not built; the amber box holds the
+`lphy-base` changes of Decision 3, both done and still to do (§8).
 
 ![Class diagram](class-diagram3.svg)
