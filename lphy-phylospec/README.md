@@ -110,7 +110,8 @@ A form LPhy cannot express yet fails with "Not supported by LPhy yet", pointing 
 Examples are indexed statements, `-x` and units. A PhyloSpec name or argument that differs from
 LPhy's needs a `phylospec` annotation in `lphy-base`, and most of these annotations are not written
 yet. The design, its limits and the open items are in
-[`CLASS_DESIGN3.md`](CLASS_DESIGN3.md).
+[`CLASS_DESIGN3.md`](CLASS_DESIGN3.md). How it differs from the earlier tiling design, and why it
+needs no tiling, is summarised in [`DESIGN_V2_VS_V3.md`](DESIGN_V2_VS_V3.md).
 
 ## 2. Measure the gap between LPhy and PhyloSpec
 
