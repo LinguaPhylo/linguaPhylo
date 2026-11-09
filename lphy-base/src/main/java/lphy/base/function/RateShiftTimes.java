@@ -80,14 +80,25 @@ public class RateShiftTimes extends DeterministicFunction<Double[]> {
         LocalDate fromDate = decimalYearToDate(fromVal);
         LocalDate toDate = decimalYearToDate(toVal);
 
-        // Generate rate shift times by stepping backward from 'from' toward 'to'
+        // Generate one rate shift time per predictor window, stepping backward from 'from'
+        // toward 'to'.
+        //
+        // The dates MASCOT's BEAUti editor produces label the *end* of each predictor window,
+        // because MASCOT reads a RateShifts value as the end of an interval. LPhy's
+        // StructuredCoalescentRateShifts takes interval START times, so we emit the start of
+        // each window instead: window i ends at the BEAUti date v[i] and starts at v[i-1],
+        // with the most recent window starting one period after 'from'. Emitting v[i] here
+        // would line predictor row i up with window i+1, lagging every predictor by one
+        // interval once the converter translates back to end times for MASCOT.
         List<Double> shifts = new ArrayList<>();
+        LocalDate windowStart = fromDate.plus(period);
         LocalDate currentDate = fromDate;
         double currentTime = -(dateToDecimalYear(fromDate) - dateToDecimalYear(mrsiDate));
         double endTime = -(dateToDecimalYear(toDate) - dateToDecimalYear(mrsiDate));
 
         while (currentTime <= endTime) {
-            shifts.add(currentTime);
+            shifts.add(-(dateToDecimalYear(windowStart) - dateToDecimalYear(mrsiDate)));
+            windowStart = currentDate;
             currentDate = currentDate.minus(period);
             currentTime = -(dateToDecimalYear(currentDate) - dateToDecimalYear(mrsiDate));
         }
