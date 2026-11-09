@@ -45,7 +45,7 @@ class toDesignMatrixTest {
         Table table = buildTable(colNames, rows);
         Value<Table> tableValue = new Value<>("ne_table", table);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, null, null);
+        toDesignMatrix func = new toDesignMatrix(tableValue, null, null, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -92,7 +92,7 @@ class toDesignMatrixTest {
         Value<Table> tableValue = new Value<>("m_table", table);
         Value<Boolean> flag = new Value<>("migrationMatrix", true);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, flag, null);
+        toDesignMatrix func = new toDesignMatrix(tableValue, flag, null, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -135,7 +135,7 @@ class toDesignMatrixTest {
         Value<Table> tableValue = new Value<>("table", table);
         Value<Boolean> flag = new Value<>("migrationMatrix", true);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, flag, null);
+        toDesignMatrix func = new toDesignMatrix(tableValue, flag, null, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -157,7 +157,7 @@ class toDesignMatrixTest {
         Value<Table> tableValue = new Value<>("table", table);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            toDesignMatrix func = new toDesignMatrix(tableValue, null, null);
+            toDesignMatrix func = new toDesignMatrix(tableValue, null, null, null);
             func.apply();
         });
     }
@@ -173,7 +173,7 @@ class toDesignMatrixTest {
         Table table = buildTable(colNames, rows);
         Value<Table> tableValue = new Value<>("table", table);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, null, null);
+        toDesignMatrix func = new toDesignMatrix(tableValue, null, null, null);
         assertThrows(IllegalArgumentException.class, func::apply);
     }
 
@@ -195,7 +195,7 @@ class toDesignMatrixTest {
         Table table = buildTable(colNames, rows);
         Value<Table> tableValue = new Value<>("ne_table", table);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, null, null);
+        toDesignMatrix func = new toDesignMatrix(tableValue, null, null, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -225,7 +225,7 @@ class toDesignMatrixTest {
         Table table = buildTable(colNames, rows);
         Value<Table> tableValue = new Value<>("ne_table", table);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, null, null);
+        toDesignMatrix func = new toDesignMatrix(tableValue, null, null, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -258,7 +258,7 @@ class toDesignMatrixTest {
         Value<Table> tableValue = new Value<>("table", table);
         Value<Boolean> flag = new Value<>("migrationMatrix", true);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, flag, null);
+        toDesignMatrix func = new toDesignMatrix(tableValue, flag, null, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -291,7 +291,7 @@ class toDesignMatrixTest {
         Value<Table> tableValue = new Value<>("table", table);
         Value<Boolean> flag = new Value<>("migrationMatrix", true);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, flag, null);
+        toDesignMatrix func = new toDesignMatrix(tableValue, flag, null, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -333,7 +333,7 @@ class toDesignMatrixTest {
         Value<Table> tableValue = new Value<>("ne_table", table);
         Value<Integer> nIntervals = new Value<>("nIntervals", 3);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, null, nIntervals);
+        toDesignMatrix func = new toDesignMatrix(tableValue, null, nIntervals, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -364,7 +364,7 @@ class toDesignMatrixTest {
         Value<Boolean> flag = new Value<>("migrationMatrix", true);
         Value<Integer> nIntervals = new Value<>("nIntervals", 2);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, flag, nIntervals);
+        toDesignMatrix func = new toDesignMatrix(tableValue, flag, nIntervals, null);
         Value<Double[][]> result = func.apply();
         Double[][] matrix = result.value();
 
@@ -393,7 +393,7 @@ class toDesignMatrixTest {
         Value<Table> tableValue = new Value<>("ne_table", table);
         Value<Integer> nIntervals = new Value<>("nIntervals", 3);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, null, nIntervals);
+        toDesignMatrix func = new toDesignMatrix(tableValue, null, nIntervals, null);
         assertThrows(IllegalArgumentException.class, func::apply,
                 "Should throw when nIntervals used with time-variant Ne matrix");
     }
@@ -411,7 +411,7 @@ class toDesignMatrixTest {
         Value<Table> tableValue = new Value<>("table", table);
         Value<Integer> nIntervals = new Value<>("nIntervals", 3);
 
-        toDesignMatrix func = new toDesignMatrix(tableValue, null, nIntervals);
+        toDesignMatrix func = new toDesignMatrix(tableValue, null, nIntervals, null);
         assertThrows(IllegalArgumentException.class, func::apply,
                 "Should throw when nIntervals used with long format");
     }
