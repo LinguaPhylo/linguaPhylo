@@ -22,7 +22,7 @@ public class ARange extends DeterministicFunction<Double[]> {
         stepParamName = getParamName(2);
         setParam(startParamName, start);
         setParam(stopParamName, stop);
-        setParam(startParamName, step);
+        setParam(stepParamName, step);
     }
 
     @Override
