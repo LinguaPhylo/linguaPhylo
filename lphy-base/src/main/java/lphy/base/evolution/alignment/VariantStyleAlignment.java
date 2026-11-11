@@ -29,7 +29,8 @@ public class VariantStyleAlignment extends AbstractAlignment {
             throw new IllegalArgumentException("The VariantStyleAlignment does not support AMINO_ACID and CODON variants.");
         }
 
-        taxaNames = idMap.keySet().toArray(new String[idMap.size()]);
+        // same order as taxa (by idMap index), so that taxon indices agree with indexOfTaxon()
+        taxaNames = taxa.getTaxaNames();
         this.alignment = root;
         this.variantStore = variantStore;
     }
