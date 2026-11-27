@@ -65,13 +65,8 @@ public class Binomial extends ParametricDistribution<Integer> implements Generat
         super.setParam(paramName, value); // constructDistribution
     }
 
-    public void setP(Value<Double> p) {
-        this.p = p;
-    }
-
-    public void setN(Value<Integer> n) {
-        this.n = n;
-    }
+    // No public setP/setN(Value): Generator.setParam would find them by reflection and invoke them
+    // with the raw value, which throws. setParam above already updates both fields (#579).
 
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};
     public Integer[] getDomainBounds() {

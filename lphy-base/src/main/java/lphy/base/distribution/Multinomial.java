@@ -5,16 +5,19 @@ import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
-import org.apache.mahout.math.random.WeightedThing;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
+/**
+ * The multinomial distribution: the counts of k events in n independent trials,
+ * where event i has probability p[i]. The probabilities are normalised to sum to 1.
+ */
 public class Multinomial extends ParametricDistribution<Integer[]> {
     private Value<Integer> n;
     private Value<Double[]> p;
-    private org.apache.mahout.math.random.Multinomial<String> multinomial;
-    private List<WeightedThing<String>> weightedThings;
 
     public Multinomial(
             @ParameterInfo(name = DistributionConstants.nParamName, description = "number of trials.") Value<Integer> n,
@@ -39,20 +42,48 @@ public class Multinomial extends ParametricDistribution<Integer[]> {
             description = "The multinomial probability distribution.")
     @Override
     public RandomVariable<Integer[]> sample() {
-        weightedThings = new ArrayList<>();
-        String index;
-        for (int i = 0; i < this.p.value().length; i++) {
-            index = String.format("%d", i);
-            weightedThings.add(new WeightedThing<>(index,this.p.value()[i]));
+        return new RandomVariable<>(null, sample(random, n.value(), p.value()), this);
+    }
+
+    /**
+     * Draws the counts with LPhy's random number generator, so that a seed makes them reproducible:
+     * x[i] ~ Binomial(trials left, p[i] / probability left), and the last event takes the remaining trials.
+     */
+    static Integer[] sample(RandomGenerator random, int nTrials, Double[] prob) {
+        if (nTrials < 0)
+            throw new IllegalArgumentException("The number of trials must be non-negative, but n = " + nTrials);
+        if (prob.length == 0)
+            throw new IllegalArgumentException("Multinomial needs at least one event probability.");
+        double total = 0;
+        for (Double pi : prob) {
+            if (pi == null || pi < 0 || Double.isNaN(pi))
+                throw new IllegalArgumentException("Event probabilities must be non-negative, but p contains " + pi);
+            total += pi;
         }
-        multinomial = new org.apache.mahout.math.random.Multinomial<String>(weightedThings);
-        Integer[] results = new Integer[p.value().length];
-        Arrays.fill(results, 0);
-        for (int i = 0; i < n.value(); i++) {
-            int result = Integer.parseInt(multinomial.sample());
-            results[result]++;
+        if (total <= 0)
+            throw new IllegalArgumentException("Event probabilities must not all be 0.");
+
+        // probLeft[i] = p[i] + ... + p[k-1]
+        double[] probLeft = new double[prob.length + 1];
+        for (int i = prob.length - 1; i >= 0; i--)
+            probLeft[i] = probLeft[i + 1] + prob[i];
+
+        Integer[] counts = new Integer[prob.length];
+        int trialsLeft = nTrials;
+        for (int i = 0; i < prob.length - 1; i++) {
+            if (trialsLeft == 0 || prob[i] == 0) {
+                counts[i] = 0;
+            } else if (probLeft[i + 1] == 0) {
+                counts[i] = trialsLeft; // no later event can occur
+            } else {
+                // rounding can push the ratio slightly above 1
+                double pi = Math.min(1.0, prob[i] / probLeft[i]);
+                counts[i] = new BinomialDistribution(random, trialsLeft, pi).sample();
+            }
+            trialsLeft -= counts[i];
         }
-        return new RandomVariable<>(null, results, this);
+        counts[prob.length - 1] = trialsLeft;
+        return counts;
     }
 
     @Override
@@ -75,8 +106,5 @@ public class Multinomial extends ParametricDistribution<Integer[]> {
             default:
                 throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
-
-
-//        super.setParam(paramName, value); // constructDistribution
     }
 }
