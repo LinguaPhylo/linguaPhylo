@@ -29,7 +29,7 @@ public class HKY extends RateMatrix {
 
 
     public HKY(@ParameterInfo(name = kappaParamName, narrativeName = "transition bias parameter", description = "the kappa of the HKY process.") Value<Number> kappa,
-               @ParameterInfo(name = SubstModelParamNames.FreqParamName, narrativeName="base frequency vector", description = "the base frequencies.") Value<Double[]> freq,
+               @ParameterInfo(name = SubstModelParamNames.FreqParamName, phylospec = "baseFrequencies", narrativeName="base frequency vector", description = "the base frequencies.") Value<Double[]> freq,
                @ParameterInfo(name = RateMatrix.meanRateParamName, narrativeName="rate", description = "the total rate of substitution per unit time. Default 1.0.", optional = true) Value<Number> rate) {
 
         super(rate);

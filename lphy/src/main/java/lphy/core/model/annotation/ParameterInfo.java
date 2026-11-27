@@ -22,4 +22,6 @@ public @interface ParameterInfo {
     String description();
     boolean suppressNameInNarrative() default false;
     boolean optional() default false;
+    // for phylospec name
+    String phylospec() default "";
 }

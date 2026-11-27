@@ -1,0 +1,356 @@
+{
+  "_comment": "Hand-curated LPhy <-> PhyloSpec name equivalences for concepts that don't share an exact name. Read by compare_component_libraries.py and layered on top of exact-name matches. Each entry: lphy (list of names), phylospec (list of names) -- either side may have more than one name for one-to-many / many-to-one equivalences -- and an optional note flagging a real caveat (different parameterization, narrower/broader scope, etc). This file is maintained by hand and reviewed for correctness; it is NOT derived automatically from the two component-library JSONs (see find_near_matches() in the script for a candidate list to promote into this file after a manual check). generatorNotes/typeNotes are a separate, smaller mechanism: supplementary notes appended to one side's Description cell in the LPhy-only/PhyloSpec-only tables (unlike the equivalence lists above, these entries are never matched -- the note just records something worth knowing about why there's no counterpart).",
+
+  "types": [
+    {
+      "lphy": ["TimeTree"],
+      "phylospec": ["Tree"]
+    },
+    {
+      "lphy": ["SequenceType"],
+      "phylospec": ["Character", "Nucleotide", "AminoAcid"],
+      "note": "LPhy's SequenceType is a single alphabet marker (see nucleotides(), aminoAcids(), standard(n)); PhyloSpec models the same idea as the Character type hierarchy."
+    },
+    {
+      "lphy": ["Double"],
+      "phylospec": ["Real", "NonNegativeReal", "PositiveReal", "Probability", "Rate", "Age", "Simplex"],
+      "note": "LPhy's Double is untyped and covers PhyloSpec's whole Real hierarchy: NonNegativeReal / PositiveReal / Probability, plus the aliases Rate (= PositiveReal) and Age (= NonNegativeReal). Simplex is grouped here too as a Probability-vector refinement, though note it's actually Vector<Probability> (a vector), not a scalar Real -- LPhy's Double[] is its closer structural match."
+    },
+    {
+      "lphy": ["Integer"],
+      "phylospec": ["Integer", "NonNegativeInteger", "PositiveInteger", "Count"],
+      "note": "LPhy's Integer is untyped and covers PhyloSpec's whole Integer hierarchy: NonNegativeInteger / PositiveInteger, plus the alias Count (= NonNegativeInteger)."
+    },
+    {
+      "lphy": ["Boolean[]", "Double[]", "Integer[]", "Number[]", "Object[]", "Variant[]", "TimeTree[]"],
+      "phylospec": ["Vector"],
+      "note": "LPhy uses one bracketed array type per element type; PhyloSpec has a single generic Vector<T> (e.g. LPhy's Double[] ≈ PhyloSpec's Vector<Real>)."
+    },
+    {
+      "lphy": ["Double[][]"],
+      "phylospec": ["Matrix", "SquareMatrix", "QMatrix", "StochasticMatrix"],
+      "note": "same pattern, one level deeper; PhyloSpec's Matrix<T> is itself defined as an alias of Vector<Vector<T>>. SquareMatrix / QMatrix / StochasticMatrix are constrained refinements of Matrix (square, a substitution-model rate matrix, a probability-transition matrix) that LPhy's untyped 2-D arrays don't distinguish."
+    }
+  ],
+
+  "generators": [
+    {
+      "lphy": ["Exp"],
+      "phylospec": ["Exponential"],
+      "note": "different parameterization: LPhy uses mean, PhyloSpec uses rate = 1/mean"
+    },
+    {
+      "lphy": ["DiscretizeGamma"],
+      "phylospec": ["DiscreteGamma"]
+    },
+    {
+      "lphy": ["UniformDiscrete"],
+      "phylospec": ["DiscreteUniform"]
+    },
+    {
+      "lphy": ["ExpMarkovChain"],
+      "phylospec": ["ExponentialMarkovChain"]
+    },
+    {
+      "lphy": ["FossilBirthDeath"],
+      "phylospec": ["FossilizedBirthDeath"]
+    },
+    {
+      "lphy": ["arange", "rangeInt"],
+      "phylospec": ["range"],
+      "note": "LPhy splits this into a general arange (float values, step argument) and an integer-only rangeInt; PhyloSpec has a single integer range"
+    },
+    {
+      "lphy": ["rep"],
+      "phylospec": ["repeat"]
+    },
+    {
+      "lphy": ["newick"],
+      "phylospec": ["fromNewick"]
+    },
+    {
+      "lphy": ["ntaxa"],
+      "phylospec": ["numTaxa"],
+      "note": "PhyloSpec's numTaxa takes an alignment or tree; LPhy's ntaxa takes a Taxa object directly"
+    },
+    {
+      "lphy": ["nchar"],
+      "phylospec": ["numSites"],
+      "note": "PhyloSpec's numSites takes an alignment or a sequence; LPhy's nchar takes any site-dimensioned object (or array of them) via its NChar type."
+    },
+    {
+      "lphy": ["readFasta"],
+      "phylospec": ["fromFasta"]
+    },
+    {
+      "lphy": ["readNexus"],
+      "phylospec": ["fromNexus"]
+    },
+    {
+      "lphy": ["readTrees"],
+      "phylospec": ["fromTree"],
+      "note": "LPhy reads one or more trees with an explicit format; PhyloSpec reads a single tree, format inferred from extension"
+    },
+    {
+      "lphy": ["readDelim"],
+      "phylospec": ["fromCSV"],
+      "note": "different return shape: LPhy Table vs PhyloSpec Vector<Map<String,String>>"
+    },
+    {
+      "lphy": ["extractTrait"],
+      "phylospec": ["discreteTraitsFromTaxa"]
+    },
+    {
+      "lphy": ["constantPopFunc"],
+      "phylospec": ["constantPopulationFunction"]
+    },
+    {
+      "lphy": ["exponentialPopFunc"],
+      "phylospec": ["exponentialPopulationFunction"]
+    },
+    {
+      "lphy": ["logisticPopFunc"],
+      "phylospec": ["logisticPopulationFunction"]
+    },
+    {
+      "lphy": ["MixturePhyloCTMC"],
+      "phylospec": ["Mixture"],
+      "note": "PhyloSpec models this via the generic Mixture combinator over Distribution<Alignment>, not a dedicated 2/3-component generator"
+    },
+    {
+      "lphy": ["PhyloBrownian"],
+      "phylospec": ["PhyloBM"],
+      "note": "different parameterization: PhyloSpec generalizes to per-site/per-branch rate vectors. (PhyloMultivariateBrownian's correlated-trait covariance is NOT covered by PhyloBM -- left as a genuine LPhy-only gap.)"
+    },
+    {
+      "lphy": ["jukesCantor"],
+      "phylospec": ["jc69"],
+      "note": "same equal-rates Jukes-Cantor substitution model; LPhy names it after the process, PhyloSpec after the 1969 paper."
+    },
+    {
+      "lphy": ["lewisMK"],
+      "phylospec": ["mk"],
+      "note": "both the Lewis-Mk model for discrete/multistate traits, but different parameterization: LPhy takes an explicit numStates argument, while PhyloSpec's mk infers the state count from context and only exposes an overall rate."
+    },
+    {
+      "lphy": ["gtr", "generalTimeReversible"],
+      "phylospec": ["gtr"],
+      "note": "LPhy splits GTR into a nucleotide-only gtr (fixed 4 states, 6 named rates) and a general n-state generalTimeReversible (rates dimensioned by numStates); PhyloSpec's second gtr overload (relativeRates: Simplex + baseFrequencies) is the same n-state generalization."
+    },
+    {
+      "lphy": ["PhyloCTMC"],
+      "phylospec": ["PhyloCTMC"],
+      "note": "Simulation gap (see the top difference): LPhy's optional L sets the alignment length, so PhyloCTMC can simulate an alignment from scratch. PhyloSpec has no length argument; numSites comes from siteRates (e.g. DiscreteGammaInv(numSites=...)) or from the observed alignment."
+    },
+    {
+      "lphy": ["taxa"],
+      "phylospec": ["taxa"],
+      "note": "Simulation gap (see the top difference): LPhy's taxa(names=..., species, ages) builds taxa from scratch, and its taxa(taxa) extracts them from an alignment or tree. PhyloSpec's taxa only extracts, from an alignment or tree; without data, Taxa (an alias of Vector<Taxon>) must be written as a vector of taxon(name=...) calls."
+    },
+    {
+      "lphy": ["Yule"],
+      "phylospec": ["Yule"],
+      "note": "Simulation gap (see the top difference): LPhy takes an optional n or taxa, so it can simulate a tree of n taxa. PhyloSpec requires taxa: from an alignment or tree, or without data as a vector of taxon(name=...) calls -- there is no count like n."
+    },
+    {
+      "lphy": ["BirthDeath"],
+      "phylospec": ["BirthDeath"],
+      "note": "Simulation gap (see the top difference): LPhy can condition on rootAge alone or take an optional n or taxa. PhyloSpec requires taxa: from an alignment or tree, or without data as a vector of taxon(name=...) calls -- there is no count like n."
+    },
+    {
+      "lphy": ["Coalescent"],
+      "phylospec": ["Coalescent"],
+      "note": "Simulation gap (see the top difference): LPhy takes an optional n or taxa, so it can simulate a tree of n taxa. PhyloSpec requires taxa: from an alignment or tree, or without data as a vector of taxon(name=...) calls -- there is no count like n."
+    },
+    {
+      "lphy": ["SkylineCoalescent"],
+      "phylospec": ["SkylineCoalescent"],
+      "note": "Simulation gap (see the top difference): LPhy takes an optional n or taxa, so it can simulate a tree of n taxa. PhyloSpec requires taxa: from an alignment or tree, or without data as a vector of taxon(name=...) calls -- there is no count like n."
+    }
+  ],
+
+  "generatorNotes": [
+    {
+      "side": "phylospec",
+      "name": "taxon",
+      "note": "LPhy has no equivalent single-Taxon constructor -- it always builds the whole Taxa collection at once via taxa(names=..., ...), never taxon-by-taxon."
+    },
+    {
+      "side": "lphy",
+      "name": "simulate",
+      "note": "Simulation gap (see the top difference): PhyloSpec has no counterpart: its scripts can describe a data-free model, but no PhyloSpec tool or engine simulates one."
+    }
+  ],
+
+  "_operators_comment": "Hand-curated mapping from every operator token in PhyloSpec's lexer (org.phylospec.lexer.TokenType) to its LPhy counterpart, plus the LPhy operators for which PhyloSpec's grammar has no token at all. Unlike types/generators, PhyloSpec's operators are NEVER entries in phylospec-core-component-library.json -- they're resolved before any generator lookup happens, by TypeResolver.visitBinary/visitUnary against a hand-written (operator, operand type) -> result type rule table. LPhy's operators, by contrast, ARE ordinary generator entries (namespace lphy.core.parser.function) in its exported library. Rows are ordered: PhyloSpec's binary arithmetic/comparison operators, its unary operator, its statement-level symbols (~, =, :), its two symbols with no LPhy equivalent (@, $/$$), then the LPhy operators with no PhyloSpec token whatsoever (%, **, &, &&, |, ||). 'phylospec'/'lphy' are null when that side has no counterpart at all.",
+  "operators": [
+    {
+      "phylospec": "-",
+      "kind": "binary arithmetic",
+      "lphy": "-",
+      "note": "PhyloSpec also allows '-' as a unary sign, e.g. -x. LPhy's grammar allows it too, but negative numbers are handled as plain literals rather than an operator call."
+    },
+    {
+      "phylospec": "+",
+      "kind": "binary arithmetic",
+      "lphy": "+",
+      "note": "PhyloSpec's '+' can also join two strings together; LPhy's '+' is numeric only."
+    },
+    {
+      "phylospec": "*",
+      "kind": "binary arithmetic",
+      "lphy": "*",
+      "note": ""
+    },
+    {
+      "phylospec": "/",
+      "kind": "binary arithmetic",
+      "lphy": "/",
+      "note": "In PhyloSpec, dividing two whole numbers always gives back a decimal (Real), since the result isn't guaranteed to be a whole number."
+    },
+    {
+      "phylospec": "!",
+      "kind": "unary",
+      "lphy": "!",
+      "note": "Both mean logical NOT, e.g. !true is false."
+    },
+    {
+      "phylospec": "!=",
+      "kind": "binary comparison",
+      "lphy": "!=",
+      "note": ""
+    },
+    {
+      "phylospec": "==",
+      "kind": "binary comparison",
+      "lphy": "==",
+      "note": ""
+    },
+    {
+      "phylospec": ">",
+      "kind": "binary comparison",
+      "lphy": ">",
+      "note": ""
+    },
+    {
+      "phylospec": ">=",
+      "kind": "binary comparison",
+      "lphy": ">=",
+      "note": ""
+    },
+    {
+      "phylospec": "<",
+      "kind": "binary comparison",
+      "lphy": "<",
+      "note": ""
+    },
+    {
+      "phylospec": "<=",
+      "kind": "binary comparison",
+      "lphy": "<=",
+      "note": ""
+    },
+    {
+      "phylospec": "~",
+      "kind": "statement (stochastic draw)",
+      "lphy": "~",
+      "note": "Same meaning in both: draws a random value from a distribution, e.g. x ~ Normal(0,1)."
+    },
+    {
+      "phylospec": "=",
+      "kind": "statement (assignment)",
+      "lphy": "=",
+      "note": "Same meaning in both: assigns a fixed value, e.g. x = 5."
+    },
+    {
+      "phylospec": ":",
+      "kind": "statement (range)",
+      "lphy": ":",
+      "note": "Same meaning in both: builds a range/sequence, e.g. 1:10 for the numbers 1 through 10."
+    },
+    {
+      "phylospec": "@",
+      "kind": "statement (decorator)",
+      "lphy": null,
+      "note": "Adds metadata before a statement, e.g. @observed(...). LPhy has nothing like it."
+    },
+    {
+      "phylospec": "$",
+      "kind": "template variable",
+      "lphy": null,
+      "note": "Marks a placeholder in a PhyloSpec model template, to be filled in later. LPhy has no template system."
+    },
+    {
+      "phylospec": "$$",
+      "kind": "template variable",
+      "lphy": null,
+      "note": "Same as $, but the placeholder is optional."
+    },
+    {
+      "phylospec": null,
+      "kind": "binary arithmetic",
+      "lphy": "%",
+      "note": "Modulo isn't supported in PhyloSpec at all."
+    },
+    {
+      "phylospec": null,
+      "kind": "binary arithmetic",
+      "lphy": "**",
+      "note": "Exponentiation (power) isn't supported in PhyloSpec at all."
+    },
+    {
+      "phylospec": null,
+      "kind": "binary bitwise",
+      "lphy": "&",
+      "note": "Bitwise AND isn't supported in PhyloSpec at all."
+    },
+    {
+      "phylospec": null,
+      "kind": "binary logical",
+      "lphy": "&&",
+      "note": "Logical AND isn't supported in PhyloSpec at all -- there's currently no way to combine two conditions."
+    },
+    {
+      "phylospec": null,
+      "kind": "binary bitwise",
+      "lphy": "|",
+      "note": "Bitwise OR isn't supported in PhyloSpec at all."
+    },
+    {
+      "phylospec": null,
+      "kind": "binary logical",
+      "lphy": "||",
+      "note": "Logical OR isn't supported in PhyloSpec at all."
+    }
+  ],
+
+  "_mathFunctionExceptions_comment": "PhyloSpec-only names that live in the phylospec.functions.math namespace alongside genuine math functions but aren't math functions themselves, with no other signal available (in this JSON, which is all we control on the PhyloSpec side) to tell them apart automatically. LPhy's own lphy.core.parser.function side needs no such list: its export already carries a real signal for this -- ComponentLibraryExporter.java's buildExpressionOperatorGenerators() stamps every genuine operator/math function with an `implementedVia` field that `map` (built via the ordinary generator path, not that method) never gets -- so is_lphy_math_function checks that instead of a curated name list. 'linspace' has no PhyloSpec-side equivalent of that field to check: it's a vector-generation function -- structurally identical to 'range'/'repeat', which stay classified as math because they're matched, not PhyloSpec-only -- so it can't be told apart by shape alone; this is purely an editorial call, kept here rather than in the LPhy exporter since it's about a PhyloSpec generator, not one this project's Java controls. Each name must currently be classified as a PhyloSpec-only math-namespace generator, or the script raises a stale-mapping error.",
+  "mathFunctionExceptions": {
+    "lphy": [],
+    "phylospec": ["linspace"]
+  },
+
+  "_methodCallEquivalents_comment": "Hand-curated links from an LPhy method call (in lphy-method-calls.json) to the PhyloSpec generator(s) that cover the same idea, for the small number of cases where one genuinely does. PhyloSpec has no dot-call syntax, so every one of these is really '<lphyMethod> as a method' vs '<phylospec name> as a plain function taking the object as an argument', never a true syntax match -- that's why this is its own list rather than folded into the 'generators' equivalences above. 'lphyMethod' identifies the row in lphy-method-calls.json by name; add 'lphyReturnType' only if that name is ambiguous there (e.g. 'nodeCount' exists on both TimeTree and Taxa with different return types) -- compare_component_libraries.py raises a loud error if a name needs it and doesn't have it, or if either side's name no longer exists.",
+  "methodCallEquivalents": [
+    {
+      "lphyMethod": "getAge",
+      "phylospec": ["age"],
+      "note": "Same idea; PhyloSpec's age() takes the node as an argument instead."
+    },
+    {
+      "lphyMethod": "branchCount",
+      "phylospec": ["numBranches"],
+      "note": "Same value; PhyloSpec's numBranches() takes the tree as an argument instead."
+    },
+    {
+      "lphyMethod": "rootAge",
+      "phylospec": ["rootAge"],
+      "note": "Same name and value; PhyloSpec's rootAge() takes the tree as an argument."
+    },
+    {
+      "lphyMethod": "length",
+      "phylospec": ["num"],
+      "note": "Partial match: PhyloSpec's num() is generic; LPhy's length() is Taxa-only."
+    }
+  ]
+}

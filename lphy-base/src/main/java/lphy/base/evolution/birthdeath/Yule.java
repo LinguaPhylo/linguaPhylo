@@ -31,7 +31,7 @@ public class Yule extends TaxaConditionedTreeGenerator {
 
     private List<TimeTreeNode> activeNodes;
 
-    public Yule(@ParameterInfo(name = BirthDeathConstants.lambdaParamName, description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
+    public Yule(@ParameterInfo(name = BirthDeathConstants.lambdaParamName, phylospec = "birthRate", description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
                 @ParameterInfo(name = DistributionConstants.nParamName, description = "the number of taxa.", optional=true) Value<Integer> n,
                 @ParameterInfo(name = TaxaConditionedTreeGenerator.taxaParamName, description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)", optional=true) Value taxa,
                 @ParameterInfo(name = BirthDeathConstants.rootAgeParamName, description = "the root age to be conditioned on. optional.", optional=true) Value<Number> rootAge) {

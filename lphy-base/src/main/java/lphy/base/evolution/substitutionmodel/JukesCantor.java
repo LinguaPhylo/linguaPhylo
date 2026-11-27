@@ -24,7 +24,7 @@ public class JukesCantor extends RateMatrix {
         super(rate);
     }
 
-    @GeneratorInfo(name = "jukesCantor", verbClause = "is", narrativeName = "Jukes-Cantor model",
+    @GeneratorInfo(name = "jukesCantor", phylospec = "jc69", verbClause = "is", narrativeName = "Jukes-Cantor model",
             category = GeneratorCategory.RATE_MATRIX, examples = {"jcCoalescent.lphy"},
             description = "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.")
     public Value<Double[][]> apply() {
