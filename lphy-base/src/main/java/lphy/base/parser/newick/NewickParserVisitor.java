@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from NewickParser.g4 by ANTLR 4.13.1
 package lphy.base.parser.newick;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 

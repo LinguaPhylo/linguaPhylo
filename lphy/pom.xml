@@ -18,7 +18,9 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.11.1</version>
+            <!-- must match the minor version of the ANTLR tool that generated lphy.core.parser.antlr
+                 (4.13.1, see the file headers); 4.13.2 is also what BEAST 2.8 uses -->
+            <version>4.13.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
