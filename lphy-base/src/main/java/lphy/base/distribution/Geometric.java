@@ -54,8 +54,14 @@ public class Geometric extends ParametricDistribution<Integer> implements Genera
         return Collections.singletonMap(pParamName, p);
     }
 
-    public void setP(Value<Double> p) {
-        this.p = p;
+    // No public setP(Value): Generator.setParam would find it by reflection and invoke it
+    // with the raw value, which throws. Set the field here, then rebuild the distribution.
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(pParamName)) p = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
     }
 
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};

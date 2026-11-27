@@ -55,16 +55,19 @@ public class NegativeBinomial extends ParametricDistribution<Integer> implements
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
             put(pParamName, p);
-            put(nParamName, r);
+            put(rParamName, r);
         }};
     }
 
-    public void setP(Value<Double> p) {
-        this.p = p;
-    }
+    // No public setP/setR(Value): Generator.setParam would find them by reflection and invoke them
+    // with the raw value, which throws. Set the fields here, then rebuild the distribution.
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(pParamName)) p = value;
+        else if (paramName.equals(rParamName)) r = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
-    public void setR(Value<Integer> r) {
-        this.r = r;
+        super.setParam(paramName, value); // constructDistribution
     }
 
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};
