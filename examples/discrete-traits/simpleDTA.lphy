@@ -1,0 +1,17 @@
+// simple discrete trait (phylogeography) analysis:
+// 3 tips 3 deme alignment in a tree under a symmetric rate matrix with
+// Bayesian stochastic variable selection (BSSVS) on the routes.
+model {
+  Θ ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  ψ ~ Coalescent(theta=Θ, n=30);
+  D ~ PhyloCTMC(L=500, Q=jukesCantor(), mu=0.1, tree=ψ);
+
+  K = 3;                                  // number of locations
+  dim = K*(K-1)/2;                        // symmetric routes
+  π_trait ~ Dirichlet(conc=rep(element=2.0, times=K));
+  R_trait ~ Dirichlet(conc=rep(element=1.0, times=dim));
+  I ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=K-1);   // which routes are on
+  μ_trait ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  Q_trait = generalTimeReversible(rates=select(x=R_trait, indicator=I), freq=π_trait);
+  D_trait ~ PhyloCTMC(L=1, Q=Q_trait, mu=μ_trait, tree=ψ, dataType=standard(numStates=K));
+}

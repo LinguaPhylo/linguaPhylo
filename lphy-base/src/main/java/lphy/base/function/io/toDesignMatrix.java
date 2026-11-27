@@ -44,6 +44,7 @@ public class toDesignMatrix extends DeterministicFunction<Double[][]> {
     private static final String tableName = "table";
     private static final String flagName = "migrationMatrix";
     private static final String nIntervalsName = "nIntervals";
+    private static final String transformName = "transform";
 
     /**
      * Classifies the detected CSV format.
@@ -60,7 +61,8 @@ public class toDesignMatrix extends DeterministicFunction<Double[][]> {
     public toDesignMatrix(
             @ParameterInfo(name = tableName, description = "Table read from a CSV file containing predictor data in one of the supported formats (long or MASCOT matrix).") Value<Table> table,
             @ParameterInfo(name = flagName, description = "If true, treat as migration format; if false (default), treat as per-deme/Ne format. Used to disambiguate MASCOT matrix formats.", optional = true) Value<Boolean> flag,
-            @ParameterInfo(name = nIntervalsName, description = "Number of time intervals to tile a static predictor across. Only valid for static formats (Ne vector, square migration matrix). The single-interval block is replicated nIntervals times to match time-variant predictors.", optional = true) Value<Integer> nIntervals) {
+            @ParameterInfo(name = nIntervalsName, description = "Number of time intervals to tile a static predictor across. Only valid for static formats (Ne vector, square migration matrix). The single-interval block is replicated nIntervals times to match time-variant predictors.", optional = true) Value<Integer> nIntervals,
+            @ParameterInfo(name = transformName, description = "If true, log-transform then standardise (subtract mean, divide by sd) each predictor column over the whole series. This matches MASCOT's Covariate.transform(), which BEAUti applies via its transform flag; use it for raw predictors such as case counts. Values must be strictly positive.", optional = true) Value<Boolean> transform) {
         if (table == null || table.value().size() == 0)
             throw new IllegalArgumentException("table is null or empty");
         setParam(tableName, table);
@@ -69,6 +71,9 @@ public class toDesignMatrix extends DeterministicFunction<Double[][]> {
         }
         if (nIntervals != null) {
             setParam(nIntervalsName, nIntervals);
+        }
+        if (transform != null) {
+            setParam(transformName, transform);
         }
     }
 
@@ -95,6 +100,11 @@ public class toDesignMatrix extends DeterministicFunction<Double[][]> {
         Value<Integer> nIntervalsVal = getNIntervals();
         if (nIntervalsVal != null) {
             result = tileRows(result, nIntervalsVal.value(), fmt);
+        }
+
+        Value<Boolean> transformVal = (Value<Boolean>) getParams().get(transformName);
+        if (transformVal != null && transformVal.value()) {
+            logStandardise(result);
         }
 
         return new Value<>("", result, this);
@@ -141,6 +151,38 @@ public class toDesignMatrix extends DeterministicFunction<Double[][]> {
                 "long per-deme (deme,interval,predictors), long migration (from,to,interval,predictors), " +
                 "MASCOT Ne vector (2 columns, no header), MASCOT Ne/migration matrix (first column blank). " +
                 "Available columns: " + Arrays.toString(columnNames));
+    }
+
+    /**
+     * Log-transform then standardise each column in place, over every row of the series.
+     * <p>
+     * This reproduces MASCOT's {@code Covariate.transform()}, which BEAUti triggers through
+     * its per-covariate {@code transform} flag. It must run over the full set of intervals,
+     * before LPhyBEAST trims the intervals that precede the most recent sample -- otherwise
+     * the mean and sd are computed from a different set of rows than BEAUti uses and the
+     * standardised values will not match.
+     */
+    private void logStandardise(Double[][] m) {
+        if (m.length == 0) return;
+        int nCols = m[0].length;
+        for (int c = 0; c < nCols; c++) {
+            double[] logs = new double[m.length];
+            for (int r = 0; r < m.length; r++) {
+                if (m[r][c] == null || m[r][c] <= 0.0)
+                    throw new IllegalArgumentException("toDesignMatrix(transform=true) requires " +
+                            "strictly positive values, but column " + c + " row " + r + " is " + m[r][c] +
+                            ". Replace zeros with a small value (the MASCOT tutorials use 0.001) first.");
+                logs[r] = Math.log(m[r][c]);
+            }
+            double mean = 0;
+            for (double x : logs) mean += x;
+            mean /= logs.length;
+            double sd = 0;
+            for (double x : logs) sd += (x - mean) * (x - mean);
+            sd = Math.sqrt(sd / (logs.length - 1));   // sample sd, as MASCOT uses
+            for (int r = 0; r < m.length; r++)
+                m[r][c] = sd == 0.0 ? 0.0 : (logs[r] - mean) / sd;
+        }
     }
 
     private Double[][] buildMatrix(FormatType fmt, Table table, String[] columnNames) {

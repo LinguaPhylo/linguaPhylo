@@ -26,8 +26,10 @@ class RateShiftTimesTest {
         assertTrue(shifts.length >= 6 && shifts.length <= 8,
                 "Expected ~7 monthly shifts, got " + shifts.length);
 
-        // First shift should be approximately mrsi - from = 0.5
-        assertEquals(0.5, shifts[0], 0.02, "First shift should be ~0.5 years before present");
+        // Values are interval START times: the most recent predictor window ends at
+        // mrsi - from = 0.5 and therefore starts one month closer to the present.
+        assertEquals(0.5 - 1.0/12, shifts[0], 0.02,
+                "First shift is the START of the most recent window, ~one month before 0.5");
 
         // Shifts should be ascending
         for (int i = 1; i < shifts.length; i++) {
@@ -35,9 +37,9 @@ class RateShiftTimesTest {
                     "Shifts should be ascending: " + shifts[i] + " <= " + shifts[i - 1]);
         }
 
-        // Last shift should be approximately mrsi - to = 1.0
-        assertEquals(1.0, shifts[shifts.length - 1], 0.1,
-                "Last shift should be ~1.0 years before present");
+        // Last shift starts the oldest window, one month more recent than mrsi - to = 1.0
+        assertEquals(1.0 - 1.0/12, shifts[shifts.length - 1], 0.1,
+                "Last shift is the START of the oldest window");
     }
 
     @Test
@@ -52,13 +54,38 @@ class RateShiftTimesTest {
         Value<Double[]> result = fn.apply();
         Double[] shifts = result.value();
 
-        // Should have 5 entries: 1.0, 2.0, 3.0, 4.0, 5.0
+        // One value per predictor window, giving each window's START.
+        // The windows end at 1..5 years before the most recent sample (which is what
+        // MASCOT's BEAUti editor lists), so they start at 0..4.
         assertEquals(5, shifts.length, "Expected 5 yearly shifts");
-        assertEquals(1.0, shifts[0], 0.01);
-        assertEquals(2.0, shifts[1], 0.01);
-        assertEquals(3.0, shifts[2], 0.01);
-        assertEquals(4.0, shifts[3], 0.01);
-        assertEquals(5.0, shifts[4], 0.01);
+        assertEquals(0.0, shifts[0], 0.01);
+        assertEquals(1.0, shifts[1], 0.01);
+        assertEquals(2.0, shifts[2], 0.01);
+        assertEquals(3.0, shifts[3], 0.01);
+        assertEquals(4.0, shifts[4], 0.01);
+    }
+
+    @Test
+    void startTimesAreOneWindowAheadOfTheBeautiEndTimes() {
+        // MASCOT's BEAUti rate shift editor lists the END of each predictor window.
+        // StructuredCoalescentRateShifts consumes START times, so shifts[i+1] must equal
+        // the BEAUti value for window i -- that is what keeps predictor row i attached to
+        // window i once LPhyBEAST translates back to end times for MASCOT. Verified against
+        // the Ebola GLM tutorial, where being one out lags every weekly case count.
+        Value<Number> mrsi = new Value<>("mrsi", 2020.0);
+        Value<Number> from = new Value<>("from", 2019.0);
+        Value<Number> to = new Value<>("to", 2015.0);
+        Value<String> interval = new Value<>("interval", "1-0-0");
+
+        Double[] starts = new RateShiftTimes(mrsi, from, to, interval).apply().value();
+        double[] beautiEnds = {1.0, 2.0, 3.0, 4.0, 5.0};   // what BEAUti writes for this grid
+
+        assertEquals(beautiEnds.length, starts.length,
+                "one value per predictor window, same count as BEAUti");
+        for (int i = 0; i < starts.length - 1; i++)
+            assertEquals(beautiEnds[i], starts[i + 1], 1e-9,
+                    "start of window i+1 must be the end of window i");
+        assertEquals(0.0, starts[0], 1e-9, "the most recent window starts at the present");
     }
 
     @Test

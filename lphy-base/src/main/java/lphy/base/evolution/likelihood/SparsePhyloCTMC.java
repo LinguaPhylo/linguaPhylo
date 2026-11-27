@@ -1,6 +1,7 @@
 package lphy.base.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.base.distribution.Categorical;
 import lphy.base.evolution.CellPosition;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.alignment.Alignment;
@@ -15,23 +16,36 @@ import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.PoissonDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
 /**
  * An event-based (sparse) CTMC simulation extending PhyloCTMC.
- * This allows us to use any Q matrix passed to the constructor.
+ * Simulates the same process as {@link PhyloCTMC} (same distribution of the alignment),
+ * but only stores the sites that change on each branch.
+ * <p>
+ * Uses uniformization: with Λ = max_i(-Q_ii), events on a branch occur as a Poisson process
+ * with rate Λ * clockRate * branchRate * siteRate per site, and each event moves a site from
+ * state i to j with probability (I + Q/Λ)_ij (which may be a "virtual" self-jump).
+ * This is exact for any Q, including non-reversible Q and Q with unequal exit rates.
+ * <p>
+ * The random number stream differs from PhyloCTMC, so the same seed gives a different
+ * (but identically distributed) alignment.
  */
 public class SparsePhyloCTMC extends PhyloCTMC {
 
-    // We store the differences in a Map: node -> (siteIndex -> mutatedState).
-    // Each node's difference map tells which sites changed from its parent.
-    private Map<TimeTreeNode, Map<Integer,Integer>> nodeDifferences;
-    private Set<Integer> changedSites = new HashSet<>();
-    VariantStyleAlignment alignment;
-//    Alignment sampledRootSeq;
-    //TODO: didn't pass the validation test
+    // node -> (siteIndex -> state): sites whose state on this node differs from its parent.
+    private Map<TimeTreeNode, Map<Integer, Integer>> nodeDifferences;
+    private VariantStyleAlignment alignment;
+    // the root sequence used in the last simulation (given, or sampled from rootFreqs)
+    private Alignment simRoot;
+
+    // uniformized jump chain: cumulative jump probabilities per row of (I + Q/Λ)
+    private double uniformRate;
+    private double[][] jumpCDF;
+    // cumulative site rates for choosing the site of an event, null if all site rates are 1
+    private double[] siteRateCDF;
+
     public SparsePhyloCTMC(
             @ParameterInfo(name = AbstractPhyloCTMC.treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
             @ParameterInfo(name = AbstractPhyloCTMC.muParamName, narrativeName = "molecular clock rate", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
@@ -43,20 +57,8 @@ public class SparsePhyloCTMC extends PhyloCTMC {
                     description = "length of the alignment", optional = true) Value<Integer> L,
             @ParameterInfo(name = AbstractPhyloCTMC.dataTypeParamName, description = "the data type used for simulations, default to nucleotide",
                     narrativeName = "data type used for simulations", optional = true) Value<SequenceType> dataType,
-            @ParameterInfo(name = AbstractPhyloCTMC.rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from equilibrium frequencies.") Value<Alignment> rootSeq) {
+            @ParameterInfo(name = AbstractPhyloCTMC.rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from the root frequencies.", optional = true) Value<Alignment> rootSeq) {
         super(tree, mu, rootFreq, Q, siteRates, branchRates, L, dataType, rootSeq);
-
-        if (rootSeq != null) {
-            this.rootSeq = rootSeq;
-//            this.sampledRootSeq = new SimpleAlignment(rootSeq.value().nchar(), rootSeq.value());
-        } else {
-            throw new IllegalArgumentException("The root sequence should be provided!");
-//            if (dataType != null){
-//                this.sampledRootSeq = new SimpleAlignment(Taxa.createTaxa(1), L.value(), dataType.value());
-//            } else {
-//                this.sampledRootSeq = new SimpleAlignment(Taxa.createTaxa(1), L.value(), SequenceType.NUCLEOTIDE);
-//            }
-        }
     }
 
     // ======================================================================
@@ -64,213 +66,173 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     // ======================================================================
 
     /**
-     * This is the main entry point for the user to do a sparse simulation.
-     * We store the difference maps in nodeDifferences so that we can later 
-     * reconstruct the entire sequence for leaves if needed.
+     * Run the sparse simulation. Fills nodeDifferences (per-branch changes) and simRoot.
      */
     public void simulateSparse() {
-        // 1) Make sure everything is consistent and Q is built
-        setup();
+        setup(); // idMap, rootFreqs
 
-        // 2) Clear our difference map structure
+        final int nSites = getSiteCount();
+        simRoot = getOrSampleRoot(nSites);
+
+        Double[][] Qm = getQ();
+        buildJumpChain(Qm);
+        buildSiteRateCDF(nSites);
+
         nodeDifferences = new HashMap<>();
-
-        // 3) Mark root differences as empty: by default the root has no changes from itself
         TimeTreeNode root = tree.value().getRoot();
         nodeDifferences.put(root, Collections.emptyMap());
-        // 4) Recursively traverse children
+
+        // states differing from the root sequence along the current path, root -> node
+        Map<Integer, Integer> pathFromRoot = new HashMap<>();
         for (TimeTreeNode child : root.getChildren()) {
-            simulateBranchSparse(root, child);
+            simulateBranchSparse(root, child, pathFromRoot);
         }
     }
 
-    /**
-     * Recursively simulate from parent to child:
-     *   - draw Poisson(# of mutation events)
-     *   - for each event, pick site, sample new state, record difference
-     *   - properly handle cases where mutations might revert to original states
-     */
-    private void simulateBranchSparse(TimeTreeNode parent, TimeTreeNode child) {
-        // 1) Branch length scaled by clockRate & branchRates
-        double branchLength;
-
-        if (clockRate != null){
-            branchLength = clockRate.value().doubleValue() * (parent.getAge() - child.getAge());
-        } else {
-            branchLength = parent.getAge() - child.getAge();
+    private Alignment getOrSampleRoot(int nSites) {
+        if (rootSeq != null) {
+            Alignment r = rootSeq.value();
+            if (r.ntaxa() != 1)
+                throw new IllegalArgumentException("The root sequence alignment must contain exactly one sequence, but has " + r.ntaxa());
+            return r;
         }
+        SequenceType dt = (dataType != null) ? dataType.value() : SequenceType.NUCLEOTIDE;
+        Alignment r = new SimpleAlignment(Taxa.createTaxa(1), nSites, dt);
+        Double[] freqs = rootFreqs.value();
+        for (int i = 0; i < nSites; i++)
+            r.setState(0, i, Categorical.sample(freqs, random));
+        return r;
+    }
 
-        if (branchRates != null) {
+    private void buildJumpChain(Double[][] Qm) {
+        final int n = Qm.length;
+        uniformRate = 0.0;
+        for (int i = 0; i < n; i++)
+            uniformRate = Math.max(uniformRate, -Qm[i][i]);
+
+        jumpCDF = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            double c = 0.0;
+            for (int j = 0; j < n; j++) {
+                double p = (uniformRate > 0) ? Qm[i][j] / uniformRate : 0.0;
+                if (i == j) p += 1.0;
+                c += p;
+                jumpCDF[i][j] = c;
+            }
+        }
+    }
+
+    private void buildSiteRateCDF(int nSites) {
+        if (siteRates == null) {
+            siteRateCDF = null;
+            return;
+        }
+        Double[] r = siteRates.value();
+        siteRateCDF = new double[nSites];
+        double c = 0.0;
+        for (int i = 0; i < nSites; i++) {
+            c += r[i];
+            siteRateCDF[i] = c;
+        }
+    }
+
+    private double totalSiteRate(int nSites) {
+        return (siteRateCDF == null) ? nSites : siteRateCDF[nSites - 1];
+    }
+
+    private int pickSite(int nSites) {
+        if (siteRateCDF == null) return random.nextInt(nSites);
+        double u = random.nextDouble() * siteRateCDF[nSites - 1];
+        int idx = Arrays.binarySearch(siteRateCDF, u);
+        if (idx < 0) idx = -idx - 1;
+        // skip sites with zero rate (equal cumulative values)
+        while (idx < nSites - 1 && siteRateCDF[idx] <= u) idx++;
+        return Math.min(idx, nSites - 1);
+    }
+
+    private int jump(int state) {
+        double[] cdf = jumpCDF[state];
+        double u = random.nextDouble() * cdf[cdf.length - 1];
+        for (int j = 0; j < cdf.length; j++) {
+            if (u < cdf[j]) return j;
+        }
+        return state;
+    }
+
+    /**
+     * Simulate the branch parent -> child, then recurse.
+     * @param pathFromRoot states that differ from the root sequence at the parent;
+     *                     restored to its original content before returning.
+     */
+    private void simulateBranchSparse(TimeTreeNode parent, TimeTreeNode child, Map<Integer, Integer> pathFromRoot) {
+        final int nSites = getSiteCount();
+
+        // branch length in expected substitutions per unit site rate, as in AbstractPhyloCTMC.traverseTree
+        double mu = (clockRate == null) ? 1.0 : ValueUtils.doubleValue(clockRate);
+        double branchLength = mu * (parent.getAge() - child.getAge());
+        if (branchRates != null)
             branchLength *= branchRates.value()[child.getIndex()];
-        }
 
-        // 2) The total expected # of events = branchLength * N * mu
-        //    We'll compute mu from the Q matrix.
-        Double[][] Qm = getQ();
-        double mu = (this.clockRate == null) ? computeMeanOffDiagonalRate(Qm) : ValueUtils.doubleValue(clockRate);
+        double lambda = uniformRate * branchLength * totalSiteRate(nSites);
+        int K = (lambda > 0) ? new PoissonDistribution(random, lambda,
+                PoissonDistribution.DEFAULT_EPSILON, PoissonDistribution.DEFAULT_MAX_ITERATIONS).sample() : 0;
 
-        int N = getSiteCount();
-        double lambda = branchLength * mu * N;
+        // child's states that differ from parent's
+        Map<Integer, Integer> childDiffs = new HashMap<>();
+        // parent's state of each site touched on this branch, to undo pathFromRoot later
+        Map<Integer, Integer> parentStates = new HashMap<>();
 
-        // 3) Draw Poisson(lambda)
-        RandomGenerator rng = random;
-        PoissonDistribution pois = new PoissonDistribution(rng, lambda,
-                PoissonDistribution.DEFAULT_EPSILON,
-                PoissonDistribution.DEFAULT_MAX_ITERATIONS);
-        int K = pois.sample();
-
-        // 4) Build child's difference map
-        Map<Integer,Integer> childDiffs = new HashMap<>();
-
-        // 5) For each mutation event
         for (int e = 0; e < K; e++) {
-            // pick a site at random (uniform)
-            int siteIndex = rng.nextInt(N);
-
-            // Find the parent's effective state for this site
-            int parentState = getEffectiveState(parent, siteIndex);
-            
-            // Find the current state for this site in this branch (if previously mutated)
-            int currentState;
-
-            if (childDiffs.containsKey(siteIndex)) {
-                // Use the latest state from previous mutations in this branch
-                currentState = childDiffs.get(siteIndex);
-            } else {
-                // If this is the first mutation on this site in this branch,
-                // use the parent's state
-                currentState = parentState;
-            }
-
-            // Sample new state from Q using the current state
-            int newState = sampleNewState(currentState, Qm);
-            
-            // Only record the difference if:
-            // 1. This is a new mutation in this branch, and the state is different from parent's state
-            // 2. OR, this is a follow-up mutation in this branch that changed the state
-            if (newState != currentState) {
-                // If the new state happens to match the parent's original state and there were 
-                // previous mutations in this branch, we need to decide if we should remove this entry
-                if (newState == parentState && childDiffs.containsKey(siteIndex)) {
-                    // Remove the entry since effectively there's no change from parent
-                    childDiffs.remove(siteIndex);
-                } else {
-                    // Otherwise record the new state
-                    childDiffs.put(siteIndex, newState);
-                }
-            }
-            // If newState == currentState, we don't record anything as there's no actual change
+            int site = pickSite(nSites);
+            int parentState = parentStates.computeIfAbsent(site, s -> stateAt(s, pathFromRoot));
+            int current = childDiffs.getOrDefault(site, parentState);
+            int newState = jump(current);
+            if (newState == current) continue; // virtual jump
+            if (newState == parentState) childDiffs.remove(site);
+            else childDiffs.put(site, newState);
         }
-
         nodeDifferences.put(child, childDiffs);
-        changedSites.addAll(childDiffs.values());
 
-        // 6) Recurse
-        for (TimeTreeNode grandChild : child.getChildren()) {
-            simulateBranchSparse(child, grandChild);
+        // update the path to the child
+        Map<Integer, Integer> undo = new HashMap<>();
+        for (Map.Entry<Integer, Integer> d : childDiffs.entrySet()) {
+            undo.put(d.getKey(), pathFromRoot.get(d.getKey())); // may be null
+            pathFromRoot.put(d.getKey(), d.getValue());
+        }
+
+        for (TimeTreeNode grandChild : child.getChildren())
+            simulateBranchSparse(child, grandChild, pathFromRoot);
+
+        // restore the parent's path
+        for (Map.Entry<Integer, Integer> u : undo.entrySet()) {
+            if (u.getValue() == null) pathFromRoot.remove(u.getKey());
+            else pathFromRoot.put(u.getKey(), u.getValue());
         }
     }
 
+    private int rootState(int site) {
+        return simRoot.getState(0, site);
+    }
+
+    private int stateAt(int site, Map<Integer, Integer> pathFromRoot) {
+        Integer s = pathFromRoot.get(site);
+        return (s != null) ? s : rootState(site);
+    }
+
     /**
-     * Climb up the ancestor chain until we find a difference entry for 'siteIndex',
-     * or we reach the root. If nobody had a difference, sample from rootFreq (once).
+     * State of a site at a node: the youngest change on the path from the root, else the root state.
      */
-    private int getEffectiveState(TimeTreeNode node, int siteIndex) {
-        // if node is root
-        if (node == tree.value().getRoot()) {
-            if (rootSeq != null){
-                return rootSeq.value().getState(rootSeq.value().length()-1, siteIndex);
-//            } else {
-//                // fallback: sample from root freq
-//                int rootState = sampleFromRootFreq();
-//                // set root sequence
-//                sampledRootSeq.setState(sampledRootSeq.length()-1, siteIndex, rootState);
-//
-//                return rootState;
+    private int getEffectiveState(TimeTreeNode node, int site) {
+        for (TimeTreeNode n = node; n != null; n = n.getParent()) {
+            Map<Integer, Integer> diffs = nodeDifferences.get(n);
+            if (diffs != null) {
+                Integer s = diffs.get(site);
+                if (s != null) return s;
             }
         }
-
-        Map<Integer,Integer> diffs = nodeDifferences.get(node);
-        if (diffs == null) {
-            // no map means we haven't visited this node yet or something is off
-            // but let's keep going up
-            return getEffectiveState(node.getParent(), siteIndex);
-        }
-        Integer st = diffs.get(siteIndex);
-        if (st != null) {
-            return st;
-        } else {
-            // check parent's differences
-            return getEffectiveState(node.getParent(), siteIndex);
-        }
+        return rootState(site);
     }
 
-    /**
-     * Sample a new state from the parentState's off-diagonal rates in the Q matrix.
-     */
-    private int sampleNewState(int parentState, Double[][] Qm) {
-        int numStates = Qm.length;
-        double sumOffDiag = 0.0;
-        for (int s = 0; s < numStates; s++) {
-            if (s != parentState) {
-                sumOffDiag += Qm[parentState][s];
-            }
-        }
-        double r = random.nextDouble() * sumOffDiag;
-        double cumulative = 0.0;
-        for (int s = 0; s < numStates; s++) {
-            if (s == parentState) continue;
-            cumulative += Qm[parentState][s];
-            if (r <= cumulative) return s;
-        }
-        // fallback if rounding errors occur
-        return numStates - 1;
-    }
-
-    /**
-     * If we get all the way up the ancestor chain to the root and never see a difference,
-     * that means no mutation from the root's "unknown" state. 
-     * We sample from rootFreq once.
-     */
-    private int sampleFromRootFreq() {
-        Double[] rf = rootFreqs.value();
-        double u = random.nextDouble();
-        double c = 0;
-        for (int i = 0; i < rf.length; i++) {
-            c += rf[i];
-            if (u < c) {
-                return i;
-            }
-        }
-        return rf.length - 1;
-    }
-
-    /**
-     * Compute the average off-diagonal rate from the Q matrix (row sums of off-diagonal entries).
-     * This is used as "mu" in Poisson(lambda) = lambda = branchLength * mu * N.
-     */
-    private double computeMeanOffDiagonalRate(Double[][] Qm) {
-        int numStates = Qm.length;
-        double sum = 0.0;
-        int count = 0;
-        for (int i = 0; i < numStates; i++) {
-            for (int j = 0; j < numStates; j++) {
-                if (i != j) {
-                    sum += Qm[i][j];
-                    count++;
-                }
-            }
-        }
-        return (count > 0 ? sum / count : 0.0);
-    }
-
-    // ======================================================================
-    // =========== Example: Reconstruct leaf sequences if desired ============
-    // ======================================================================
-
-    /**
-     * If you want the final leaf sequence, you can do:
-     */
     public int[] reconstructLeafSequence(TimeTreeNode leaf) {
         int nSites = getSiteCount();
         int[] leafSeq = new int[nSites];
@@ -284,89 +246,61 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     // =========== Overriding sample() to produce an Alignment ==============
     // ======================================================================
 
-    /**
-     * Override the sample method from PhyloCTMC to use our sparse simulation
-     */
     @GeneratorInfo(name = "SparsePhyloCTMC", verbClause = "is assumed to have evolved under",
             narrativeName = "phylogenetic continuous time Markov process",
             category = GeneratorCategory.PHYLO_LIKELIHOOD,
             description = "Simulate random number of mutations on branches along the tree. Variable sites and root sequence are stored to return the alignment.  ")
     @Override
     public RandomVariable<Alignment> sample() {
-        // 1) run the sparse simulation
         simulateSparse();
 
-        // 2) create a variant storing map with root sequence and variants
-        // initialise the root sequence if it's not given
-        int length = getSiteCount();
+        alignment = new VariantStyleAlignment(idMap, simRoot, new HashMap<>());
 
-        // initialise the variantStore map
-        Map<CellPosition, Integer> variantStore = new HashMap<>();
-        alignment = new VariantStyleAlignment(idMap, rootSeq.value(), variantStore);
+        SequenceType dt = (dataType != null) ? dataType.value() : simRoot.getSequenceType();
+        final int nSites = getSiteCount();
+        Alignment a = new SimpleAlignment(idMap, nSites, dt);
 
-        // 3) fill in the alignment using the simulated sparse differences
-        TimeTreeNode root = tree.value().getRoot();
-        int taxonIndex = 0;
-
-        for (String taxonName : idMap.keySet()) {
-            TimeTreeNode node = findNodeById(root, taxonName);
-            if (node != null) {
-                // fill by each site
-                for (int site = 0; site < length; site++) {
-                    // add parent site mutations first
-                    TimeTreeNode tempNode = node.getParent();
-
-                    // find the youngest parent that has a mutation on this site
-                    while (tempNode != null && tempNode != root && // while node exist and is not root and node has differences
-                            (!nodeDifferences.containsKey(tempNode) || nodeDifferences.get(tempNode).get(site) == null)) {
-                        tempNode = tempNode.getParent();
-                    }
-
-                    // if a parent mutation exists, assign the effective state
-                    if (tempNode != null && tempNode != root) {
-                        int state = nodeDifferences.get(tempNode).get(site);
-                        alignment.setState(taxonIndex, site, state);
-                    } // else, skip
-
-                    // map the mutations on the tip
-                    if (nodeDifferences.containsKey(node) && nodeDifferences.get(node).containsKey(site)) {
-                        int state = nodeDifferences.get(node).get(site);
-                        alignment.setState(taxonIndex, site, state);
-                    }
-                }
-            }
-            taxonIndex++;
-        }
-
-        Alignment a = mapAlignment(alignment);
+        // same set of output nodes and rows as AbstractPhyloCTMC.traverseTree
+        fillOutput(tree.value().getRoot(), new HashMap<>(), a, nSites);
 
         return new RandomVariable<>("D", a, this);
     }
 
-    public static Alignment mapAlignment(VariantStyleAlignment alignment) {
-        Alignment a = new SimpleAlignment(alignment.getTaxa(), alignment.nchar(), alignment.getSequenceType());
-        for (int i = 0; i < alignment.length(); i++) {
-            for (int j = 0; j < alignment.nchar(); j++) {
-                a.setState(i,j, alignment.getState(i,j));
+    private void fillOutput(TimeTreeNode node, Map<Integer, Integer> pathFromRoot, Alignment a, int nSites) {
+        Map<Integer, Integer> path = pathFromRoot;
+        Map<Integer, Integer> diffs = nodeDifferences.get(node);
+        if (diffs != null && !diffs.isEmpty()) {
+            path = new HashMap<>(pathFromRoot);
+            path.putAll(diffs);
+        }
+
+        if (node.isLeaf() || (node.isSingleChildNonOrigin() && node.getId() != null)) {
+            int row = node.getLeafIndex();
+            for (int site = 0; site < nSites; site++)
+                a.setState(row, site, rootState(site));
+            for (Map.Entry<Integer, Integer> d : path.entrySet()) {
+                a.setState(row, d.getKey(), d.getValue());
+                alignment.setState(node.getId(), d.getKey(), d.getValue());
             }
         }
-        return a;
+
+        for (TimeTreeNode child : node.getChildren())
+            fillOutput(child, path, a, nSites);
     }
 
     /**
-     * Helper method to find a node by ID in the tree
+     * Copy a {@link VariantStyleAlignment} into a {@link SimpleAlignment}, matching rows by taxon name.
      */
-    private TimeTreeNode findNodeById(TimeTreeNode node, String id) {
-        if (id.equals(node.getId())) {
-            return node;
-        }
-        for (TimeTreeNode child : node.getChildren()) {
-            TimeTreeNode found = findNodeById(child, id);
-            if (found != null) {
-                return found;
+    public static Alignment mapAlignment(VariantStyleAlignment alignment) {
+        Alignment a = new SimpleAlignment(alignment.getTaxa(), alignment.nchar(), alignment.getSequenceType());
+        String[] names = alignment.getTaxaNames();
+        for (String name : names) {
+            int row = a.indexOfTaxon(name);
+            for (int j = 0; j < alignment.nchar(); j++) {
+                a.setState(row, j, alignment.getState(name, j));
             }
         }
-        return null;
+        return a;
     }
 
     // for unit test

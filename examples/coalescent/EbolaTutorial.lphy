@@ -1,0 +1,85 @@
+data {
+  nIntervals = 99;       // weekly predictor entries
+
+  // Rate shift times, weekly, spanning the predictor series.
+  // from = most recent predictor entry, to = oldest, relative to the most recent sample.
+  rateShiftTimes = rateShiftTimes(mostRecentSampleDate=2014.989041,   // 2014-12-28
+                                  from=2015.873973,                   // 2015-11-16
+                                  to=2013.994521,                     // 2013-12-30
+                                  interval="0-0-7");                  // 7 days
+
+  // === Ne predictors ===
+  // Population density: one value per district, tiled across all weeks
+  pdens_table = readDelim(file="data/Ne_Pdens.csv", sep=",", header=false);
+  X_pdens = toDesignMatrix(table=pdens_table, nIntervals=nIntervals);
+
+  // Weekly case counts: one column per week. Raw counts, so log-standardise them the way
+  // the tutorial does via BEAUti's transform flag (zeros are already 0.001 in the CSV).
+  // This runs over all 99 intervals, before LPhyBEAST trims the pre-present ones, so the
+  // mean and sd match the ones BEAUti computes.
+  cases_table = readDelim(file="data/Ne_cases.csv", sep=",");
+  X_cases = toDesignMatrix(table=cases_table, transform=true);
+
+  X_Ne = cbind(a=X_pdens, b=X_cases);          // [nIntervals * S][2] = [495][2]
+
+  // === Migration predictors ===
+  // Both are static square matrices, tiled across all weeks
+  dist_table = readDelim(file="data/migration_greatCircleDistances.csv", sep=",");
+  X_dist = toDesignMatrix(table=dist_table, migrationMatrix=true, nIntervals=nIntervals);
+
+  border_table = readDelim(file="data/migration_national_border_shared.csv", sep=",");
+  X_border = toDesignMatrix(table=border_table, migrationMatrix=true, nIntervals=nIntervals);
+
+  X_m = cbind(a=X_dist, b=X_border);           // [nIntervals * S*(S-1)][2] = [1980][2]
+
+  // === Alignment, sampling dates and demes ===
+  // Taxon names are pipe-separated: id|accession|district|date
+  //   e.g. EM_080011|KR817229|Kailahun|2014-06-15
+  // Field 3 (i=3) is a uuuu-MM-dd
+  options = {ageDirection="forward", ageRegex=".*\|(\d{4}-\d{2}-\d{2})$"};
+  D = readFasta(file="data/ebov_noncoding.fasta", options=options);
+
+  taxa = D.taxa();
+  L = D.nchar();
+
+  // Field 2 (i=2) is the district
+  demes = split(str=D.taxaNames(), regex="\|", i=2);
+
+  // 5 districts, matching the rows of the predictor CSVs
+  S = length(unique(demes));
+}
+
+model {
+  // === Ne GLM ===
+  // Coefficients are shared across weeks; the time variation comes from X_cases.
+  beta_Ne ~ Normal(mean=0.0, sd=1.0, replicates=2);
+  Ne_scale ~ LogNormal(meanlog=0.0, sdlog=1.0);
+
+  // BSSVS: Poisson prior on the number of active predictors, lambda = 0.5,
+  // which favours the sparser model as the tutorial intends.
+  indicator_Ne ~ PoissonIndicators(n=2, lambda=0.5);
+
+  theta = generalLinearFunction(beta=beta_Ne, x=X_Ne, link="log", scale=Ne_scale, indicator=indicator_Ne);
+
+  // === Migration GLM ===
+  beta_m ~ Normal(mean=0.0, sd=1.0, replicates=2);
+  m_scale ~ LogNormal(meanlog=-2.0, sdlog=1.0);
+  indicator_m ~ PoissonIndicators(n=2, lambda=0.5);
+
+  m = generalLinearFunction(beta=beta_m, x=X_m, link="log", scale=m_scale, indicator=indicator_m);
+
+  // === Tree prior: structured coalescent with weekly rate shifts ===
+  psi ~ StructuredCoalescentRateShifts(theta=theta, m=m, rateShiftTimes=rateShiftTimes, taxa=taxa, demes=demes);
+
+  // === Sequence evolution: HKY + gamma(4), strict clock ===
+  kappa ~ LogNormal(meanlog=1.0, sdlog=0.5);
+  pi ~ Dirichlet(conc=[2.0, 2.0, 2.0, 2.0]);
+  Q = hky(kappa=kappa, freq=pi);
+
+  shape ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, replicates=L);
+
+  clockRate ~ LogNormal(meanlog=-7.0, sdlog=1.0);
+
+  D ~ PhyloCTMC(tree=psi, Q=Q, siteRates=siteRates, mu=clockRate);
+}
