@@ -4561,6 +4561,11 @@
         "type" : "Integer",
         "required" : false,
         "description" : "Number of time intervals to tile a static predictor across. Only valid for static formats (Ne vector, square migration matrix). The single-interval block is replicated nIntervals times to match time-variant predictors."
+      }, {
+        "name" : "transform",
+        "type" : "Boolean",
+        "required" : false,
+        "description" : "If true, log-transform then standardise (subtract mean, divide by sd) each predictor column over the whole series. This matches MASCOT's Covariate.transform(), which BEAUti applies via its transform flag; use it for raw predictors such as case counts. Values must be strictly positive."
       } ]
     }, {
       "name" : "unique",
