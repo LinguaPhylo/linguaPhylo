@@ -66,7 +66,22 @@ public class ParserUtils {
         } else {
             LoggerUtils.log.severe("No generator with name " + name + " available.");
         }
-        return matches;
+        return preferDirectMatches(matches);
+    }
+
+    /**
+     * When a call matches a generator directly and also matches another generator wrapped in
+     * {@link IID}, drop the IID matches. A generator that declares the replicates argument handles
+     * replicates itself, e.g. Bernoulli(p, replicates) is BernoulliMulti, not IID(Bernoulli).
+     * Without this, which match comes first, and so which one the parser picks, is arbitrary.
+     * @param matches  the matching generators, possibly including IIDs
+     * @return the matches without IIDs, unless every match is an IID
+     */
+    static List<Generator> preferDirectMatches(List<Generator> matches) {
+        if (matches.size() < 2) return matches;
+        // a null is a generator that failed to construct: it is not a direct match
+        List<Generator> direct = matches.stream().filter(g -> g != null && !(g instanceof IID)).toList();
+        return direct.isEmpty() ? matches : new ArrayList<>(direct);
     }
 
     /** Warn if {@code name} is a deprecated generator/function alias, pointing to the canonical name. */

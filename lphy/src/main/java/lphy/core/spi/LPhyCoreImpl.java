@@ -68,11 +68,11 @@ public class LPhyCoreImpl implements LPhyExtension {
         for (Class<? extends GenerativeDistribution> genClass : genDist) {
             String name = GeneratorUtils.getGeneratorName(genClass);
 
-            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
+            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new LinkedHashSet<>());
             genDistSet.add(genClass);
             // also index under any deprecated alias name(s) for backward compatibility
             for (String alias : GeneratorUtils.getGeneratorAliases(genClass)) {
-                genDistDictionary.computeIfAbsent(alias, k -> new HashSet<>()).add(genClass);
+                genDistDictionary.computeIfAbsent(alias, k -> new LinkedHashSet<>()).add(genClass);
             }
             // collect LPhy data types from GenerativeDistribution
             types.add(GeneratorUtils.getReturnType(genClass));
@@ -82,7 +82,7 @@ public class LPhyCoreImpl implements LPhyExtension {
 //        for (Class<?> genClass : lightWeightGenClasses) {
 //            String name = Generator.getGeneratorName(genClass);
 //
-//            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
+//            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new LinkedHashSet<>());
 //            genDistSet.add(genClass);
 //            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
 //        }
@@ -92,11 +92,11 @@ public class LPhyCoreImpl implements LPhyExtension {
         for (Class<? extends BasicFunction> functionClass : funcs) {
             String name = GeneratorUtils.getGeneratorName(functionClass);
 
-            Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
+            Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new LinkedHashSet<>());
             funcSet.add(functionClass);
             // also index under any deprecated alias name(s) for backward compatibility
             for (String alias : GeneratorUtils.getGeneratorAliases(functionClass)) {
-                functionDictionary.computeIfAbsent(alias, k -> new HashSet<>()).add(functionClass);
+                functionDictionary.computeIfAbsent(alias, k -> new LinkedHashSet<>()).add(functionClass);
             }
             // collect LPhy data types from Func
             Collections.addAll(types, NarrativeUtils.getParameterTypes(functionClass, 0));
