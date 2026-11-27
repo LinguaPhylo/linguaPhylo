@@ -2,6 +2,7 @@ package lphy.core.simulator;
 
 import lphy.core.io.FileConfig;
 import lphy.core.logger.FileLoggerListener;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -105,6 +106,13 @@ public class NamedRandomValueSimulator {
 
         long start = System.currentTimeMillis();
 
+        // Seed once, before parsing: parsing simulates the 1st replicate, and the later replicates
+        // continue the same random number stream. Re-seeding every replicate would make them identical.
+        if (seed != null) {
+            RandomUtils.setSeed(seed);
+            LoggerUtils.log.info("Set seed = " + seed);
+        }
+
         // create Sampler by parsing a lphy script file,
         // during parsing, the values are simulated.
         sampler = Sampler.createSampler(lphyFile, constants);
@@ -116,7 +124,7 @@ public class NamedRandomValueSimulator {
         // start from 2nd replicate
         for (int i = SimulatorListener.REPLICATES_START_INDEX + 1; i < numReplicates; i++) {
             // sample() does not parse the script again
-            values = sampler.sample(seed);
+            values = sampler.sample(null);
             // filter to RandomValue
             namedRandomValueList = getNamedRandomValues(values, varNotLog);
 

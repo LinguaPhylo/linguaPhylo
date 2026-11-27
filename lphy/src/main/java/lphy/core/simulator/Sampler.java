@@ -217,10 +217,15 @@ public class Sampler {
             // pass numReplicates to loggers
             logger.start(numReplicates);
 
+        // seed once: re-seeding every replicate would make them all identical
+        if (seed != null) {
+            RandomUtils.setSeed(seed);
+            LoggerUtils.log.info("Set seed = " + seed );
+        }
+
         for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
 
-            // sampling at seed
-            List<Value> values = sample(seed);
+            List<Value> values = sample(null);
             // store result
             valuesAllRepsMap.put(i, values);
 
