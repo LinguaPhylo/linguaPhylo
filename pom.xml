@@ -68,10 +68,19 @@
         <module>lphy</module>
         <module>lphy-base</module>
         <module>lphy-studio</module>
-        <module>lphy-phylospec</module>
+        <!-- lphy-phylospec needs phylospec-core, which is not published yet: see the phylospec profile -->
     </modules>
 
     <profiles>
+        <!-- mvn -Pphylospec -pl lphy-phylospec -am test
+             builds lphy-phylospec; it needs phylospec-core installed in the local .m2 -->
+        <profile>
+            <id>phylospec</id>
+            <modules>
+                <module>lphy-phylospec</module>
+            </modules>
+        </profile>
+
         <!-- mvn clean test -P skipLPhyTests -->
         <profile>
             <id>skipLPhyTests</id>

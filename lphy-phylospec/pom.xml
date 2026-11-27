@@ -11,9 +11,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <!-- this module versions independently (see <version> above), but lphy-base still
-             versions with the rest of the reactor, hence ${revision} rather than ${project.version} -->
-        <lphy-base.version>1.8.1-SNAPSHOT</lphy-base.version>
+        <!-- never deployed while it depends on the unpublished phylospec-core SNAPSHOT -->
+        <maven.deploy.skip>true</maven.deploy.skip>
         <phylospec-core.version>0.0.1-SNAPSHOT</phylospec-core.version>
         <!-- Override on the command line: -Dexporter.args=path/to/output.json -->
         <exporter.args/>
@@ -23,7 +22,9 @@
         <dependency>
             <groupId>io.github.linguaphylo</groupId>
             <artifactId>lphy-base</artifactId>
-            <version>${lphy-base.version}</version>
+            <!-- this module versions independently (see <version> above), but lphy-base versions
+                 with the rest of the reactor, hence ${revision} rather than ${project.version} -->
+            <version>${revision}</version>
         </dependency>
 
         <!-- installed locally via: cd ../../phylospec && mvn -pl core/java -am install -Dmaven.test.skip=true -->

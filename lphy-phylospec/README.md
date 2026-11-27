@@ -19,14 +19,31 @@ cd phylospec    && mvn -pl core/java -am install -Dmaven.test.skip=true && cd ..
 cd linguaPhylo  && mvn -q -pl lphy,lphy-base -am install -Dmaven.test.skip=true
 ```
 
-**SNAPSHOT dependencies.** This module depends on `phylospec-core` `0.0.1-SNAPSHOT` and
-`lphy-base` `1.8.1-SNAPSHOT`. SNAPSHOT versions are not published to Maven Central, so Maven reads
+**SNAPSHOT dependencies.** This module depends on `phylospec-core` `0.0.1-SNAPSHOT` and on
+`lphy-base` at the version of the rest of LinguaPhylo (`${revision}` in the root `pom.xml`, currently
+`1.8.1-SNAPSHOT`). SNAPSHOT versions are not published to Maven Central, so Maven reads
 them from the local repository, `~/.m2/repository`. The two `install` commands above put them
 there. In the first command, `-pl core/java` selects the `phylospec-core` module, and `-am` also
 installs its parent pom, which Maven needs to resolve it.
 
 Run both commands once, and again after any change to the PhyloSpec or LPhy code. When these
 dependencies move to released versions, the installs are no longer needed.
+
+**Not in the default build.** Because `phylospec-core` is not published yet, the root `pom.xml`
+builds this module only with the `phylospec` profile. A plain `mvn verify` from the repository root,
+as CI runs it, skips this module, and `mvn -Prelease deploy` never publishes it. The module also sets
+`maven.deploy.skip`, so it is not deployed even when the profile is on.
+
+```bash
+# from linguaPhylo: build lphy and lphy-base from source, then test this module
+mvn -Pphylospec -pl lphy-phylospec -am test
+
+# from linguaPhylo: the whole repository, including this module
+mvn -Pphylospec clean verify
+```
+
+When `phylospec-core` has a released version, move `lphy-phylospec` back into the root `<modules>`
+and delete the profile.
 
 All commands below run from this module's folder, `linguaPhylo/lphy-phylospec`.
 
